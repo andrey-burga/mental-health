@@ -1,0 +1,29 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+  @apply font-sans leading-relaxed m-0 p-0;
+}
+
+
+section {
+  padding: 1rem 2rem 0rem 2rem;
+  /* arriba, derecha, abajo, izquierda (en ese orden) */
+}
+
+.cards-row, .warnings-row {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+  padding: 1rem;
+}
+
+.warning, .resourcecard {
+  flex: 1 1 220px;
+  text-align: center;
+}
+
+.warning button {
+  margin-bottom: 0.5rem;
+}
