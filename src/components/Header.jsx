@@ -3,7 +3,7 @@ function Header() {
     <header className="sticky top-0 z-50 bg-blue-600 text-white">
       <div className="max-w-6xl mx-auto px-6 py-6 flex flex-col md:flex-row items-center justify-between gap-4">
         {/* Logo / Título */}
-        <h1 className="text-2xl font-bold">🌱 Salud Mental</h1>
+        <h1 className="text-2xl font-bold">🌱 Tu Espacio Seguro</h1>
 
         {/* Navegación principal */}
         <nav className="flex flex-wrap justify-center gap-6 text-sm font-medium">
