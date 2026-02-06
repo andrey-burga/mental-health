@@ -7,6 +7,9 @@ import {
   mentalHealthIntro,
   commonDisorders,
   helpResources,
+  pornographyResources,
+  badHabitsResources,
+  wellbeingResources,
 } from "../data/homeContent";
 
 function Home() {
@@ -14,12 +17,12 @@ function Home() {
     <>
       <Header />
       <Section>
-        <h2 className="text-2xl font-semibold">
-          Cuidar tu salud mental también es cuidarte
+        <h2 className="text-3xl font-semibold">
+          Tu bienestar emocional importa
         </h2>
         <p className="mt-2 text-gray-700">
-          Este espacio busca informar, acompañar y orientar sobre el bienestar
-          emocional de forma clara y humana.
+          Aquí encontrarás información clara sobre salud mental, trastornos
+          comunes y recursos de ayuda para acompañarte cuando lo necesites.
         </p>
       </Section>
 
@@ -39,14 +42,86 @@ function Home() {
         </div>
       </Section>
 
+      <Section title="Factores de riesgo para la salud mental">
+        <p className="mb-6 text-gray-700">
+          Algunas conductas y hábitos cotidianos pueden afectar la salud mental
+          de forma progresiva. Conocerlos permite tomar decisiones más
+          conscientes sobre el propio bienestar.
+        </p>
+
+        <div className="space-y-8">
+          <div>
+            <h3 className="text-xl font-semibold mb-2">
+              {pornographyResources.title}
+            </h3>
+            {pornographyResources.paragraphs.map((text, index) => (
+              <p key={index} className="mb-4">
+                {text}
+              </p>
+            ))}
+          </div>
+
+          <div>
+            <h3 className="text-xl font-semibold mb-2">
+              {badHabitsResources.title}
+            </h3>
+            {badHabitsResources.paragraphs.map((text, index) => (
+              <p key={index} className="mb-4">
+                {text}
+              </p>
+            ))}
+          </div>
+        </div>
+      </Section>
+
       <Section>
-        <div className="flex flex-wrap gap-4 p-4">
-          {helpResources.map((item, index) => (
+        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+          {wellbeingResources.map((item) => (
             <ResourceCard
-              key={index}
+              key={item.id}
               title={item.title}
               description={item.description}
-            />
+            >
+              <details className="text-sm text-body">
+                <summary className="cursor-pointer text-primary font-medium">
+                  Leer más
+                </summary>
+                <p className="mt-2">{item.content}</p>
+              </details>
+            </ResourceCard>
+          ))}
+        </div>
+      </Section>
+
+      <Section title="En desarrollo">
+        <p className="mb-6 text-gray-700">
+          //////////////////////////////////////////////////////
+        </p>
+      </Section>
+      <Section title="Testimonios">
+        <p className="mb-6 text-gray-700">
+          //////////////////////////////////////////////////////
+        </p>
+        <div>
+          <p>Mi testimonio y lo que he vivido</p>
+        </div>
+      </Section>
+
+      <Section>
+        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+          {helpResources.map((item, index) => (
+            <ResourceCard
+              key={item.id}
+              title={item.title}
+              description={item.description}
+            >
+              <details className="text-sm text-body">
+                <summary className="cursor-pointer text-primary font-medium">
+                  Leer más
+                </summary>
+                <p className="mt-2">{item.content}</p>
+              </details>
+            </ResourceCard>
           ))}
         </div>
       </Section>
