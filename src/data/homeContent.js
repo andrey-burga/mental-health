@@ -9,15 +9,27 @@ export const mentalHealthIntro = {
 export const commonDisorders = [
   {
     title: "Ansiedad",
-    text: "Preocupación constante, irritabilidad, insomnio o síntomas físicos como palpitaciones pueden ser señales de alerta. Si estos síntomas persisten, buscar ayuda profesional es un paso importante.",
+    text: "Preocupación constante, nerviosismo, insomnio o síntomas físicos como palpitaciones pueden ser señales de alerta. Si persisten, buscar ayuda profesional es fundamental.",
+  },
+  {
+    title: "Burnout",
+    text: "El agotamiento emocional y físico relacionado con el trabajo o estudio puede provocar desmotivación y cansancio extremo. Pedir ayuda y poner límites es esencial.",
   },
   {
     title: "Depresión",
-    text: "Sentimientos prolongados de tristeza, vacío, falta de energía o pérdida de interés en actividades habituales no deben ignorarse. Hablar con un profesional puede marcar una gran diferencia.",
+    text: "Tristeza profunda, falta de energía o pérdida de interés en actividades cotidianas durante un tiempo prolongado no deben ignorarse. El apoyo profesional puede marcar una gran diferencia.",
   },
   {
     title: "Estrés crónico",
-    text: "Cuando el estrés se mantiene en el tiempo, puede afectar la salud física y emocional. Compartir lo que sientes y aprender estrategias de manejo puede ayudarte a recuperar el equilibrio.",
+    text: "Cuando el estrés se mantiene en el tiempo, puede afectar la salud física y emocional. Aprender a gestionarlo ayuda a recuperar el equilibrio.",
+  },
+  {
+    title: "Trastorno de pánico",
+    text: "Ataques repentinos de miedo intenso acompañados de síntomas físicos como dificultad para respirar o mareos pueden ser muy angustiantes, pero tienen tratamiento.",
+  },
+  {
+    title: "Trastornos del sueño",
+    text: "Dificultad para dormir o un descanso poco reparador afectan el bienestar mental y emocional. Identificar la causa es clave para mejorar la calidad de vida.",
   },
 ];
 
@@ -109,5 +121,109 @@ export const wellbeingResources = [
       "El ambiente donde vives y trabajas influye en tu bienestar mental.",
     content:
       "Tanto el entorno físico como el social puede afectar tu estado emocional. Espacios desordenados, falta de luz natural, ruido constante o relaciones conflictivas aumentan el estrés y la ansiedad. Mantener un entorno limpio, organizado y con apoyo social contribuye a una mejor salud mental.",
+  },
+];
+
+export const mentalHealthStats = [
+  {
+    id: "prevalence",
+    count: "1 de cada 4",
+    title: "Personas",
+    description:
+      "Experimentará un problema de salud mental en algún momento de su vida.",
+  },
+  {
+    id: "treatment-gap",
+    count: "60%",
+    title: "No recibe atención",
+    description:
+      "Muchas personas no acceden a ayuda profesional por estigma o falta de recursos.",
+  },
+  {
+    id: "exercise",
+    count: "30%",
+    title: "Menos síntomas",
+    description:
+      "La actividad física regular puede reducir ansiedad y depresión.",
+  },
+  {
+    id: "sleep",
+    count: "7–9 h",
+    title: "De sueño",
+    description:
+      "Dormir bien es clave para la regulación emocional y la salud mental.",
+  },
+];
+
+export const pornImpactStats = [
+  {
+    id: "early-exposure",
+    count: "93%",
+    title: "Exposición temprana",
+    description:
+      "De los adolescentes varones han estado expuestos a este contenido antes de cumplir los 18 años.",
+  },
+  {
+    id: "brain-reward",
+    count: "Dopamina",
+    title: "Efecto químico",
+    description:
+      "El consumo compulsivo satura el sistema de recompensa, dificultando el placer en actividades cotidianas.",
+  },
+  {
+    id: "body-image",
+    count: "1 de cada 3",
+    title: "Imagen corporal",
+    description:
+      "Usuarios reportan sentir inseguridad sobre su propio cuerpo debido a estándares irreales y editados.",
+  },
+  {
+    id: "relationship-gap",
+    count: "45%",
+    title: "Menos conexión",
+    description:
+      "El consumo frecuente puede correlacionarse con una menor satisfacción emocional en parejas reales.",
+  },
+];
+
+export const articles = [
+  {
+    id: "estres-cronico",
+    title: "Estrés crónico y salud mental",
+    description:
+      "Cómo el estrés sostenido afecta el cuerpo y la mente, y qué puedes hacer para gestionarlo.",
+    date: "16 Ene 2026",
+    datetime: "2026-01-16",
+    category: "Estrés",
+    author: {
+      name: "Andrey",
+      role: "Autor",
+    },
+  },
+  {
+    id: "importancia-del-sueno",
+    title: "La importancia del sueño en el bienestar emocional",
+    description:
+      "Dormir bien no es un lujo: es una necesidad para la salud mental.",
+    date: "31 Dic 2025",
+    datetime: "2025-12-31",
+    category: "Sueño",
+    author: {
+      name: "Andrey",
+      role: "Autor",
+    },
+  },
+  {
+    id: "habitos-saludables",
+    title: "Hábitos diarios que fortalecen la salud mental",
+    description:
+      "Pequeñas acciones cotidianas pueden tener un gran impacto emocional.",
+    date: "2 Feb 2026",
+    datetime: "2026-02-02",
+    category: "Autocuidado",
+    author: {
+      name: "Andrey",
+      role: "Autor",
+    },
   },
 ];
