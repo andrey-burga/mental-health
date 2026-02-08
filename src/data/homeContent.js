@@ -52,6 +52,20 @@ export const disorderDetails = {
       "Alteraciones del sueño",
     ],
   },
+
+  burnout: {
+    title: "Burnout (agotamiento)",
+    description:
+      "El burnout es un estado de agotamiento físico, emocional y mental causado por estrés prolongado, generalmente relacionado con el trabajo o el estudio.",
+    symptoms: [
+      "Cansancio extremo",
+      "Falta de motivación",
+      "Sensación de vacío o desgaste",
+      "Dificultad para concentrarse",
+      "Despersonalización o apatía",
+    ],
+  },
+
   depresion: {
     title: "Depresión",
     description:
@@ -64,16 +78,43 @@ export const disorderDetails = {
       "Cambios en el apetito o el sueño",
     ],
   },
+
   estres: {
-    title: "Estrés",
+    title: "Estrés crónico",
     description:
-      "El estrés es una respuesta adaptativa ante demandas externas. Cuando se mantiene en el tiempo, puede afectar la salud mental y física.",
+      "El estrés crónico ocurre cuando la presión y las demandas se mantienen en el tiempo, afectando tanto la salud mental como física.",
     symptoms: [
       "Irritabilidad",
       "Cansancio constante",
       "Dolores de cabeza o musculares",
       "Dificultad para relajarse",
       "Problemas de concentración",
+    ],
+  },
+
+  panico: {
+    title: "Trastorno de pánico",
+    description:
+      "El trastorno de pánico se caracteriza por la aparición repentina de ataques de miedo intenso acompañados de síntomas físicos muy fuertes.",
+    symptoms: [
+      "Palpitaciones o taquicardia",
+      "Sensación de falta de aire",
+      "Mareos o desorientación",
+      "Miedo intenso o sensación de perder el control",
+      "Sudoración o temblores",
+    ],
+  },
+
+  sueno: {
+    title: "Problemas de sueño",
+    description:
+      "Los problemas de sueño incluyen dificultades para dormir, mantener el sueño o descansar adecuadamente, afectando el bienestar diario.",
+    symptoms: [
+      "Dificultad para conciliar el sueño",
+      "Despertares frecuentes durante la noche",
+      "Sensación de no haber descansado",
+      "Somnolencia durante el día",
+      "Irritabilidad o falta de concentración",
     ],
   },
 };

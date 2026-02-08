@@ -1,31 +1,33 @@
-import { Routes, Route } from "react-router-dom";
+import { Routes, Route, useLocation } from "react-router-dom";
+import { AnimatePresence } from "framer-motion";
+import { lazy, Suspense } from "react";
 
-import Home from "./pages/Home";
-import Autocuidado from "./pages/Autocuidado";
-import FactoresDeRiesgo from "./pages/FactoresDeRiesgo";
-import SaludMental from "./pages/SaludMental";
-import Trastornos from "./pages/Trastornos";
-import TrastornoDetalle from "./pages/TrastornoDetalle";
+import PageLoader from "./components/PageLoader";
 
-//import Articulos from "./pages/Articulos";
-//import SaludMental from "./pages/SaludMental";
-//import Ayuda from "./pages/Ayuda";
-/*
-      <Route path="/salud-mental" element={<SaludMental />} />
-      <Route path="/articulos" element={<Articulos />} />
-      <Route path="/ayuda" element={<Ayuda />} />
-      */
+// Lazy pages
+const Home = lazy(() => import("./pages/Home"));
+const SaludMental = lazy(() => import("./pages/SaludMental"));
+const Trastornos = lazy(() => import("./pages/Trastornos"));
+const TrastornoDetalle = lazy(() => import("./pages/TrastornoDetalle"));
+const Autocuidado = lazy(() => import("./pages/Autocuidado"));
+const Help = lazy(() => import("./pages/Help"));
 
 function App() {
+  const location = useLocation();
+
   return (
-    <Routes>
-      <Route path="/" element={<Home />} />
-      <Route path="/autocuidado" element={<Autocuidado />} />
-      <Route path="/factores-de-riesgo" element={<FactoresDeRiesgo />} />
-      <Route path="/salud-mental" element={<SaludMental />} />
-      <Route path="/trastornos" element={<Trastornos />} />
-      <Route path="/trastornos/:slug" element={<TrastornoDetalle />} />
-    </Routes>
+    <AnimatePresence mode="wait">
+      <Suspense fallback={<PageLoader />}>
+        <Routes location={location} key={location.pathname}>
+          <Route path="/" element={<Home />} />
+          <Route path="/salud-mental" element={<SaludMental />} />
+          <Route path="/trastornos" element={<Trastornos />} />
+          <Route path="/trastornos/:slug" element={<TrastornoDetalle />} />
+          <Route path="/autocuidado" element={<Autocuidado />} />
+          <Route path="/ayuda" element={<Help />} />
+        </Routes>
+      </Suspense>
+    </AnimatePresence>
   );
 }
 
