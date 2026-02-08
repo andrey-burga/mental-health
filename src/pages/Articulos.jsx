@@ -5,7 +5,7 @@ import Footer from "../components/Footer";
 import ArticlePreview from "../components/ArticlePreview";
 import ArticleModal from "../components/ArticleModal";
 
-import { articlesDetails } from "../data/homeContent";
+import { articles } from "../data/homeContent";
 
 function Articulos() {
   const [selectedArticle, setSelectedArticle] = useState(null);
@@ -23,7 +23,7 @@ function Articulos() {
 
       <Section>
         <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-          {articlesDetails.map((article) => (
+          {articles.map((article) => (
             <ArticlePreview
               key={article.id}
               {...article}
