@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { NavLink } from "react-router-dom";
 
 function Warning({ title, text, slug }) {
   const [show, setShow] = useState(false);
@@ -28,12 +29,12 @@ function Warning({ title, text, slug }) {
         <p className="text-gray-700 mb-3">{text}</p>
 
         {slug && (
-          <a
-            href={`/trastornos/${slug}`}
+          <NavLink
+            to={`/trastornos/${slug}`}
             className="text-primary font-medium hover:underline text-sm"
           >
             Leer más →
-          </a>
+          </NavLink>
         )}
       </div>
     </div>

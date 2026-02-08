@@ -1,3 +1,5 @@
+import { NavLink } from "react-router-dom";
+
 import Header from "../components/Header";
 import Section from "../components/Section";
 import Warning from "../components/Warning";
@@ -73,20 +75,18 @@ function SaludMental() {
           suele pensar. Conocerlas ayuda a identificar señales de alerta y a
           buscar apoyo oportunamente.
         </p>
-
         <div className="flex flex-wrap gap-4">
           {commonDisorders.slice(0, 4).map((item, index) => (
             <Warning key={index} title={item.title} text={item.text} />
           ))}
         </div>
-
         <div className="mt-6">
-          <a
-            href="/trastornos"
+          <NavLink
+            to="/trastornos"
             className="text-primary font-medium hover:underline"
           >
             Ver todos los trastornos →
-          </a>
+          </NavLink>
         </div>
       </Section>
 
