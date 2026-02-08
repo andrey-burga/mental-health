@@ -94,7 +94,7 @@ function Home() {
 
           <a
             href="/ayuda"
-            className="inline-block rounded-lg bg-primary px-6 py-3 text-white font-medium hover:opacity-90 transition"
+            className="inline-block rounded-lg bg-primary px-6 py-3 text-black font-medium hover:opacity-90 transition"
           >
             Buscar ayuda
           </a>

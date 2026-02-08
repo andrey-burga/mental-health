@@ -275,35 +275,111 @@ export const articles = [
     title: "Estrés crónico y salud mental",
     description:
       "Cómo el estrés sostenido afecta el cuerpo y la mente, y qué puedes hacer para gestionarlo.",
+    excerpt:
+      "Cuando el estrés se mantiene en el tiempo, puede afectar tanto la mente como el cuerpo.",
+    content: `
+El estrés es una respuesta natural del organismo ante situaciones de presión.
+Sin embargo, cuando se vuelve constante, puede generar ansiedad, irritabilidad,
+problemas de sueño y dificultades de concentración.
+
+Identificar las fuentes de estrés y aplicar estrategias de autocuidado como la
+respiración consciente, el ejercicio y la regulación de límites puede marcar
+una gran diferencia en el bienestar emocional.
+    `,
+    category: "Estrés",
     date: "16 Ene 2026",
     datetime: "2026-01-16",
-    category: "Estrés",
     author: {
       name: "Andrey",
       role: "Autor",
     },
   },
+
   {
     id: "importancia-del-sueno",
     title: "La importancia del sueño en el bienestar emocional",
     description:
       "Dormir bien no es un lujo: es una necesidad para la salud mental.",
+    excerpt:
+      "Dormir bien es una necesidad biológica que impacta directamente el equilibrio emocional.",
+    content: `
+La falta de sueño afecta la regulación emocional, la memoria y la capacidad
+para afrontar el estrés diario.
+
+Mantener horarios regulares y reducir pantallas antes de dormir ayuda a
+proteger la salud mental.
+    `,
+    category: "Sueño",
     date: "31 Dic 2025",
     datetime: "2025-12-31",
-    category: "Sueño",
     author: {
       name: "Andrey",
       role: "Autor",
     },
   },
+
   {
-    id: "habitos-saludables",
-    title: "Hábitos diarios que fortalecen la salud mental",
+    id: "ansiedad-cotidiana",
+    title: "Cómo manejar la ansiedad en el día a día",
     description:
-      "Pequeñas acciones cotidianas pueden tener un gran impacto emocional.",
-    date: "2 Feb 2026",
-    datetime: "2026-02-02",
+      "Pequeñas prácticas diarias pueden ayudarte a reducir la ansiedad.",
+    excerpt:
+      "La ansiedad puede aparecer en lo cotidiano, pero es posible aprender a regularla.",
+    content: `
+La ansiedad es una emoción común que suele activarse ante la incertidumbre
+o la sobrecarga de responsabilidades.
+
+Practicar la atención plena, organizar prioridades y conectar con el presente
+son herramientas clave para disminuir su impacto.
+    `,
+    category: "Ansiedad",
+    date: "05 Ene 2026",
+    datetime: "2026-01-05",
+    author: {
+      name: "Andrey",
+      role: "Autor",
+    },
+  },
+
+  {
+    id: "autocuidado-emocional",
+    title: "Autocuidado emocional: más allá de los hábitos",
+    description:
+      "Cuidarte emocionalmente implica escucharte y respetar tus límites.",
+    excerpt:
+      "El autocuidado emocional va más allá de rutinas: es una actitud diaria.",
+    content: `
+El autocuidado emocional consiste en reconocer tus necesidades internas
+y responder a ellas con amabilidad.
+
+Decir no cuando es necesario, validar tus emociones y pedir ayuda
+son actos fundamentales de bienestar.
+    `,
     category: "Autocuidado",
+    date: "10 Ene 2026",
+    datetime: "2026-01-10",
+    author: {
+      name: "Andrey",
+      role: "Autor",
+    },
+  },
+
+  {
+    id: "salud-mental-y-relaciones",
+    title: "La salud mental en las relaciones personales",
+    description: "Vínculos sanos también contribuyen al bienestar emocional.",
+    excerpt:
+      "Las relaciones influyen profundamente en cómo nos sentimos con nosotros mismos.",
+    content: `
+Las relaciones pueden ser una fuente de apoyo o de desgaste emocional,
+dependiendo de su dinámica.
+
+La comunicación asertiva, el respeto mutuo y los límites claros
+son pilares de relaciones emocionalmente saludables.
+    `,
+    category: "Relaciones",
+    date: "18 Ene 2026",
+    datetime: "2026-01-18",
     author: {
       name: "Andrey",
       role: "Autor",

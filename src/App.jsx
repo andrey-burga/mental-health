@@ -11,6 +11,7 @@ const Trastornos = lazy(() => import("./pages/Trastornos"));
 const TrastornoDetalle = lazy(() => import("./pages/TrastornoDetalle"));
 const Autocuidado = lazy(() => import("./pages/Autocuidado"));
 const Help = lazy(() => import("./pages/Help"));
+const Articulos = lazy(() => import("./pages/Articulos"));
 
 function App() {
   const location = useLocation();
@@ -25,6 +26,7 @@ function App() {
           <Route path="/trastornos/:slug" element={<TrastornoDetalle />} />
           <Route path="/autocuidado" element={<Autocuidado />} />
           <Route path="/ayuda" element={<Help />} />
+          <Route path="/articulos" element={<Articulos />} />
         </Routes>
       </Suspense>
     </AnimatePresence>
