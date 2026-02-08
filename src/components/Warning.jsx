@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-function Warning({ title, text }) {
+function Warning({ title, text, slug }) {
   const [show, setShow] = useState(false);
 
   return (
@@ -8,22 +8,33 @@ function Warning({ title, text }) {
       <button
         type="button"
         aria-expanded={show}
-        aria-controls={`warning-${title}`}
+        aria-controls={`warning-${slug}`}
         onClick={() => setShow(!show)}
-        className="text-black bg-blue-400 hover:text-white hover:bg-blue-600
-        focus:ring-2 focus:ring-blue-300 shadow font-medium rounded-full
-        text-sm px-4 py-2.5 focus:outline-none transition"
+        className="
+          text-black bg-blue-400 hover:text-white hover:bg-blue-600
+          focus:ring-2 focus:ring-blue-300 shadow font-medium rounded-full
+          text-sm px-4 py-2.5 focus:outline-none transition
+        "
       >
-        {title} {show ? "" : ""}
+        {title}
       </button>
 
       <div
-        id={`warning-${title}`}
+        id={`warning-${slug}`}
         className={`mt-6 overflow-hidden transition-all duration-700 ease-in-out ${
           show ? "max-h-96 opacity-100" : "max-h-0 opacity-0"
         }`}
       >
-        <p className="text-gray-700">{text}</p>
+        <p className="text-gray-700 mb-3">{text}</p>
+
+        {slug && (
+          <a
+            href={`/trastornos/${slug}`}
+            className="text-primary font-medium hover:underline text-sm"
+          >
+            Leer más →
+          </a>
+        )}
       </div>
     </div>
   );

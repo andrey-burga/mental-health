@@ -1,37 +1,76 @@
+import { NavLink } from "react-router-dom";
+
 function Header() {
   return (
-    <header className="sticky top-0 z-50 bg-blue-600 text-white">
-      <div className="max-w-6xl mx-auto px-6 py-6 flex flex-col md:flex-row items-center justify-between gap-4">
-        {/* Logo / Título */}
-        <div className="flex items-center gap-3">
-          {/* El Logo */}
-          <img
-            src="/src/resources/logo.png"
-            alt="Logo de Tu Espacio Seguro"
-            className="h-10 w-auto" // Ajusta la altura (h-10 = 40px)
-          />
+    <header className="sticky top-0 z-50  border-b border-default bg-primaryHeader">
+      <div className="container mx-auto flex items-center justify-between px-6 py-4">
+        {/* LOGO */}
+        <NavLink to="/" className="text-xl font-semibold text-heading">
+          Bienestar
+        </NavLink>
 
-          {/* El Título */}
-          <h1 className="text-2xl font-bold">Tu Espacio Seguro</h1>
-        </div>
-        {/* Navegación principal */}
-        <nav className="flex flex-wrap justify-center gap-6 text-sm font-medium">
-          <a href="/" className="hover:text-blue-200 transition">
+        {/* NAV */}
+        <nav className="hidden md:flex items-center gap-6">
+          <NavLink
+            to="/"
+            className={({ isActive }) =>
+              isActive
+                ? "font-medium text-primary"
+                : "text-gray-700 hover:text-primary"
+            }
+          >
             Inicio
-          </a>
-          <a href="/salud-mental" className="hover:text-blue-200 transition">
+          </NavLink>
+
+          <NavLink
+            to="/salud-mental"
+            className={({ isActive }) =>
+              isActive
+                ? "font-medium text-primary"
+                : "text-gray-700 hover:text-primary"
+            }
+          >
             Salud mental
-          </a>
-          <a href="/trastornos" className="hover:text-blue-200 transition">
-            Trastornos
-          </a>
-          <a href="/autocuidado" className="hover:text-blue-200 transition">
+          </NavLink>
+
+          <NavLink
+            to="/autocuidado"
+            className={({ isActive }) =>
+              isActive
+                ? "font-medium text-primary"
+                : "text-gray-700 hover:text-primary"
+            }
+          >
             Autocuidado
-          </a>
-          <a href="/ayuda" className="hover:text-blue-200 transition">
-            Buscar ayuda
-          </a>
+          </NavLink>
+
+          <NavLink
+            to="/articulos"
+            className={({ isActive }) =>
+              isActive
+                ? "font-medium text-primary"
+                : "text-gray-700 hover:text-primary"
+            }
+          >
+            Artículos
+          </NavLink>
         </nav>
+
+        {/* CTA */}
+        <NavLink
+          to="/ayuda"
+          className="
+            rounded-lg
+            bg-primary
+            px-4 py-2
+            text-white
+            font-medium
+            hover:opacity-90
+            transition
+          "
+        >
+          Buscar ayuda
+        </NavLink>
       </div>
     </header>
   );

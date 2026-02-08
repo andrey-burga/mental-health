@@ -1,6 +1,6 @@
 function Footer() {
   return (
-    <footer className="bg-slate-800 text-slate-200 mt-12">
+    <footer className="bg-primaryFooter text-slate-200 mt-12">
       <div className="max-w-6xl mx-auto px-6 py-8">
         {/* Contenido principal */}
         <div className="flex flex-col md:flex-row items-center justify-between gap-4">

@@ -1,78 +1,120 @@
 export const mentalHealthIntro = {
   title: "¿Qué es la salud mental?",
   paragraphs: [
-    "La salud mental es un estado de bienestar emocional, psicológico y social que nos permite afrontar el estrés cotidiano, desarrollar nuestras habilidades, aprender, trabajar y relacionarnos de manera saludable. Influye en cómo pensamos, sentimos, actuamos y tomamos decisiones a lo largo de nuestra vida. No se trata únicamente de la ausencia de trastornos mentales. La salud mental existe en un continuo: todas las personas la experimentamos de formas distintas y en diferentes momentos, con niveles variables de bienestar, dificultad o angustia.",
-    "Además, la salud mental es un derecho humano fundamental y un pilar esencial para el desarrollo personal, comunitario y social. Cuidarla fortalece no solo a la persona, sino también a su entorno. Los trastornos mentales y las condiciones relacionadas con el consumo de sustancias son frecuentes a nivel mundial y pueden generar discapacidad, sufrimiento y, en algunos casos, riesgos graves para la vida. A pesar de ello, muchas personas no reciben atención adecuada debido a la falta de recursos, la desigualdad en el acceso y el estigma social, lo que genera una importante brecha en el tratamiento.",
+    "La salud mental tiene que ver con cómo te sientes, cómo piensas y cómo manejas tu día a día. Influye en cómo enfrentas el estrés, cómo te relacionas con otras personas, cómo tomas decisiones y cómo te desarrollas en el estudio, el trabajo y la vida en general. No se trata solo de “no estar enfermo”. Todos tenemos salud mental, y esta puede cambiar con el tiempo: hay momentos en los que nos sentimos bien y otros en los que cuesta más.",
+    "Cuidar la salud mental es un derecho y una necesidad, no un lujo. Es clave para tu bienestar personal y también para la convivencia en sociedad. Hoy en día, muchos jóvenes viven ansiedad, depresión, agotamiento o problemas relacionados con el consumo de sustancias. Aun así, muchas personas no reciben ayuda por falta de recursos, miedo al qué dirán o desinformación. Hablar del tema y buscar apoyo puede marcar una gran diferencia.",
   ],
 };
 
 export const commonDisorders = [
   {
     title: "Ansiedad",
-    text: "Preocupación constante, nerviosismo, insomnio o síntomas físicos como palpitaciones pueden ser señales de alerta. Si persisten, buscar ayuda profesional es fundamental.",
+    slug: "ansiedad",
+    text: "Sentir preocupación constante, nerviosismo, dificultad para dormir o síntomas físicos como palpitaciones puede ser una señal de alerta. Si esto se mantiene en el tiempo, buscar ayuda profesional es importante.",
   },
   {
-    title: "Burnout",
-    text: "El agotamiento emocional y físico relacionado con el trabajo o estudio puede provocar desmotivación y cansancio extremo. Pedir ayuda y poner límites es esencial.",
+    title: "Burnout (agotamiento)",
+    slug: "burnout",
+    text: "El cansancio extremo por el estudio o el trabajo puede hacer que pierdas la motivación y te sientas vacío. Aprender a poner límites y pedir apoyo es clave.",
   },
   {
     title: "Depresión",
-    text: "Tristeza profunda, falta de energía o pérdida de interés en actividades cotidianas durante un tiempo prolongado no deben ignorarse. El apoyo profesional puede marcar una gran diferencia.",
+    slug: "depresion",
+    text: "Sentirte triste, sin energía o sin ganas de hacer cosas que antes te gustaban durante mucho tiempo no es algo que debas normalizar. La ayuda profesional puede ayudarte a salir de ahí.",
   },
   {
     title: "Estrés crónico",
-    text: "Cuando el estrés se mantiene en el tiempo, puede afectar la salud física y emocional. Aprender a gestionarlo ayuda a recuperar el equilibrio.",
+    slug: "estres",
+    text: "Cuando el estrés no se va, empieza a afectar tu cuerpo y tus emociones. Aprender a manejarlo puede ayudarte a recuperar el equilibrio.",
   },
   {
     title: "Trastorno de pánico",
-    text: "Ataques repentinos de miedo intenso acompañados de síntomas físicos como dificultad para respirar o mareos pueden ser muy angustiantes, pero tienen tratamiento.",
+    slug: "panico",
+    text: "Los ataques de pánico pueden aparecer de repente y sentirse muy intensos, con falta de aire, mareos o miedo extremo. Aunque asustan, tienen tratamiento.",
   },
   {
-    title: "Trastornos del sueño",
-    text: "Dificultad para dormir o un descanso poco reparador afectan el bienestar mental y emocional. Identificar la causa es clave para mejorar la calidad de vida.",
+    title: "Problemas de sueño",
+    slug: "sueno",
+    text: "Dormir mal o no descansar lo suficiente afecta directamente tu ánimo, concentración y energía. Identificar la causa es el primer paso para mejorar.",
   },
 ];
+
+export const disorderDetails = {
+  ansiedad: {
+    title: "Ansiedad",
+    description:
+      "La ansiedad es una respuesta natural del cuerpo ante situaciones de peligro o estrés. Cuando es intensa, frecuente o persistente, puede afectar el bienestar emocional.",
+    symptoms: [
+      "Preocupación constante",
+      "Sensación de nerviosismo o inquietud",
+      "Dificultad para concentrarse",
+      "Tensión muscular",
+      "Alteraciones del sueño",
+    ],
+  },
+  depresion: {
+    title: "Depresión",
+    description:
+      "La depresión va más allá de la tristeza pasajera. Afecta el estado de ánimo, los pensamientos y la energía durante períodos prolongados.",
+    symptoms: [
+      "Tristeza persistente",
+      "Pérdida de interés o placer",
+      "Fatiga constante",
+      "Sentimientos de culpa o inutilidad",
+      "Cambios en el apetito o el sueño",
+    ],
+  },
+  estres: {
+    title: "Estrés",
+    description:
+      "El estrés es una respuesta adaptativa ante demandas externas. Cuando se mantiene en el tiempo, puede afectar la salud mental y física.",
+    symptoms: [
+      "Irritabilidad",
+      "Cansancio constante",
+      "Dolores de cabeza o musculares",
+      "Dificultad para relajarse",
+      "Problemas de concentración",
+    ],
+  },
+};
 
 export const helpResources = [
   {
     id: "self-awareness",
     title: "¿Qué puedo hacer?",
-    description:
-      "Reconocer tus emociones y mantener hábitos saludables contribuye a tu bienestar mental.",
+    description: "Escucharte y cuidarte también es parte del proceso.",
     content:
-      "Reconocer cómo te sientes es el primer paso hacia el bienestar emocional. Mantener rutinas saludables, dormir lo suficiente, cuidar tu cuerpo, expresar tus emociones y evitar el aislamiento contribuye a tu equilibrio mental.",
+      "Prestar atención a cómo te sientes es el primer paso. Dormir bien, comer mejor, moverte un poco, expresar lo que llevas dentro y no aislarte puede ayudarte más de lo que parece.",
   },
   {
     id: "seek-support",
     title: "¿A quién acudir?",
-    description:
-      "Profesionales y personas de confianza pueden ofrecer apoyo emocional.",
+    description: "No tienes que pasar por esto solo.",
     content:
-      "Psicólogos, psiquiatras y otros profesionales de la salud mental están capacitados para brindarte apoyo. También puedes apoyarte en familiares, amistades o personas de confianza que te escuchen sin juzgar.",
+      "Psicólogos, psiquiatras y otros profesionales están preparados para ayudarte. También puedes apoyarte en amigos, familiares o personas de confianza que sepan escucharte sin juzgar.",
   },
   {
     id: "ask-help",
     title: "¿Cómo pedir ayuda?",
-    description:
-      "Hablar sobre lo que sientes es un acto de autocuidado, no de debilidad.",
+    description: "Pedir ayuda es valentía, no debilidad.",
     content:
-      "Hablar con honestidad sobre lo que sientes no es una debilidad, sino un acto de autocuidado. Puedes empezar conversando con alguien cercano o contactando líneas de ayuda, centros de salud o servicios psicológicos especializados.",
+      "Hablar de lo que te pasa no te hace débil. Puedes empezar con alguien cercano o buscar líneas de ayuda, centros de salud o atención psicológica especializada.",
   },
 ];
 
 export const pornographyResources = {
   title: "Consumo de pornografía y salud mental",
   paragraphs: [
-    "El consumo de pornografía es una conducta ampliamente normalizada en la sociedad actual. Sin embargo, cuando se vuelve frecuente, compulsiva o se utiliza como principal forma de evasión emocional, puede impactar negativamente la salud mental. Estudios muestran que un consumo excesivo puede afectar la motivación, la concentración, el estado de ánimo y la manera en que las personas experimentan el placer y las relaciones interpersonales (Kraus et al., 2016).",
-    "En algunos casos, el consumo repetido puede generar dependencia psicológica, dificultad para regular impulsos, sentimientos de culpa o vergüenza, y una desconexión emocional con uno mismo o con los demás. También puede influir en la percepción de la intimidad, las expectativas sobre las relaciones y la autoestima, especialmente cuando se inicia a edades tempranas. Es importante destacar que no todas las personas experimentan los mismos efectos, pero reconocer cómo esta conducta impacta en tu bienestar es clave. Si interfiere con tu vida diaria, relaciones o salud emocional, buscar apoyo profesional es recomendable.",
+    "El consumo de pornografía está muy normalizado hoy en día, especialmente entre jóvenes. Sin embargo, cuando se vuelve frecuente o se usa como forma de escapar de emociones difíciles, puede afectar la salud mental. Estudios indican que un consumo excesivo puede influir en la motivación, el estado de ánimo, la concentración y la forma en que se viven las relaciones.",
+    "En algunos casos, puede generar dependencia psicológica, dificultad para controlar impulsos, culpa o vergüenza, y una desconexión emocional con uno mismo o con otras personas. También puede afectar la autoestima y la forma en que se percibe la intimidad, sobre todo cuando el consumo empieza a edades tempranas. No a todos les afecta igual, pero si interfiere con tu bienestar o tu vida diaria, buscar ayuda profesional es una buena decisión.",
   ],
 };
 
 export const badHabitsResources = {
-  title: "Hábitos que afectan tu bienestar emocional",
+  title: "Hábitos que pueden afectar tu salud mental",
   paragraphs: [
-    "Algunos hábitos cotidianos pueden deteriorar la salud mental de forma gradual, muchas veces sin que la persona sea plenamente consciente. La falta de sueño, el sedentarismo, el uso excesivo de redes sociales, el consumo de sustancias, la mala alimentación o la ausencia de rutinas pueden alterar el equilibrio emocional, aumentar el estrés y disminuir la capacidad para afrontar las dificultades diarias (Harvard Medical School, 2020; WHO, 2021).",
-    "Estos hábitos afectan el estado de ánimo, la autoestima, la energía, la concentración y la forma en que nos relacionamos con los demás. Cuando se mantienen en el tiempo, pueden contribuir al desarrollo de ansiedad, irritabilidad, apatía o desmotivación. Identificar estos patrones no es motivo de culpa, sino una oportunidad de cambio. Pequeñas modificaciones progresivas, como mejorar los horarios de descanso, establecer rutinas saludables, reducir conductas perjudiciales y buscar apoyo cuando sea necesario, pueden tener un impacto positivo significativo en el bienestar emocional.",
+    "Algunos hábitos diarios pueden dañar tu bienestar sin que te des cuenta: dormir poco, pasar demasiado tiempo en redes sociales, no moverte, consumir sustancias, comer mal o vivir sin rutinas claras.",
+    "Con el tiempo, estos hábitos pueden afectar tu ánimo, energía, concentración y relaciones. Identificarlos no es para culparte, sino para empezar a cambiar poco a poco. Pequeños ajustes pueden tener un impacto enorme en cómo te sientes.",
   ],
 };
 
