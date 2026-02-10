@@ -6,7 +6,6 @@ export const mentalHealthIntro = {
   ],
 };
 
-
 export const helpResources = [
   {
     id: "self-awareness",
@@ -303,26 +302,86 @@ y no dejar que dirija mi vida.
   },
 
   {
-    id: "testimonio-autocuidado",
-    title: "Cuidar mi salud mental cambió mi forma de vivir",
+    id: "testimonio-salud-mental-fe-y-proceso",
+    title: "Cuando entendí que aguantar no era sanar",
     description:
-      "Un relato personal sobre el impacto del autocuidado emocional en la vida diaria.",
+      "Un testimonio personal sobre la salud mental, la fe y el proceso de aprender a cuidarse emocionalmente sin vivirlo en silencio.",
     excerpt:
-      "Entendí que cuidarme emocionalmente no era egoísmo, sino una necesidad.",
+      "Durante mucho tiempo pensé que la salud mental era aguantar, hasta que entendí que sanar no se hace solo.",
     content: `
-Hubo un momento en el que me sentía agotado emocionalmente todo el tiempo.
-Decía que sí a todo, ignoraba mis emociones y pensaba que descansar era perder el tiempo.
+He pasado por muchas situaciones.
+Situaciones que me llevaron a escribir cartas. Cartas que no siempre escribí con la intención de sanar, sino para no romperme en silencio.
+Cartas escritas desde el cansancio, la confusión, la rabia, el miedo, la culpa… y también desde una esperanza tan pequeña que a veces parecía inexistente.
 
-Aprender sobre autocuidado emocional me ayudó a poner límites, a escucharme
-y a validar lo que sentía. Empecé a priorizar mi bienestar sin culpa.
-Hoy me siento más presente, más tranquilo y con una relación más sana conmigo mismo
-y con los demás.
+Durante mucho tiempo pensé que la salud mental era aguantar.
+Aguantar pensamientos que pesaban demasiado.
+Aguantar emociones que no sabía nombrar.
+Aguantar versiones que no entendía, pero que tenía que sostener porque no veía otra opción.
+
+Escribir fue algo muy pequeño que me mantuvo ocupado,
+una herramienta simple que me ayudaba a liberar emociones,
+una forma de no explotar por dentro.
+Pero siendo honesto, eso no fue lo que realmente me sanó.
+
+Lo que verdaderamente me ayudó fue buscar a Dios.
+Al Dios que siempre estuvo cuidando de mi familia,
+al mismo Dios al que durante mucho tiempo decidí no escuchar,
+porque preferí seguir viviendo una vida de libertinaje,
+creyendo que estaba siendo libre cuando en realidad estaba huyendo.
+
+Acercarme a Él fue clave para empezar a sanar muchas cosas,
+para aprender a cuidar mi salud mental desde la raíz.
+En el camino, Dios puso personas en mi vida que amo con todo mi corazón,
+personas que me han acompañado, que me han sostenido, que han sido parte del proceso.
+
+Eso no significa que no tenga malos días.
+Los tengo.
+De hecho, este proyecto nació en mi última recaída,
+en uno de los momentos donde mi salud mental se vio más afectada.
+Y fue ahí donde tomé una decisión:
+por esto no debía pasar nadie más en silencio.
+
+La salud mental no es algo que se deba tomar a la ligera.
+Es algo serio.
+Es algo que me apasiona.
+Y sé que cada día que invierto en este proyecto,
+cada palabra, cada reflexión, cada esfuerzo,
+se va a ver reflejado en vidas que hoy están luchando como yo luché.
+
+Dios me ha liberado de muchas batallas internas:
+de mi ego,
+de la impaciencia,
+de no saber escuchar consejo,
+del rencor, del resentimiento, del odio.
+Me ha ido transformando en una persona más tranquila, más calmada, más consciente.
+
+También me ayudó a enfrentar mi adicción a la pornografía,
+una adicción que esta sociedad normaliza y hasta promueve,
+pero que en realidad causa un daño profundo al cerebro y al alma.
+No ha sido fácil.
+No lo es.
+Es una lucha diaria, una batalla constante en la que debo estar alerta.
+
+Hoy no hablo desde alguien “perfecto” ni “totalmente sanado”.
+Hablo desde alguien que aprendió a caminar con sus procesos,
+sin negarlos, sin maquillarlos, sin huir.
+
+Y si estás leyendo esto, solo puedo decirte una cosa con el corazón en la mano:
+de una mala salud mental se puede salir.
+No solo.
+Nunca solo.
+Siempre acompañado de personas que nos aman.
+
+“La esperanza que se demora es tormento del corazón,
+pero el deseo cumplido es árbol de vida.”
+Proverbios 13:12
+
     `,
     category: "Testimonio",
-    date: "20 Ene 2026",
-    datetime: "2026-01-20",
+    date: "2 Feb 2026",
+    datetime: "2026-02-10",
     author: {
-      name: "Carlos R.",
+      name: "Andrey B.",
       role: "Paciente",
     },
   },
