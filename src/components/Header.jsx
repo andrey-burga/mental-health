@@ -5,14 +5,11 @@ function Header() {
   const [menuOpen, setMenuOpen] = useState(false);
 
   const linkClass = ({ isActive }) =>
-    isActive
-      ? "font-medium text-primary"
-      : "text-gray-700 hover:text-primary";
+    isActive ? "font-medium text-primary" : "text-gray-700 hover:text-primary";
 
   return (
     <header className="sticky top-0 z-50 border-b border-default bg-primaryHeader">
       <div className="container mx-auto flex items-center justify-between px-6 py-4">
-        
         {/* LOGO */}
         <NavLink to="/" className="text-xl font-semibold text-heading">
           Bienestar
@@ -20,12 +17,21 @@ function Header() {
 
         {/* NAV DESKTOP */}
         <nav className="hidden md:flex items-center gap-6">
-          <NavLink to="/" className={linkClass}>Inicio</NavLink>
-          <NavLink to="/salud-mental" className={linkClass}>Salud mental</NavLink>
-          <NavLink to="/autocuidado" className={linkClass}>Autocuidado</NavLink>
-          <NavLink to="/articulos" className={linkClass}>Artículos</NavLink>
-          <NavLink to="/testimonios" className={linkClass}>Testimonios</NavLink>
-
+          <NavLink to="/" className={linkClass}>
+            Inicio
+          </NavLink>
+          <NavLink to="/salud-mental" className={linkClass}>
+            Salud mental
+          </NavLink>
+          <NavLink to="/autocuidado" className={linkClass}>
+            Autocuidado
+          </NavLink>
+          <NavLink to="/articulos" className={linkClass}>
+            Artículos
+          </NavLink>
+          <NavLink to="/testimonios" className={linkClass}>
+            Testimonios
+          </NavLink>
         </nav>
 
         {/* BOTONES DERECHA */}
@@ -51,10 +57,21 @@ function Header() {
       {/* NAV MOBILE */}
       {menuOpen && (
         <nav className="md:hidden flex flex-col gap-4 px-6 pb-4">
-          <NavLink to="/" onClick={() => setMenuOpen(false)}>Inicio</NavLink>
-          <NavLink to="/salud-mental" onClick={() => setMenuOpen(false)}>Salud mental</NavLink>
-          <NavLink to="/autocuidado" onClick={() => setMenuOpen(false)}>Autocuidado</NavLink>
-          <NavLink to="/articulos" onClick={() => setMenuOpen(false)}>Artículos</NavLink>
+          <NavLink to="/" onClick={() => setMenuOpen(false)}>
+            Inicio
+          </NavLink>
+          <NavLink to="/salud-mental" onClick={() => setMenuOpen(false)}>
+            Salud mental
+          </NavLink>
+          <NavLink to="/autocuidado" onClick={() => setMenuOpen(false)}>
+            Autocuidado
+          </NavLink>
+          <NavLink to="/articulos" className={linkClass}>
+            Artículos
+          </NavLink>
+          <NavLink to="/testimonios" className={linkClass}>
+            Testimonios
+          </NavLink>{" "}
         </nav>
       )}
     </header>
