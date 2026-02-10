@@ -6,118 +6,6 @@ export const mentalHealthIntro = {
   ],
 };
 
-export const commonDisorders = [
-  {
-    title: "Ansiedad",
-    slug: "ansiedad",
-    text: "Sentir preocupación constante, nerviosismo, dificultad para dormir o síntomas físicos como palpitaciones puede ser una señal de alerta. Si esto se mantiene en el tiempo, buscar ayuda profesional es importante.",
-  },
-  {
-    title: "Burnout (agotamiento)",
-    slug: "burnout",
-    text: "El cansancio extremo por el estudio o el trabajo puede hacer que pierdas la motivación y te sientas vacío. Aprender a poner límites y pedir apoyo es clave.",
-  },
-  {
-    title: "Depresión",
-    slug: "depresion",
-    text: "Sentirte triste, sin energía o sin ganas de hacer cosas que antes te gustaban durante mucho tiempo no es algo que debas normalizar. La ayuda profesional puede ayudarte a salir de ahí.",
-  },
-  {
-    title: "Estrés crónico",
-    slug: "estres",
-    text: "Cuando el estrés no se va, empieza a afectar tu cuerpo y tus emociones. Aprender a manejarlo puede ayudarte a recuperar el equilibrio.",
-  },
-  {
-    title: "Trastorno de pánico",
-    slug: "panico",
-    text: "Los ataques de pánico pueden aparecer de repente y sentirse muy intensos, con falta de aire, mareos o miedo extremo. Aunque asustan, tienen tratamiento.",
-  },
-  {
-    title: "Problemas de sueño",
-    slug: "sueno",
-    text: "Dormir mal o no descansar lo suficiente afecta directamente tu ánimo, concentración y energía. Identificar la causa es el primer paso para mejorar.",
-  },
-];
-
-export const disorderDetails = {
-  ansiedad: {
-    title: "Ansiedad",
-    description:
-      "La ansiedad es una respuesta natural del cuerpo ante situaciones de peligro o estrés. Cuando es intensa, frecuente o persistente, puede afectar el bienestar emocional.",
-    symptoms: [
-      "Preocupación constante",
-      "Sensación de nerviosismo o inquietud",
-      "Dificultad para concentrarse",
-      "Tensión muscular",
-      "Alteraciones del sueño",
-    ],
-  },
-
-  burnout: {
-    title: "Burnout (agotamiento)",
-    description:
-      "El burnout es un estado de agotamiento físico, emocional y mental causado por estrés prolongado, generalmente relacionado con el trabajo o el estudio.",
-    symptoms: [
-      "Cansancio extremo",
-      "Falta de motivación",
-      "Sensación de vacío o desgaste",
-      "Dificultad para concentrarse",
-      "Despersonalización o apatía",
-    ],
-  },
-
-  depresion: {
-    title: "Depresión",
-    description:
-      "La depresión va más allá de la tristeza pasajera. Afecta el estado de ánimo, los pensamientos y la energía durante períodos prolongados.",
-    symptoms: [
-      "Tristeza persistente",
-      "Pérdida de interés o placer",
-      "Fatiga constante",
-      "Sentimientos de culpa o inutilidad",
-      "Cambios en el apetito o el sueño",
-    ],
-  },
-
-  estres: {
-    title: "Estrés crónico",
-    description:
-      "El estrés crónico ocurre cuando la presión y las demandas se mantienen en el tiempo, afectando tanto la salud mental como física.",
-    symptoms: [
-      "Irritabilidad",
-      "Cansancio constante",
-      "Dolores de cabeza o musculares",
-      "Dificultad para relajarse",
-      "Problemas de concentración",
-    ],
-  },
-
-  panico: {
-    title: "Trastorno de pánico",
-    description:
-      "El trastorno de pánico se caracteriza por la aparición repentina de ataques de miedo intenso acompañados de síntomas físicos muy fuertes.",
-    symptoms: [
-      "Palpitaciones o taquicardia",
-      "Sensación de falta de aire",
-      "Mareos o desorientación",
-      "Miedo intenso o sensación de perder el control",
-      "Sudoración o temblores",
-    ],
-  },
-
-  sueno: {
-    title: "Problemas de sueño",
-    description:
-      "Los problemas de sueño incluyen dificultades para dormir, mantener el sueño o descansar adecuadamente, afectando el bienestar diario.",
-    symptoms: [
-      "Dificultad para conciliar el sueño",
-      "Despertares frecuentes durante la noche",
-      "Sensación de no haber descansado",
-      "Somnolencia durante el día",
-      "Irritabilidad o falta de concentración",
-    ],
-  },
-};
 
 export const helpResources = [
   {
@@ -383,6 +271,59 @@ son pilares de relaciones emocionalmente saludables.
     author: {
       name: "Andrey",
       role: "Autor",
+    },
+  },
+];
+
+export const testimonials = [
+  {
+    id: "testimonio-ansiedad",
+    title: "Aprendí a convivir con mi ansiedad",
+    description:
+      "Un testimonio real sobre el proceso de reconocer la ansiedad y aprender a gestionarla.",
+    excerpt:
+      "Durante mucho tiempo pensé que vivir con ansiedad era algo normal, hasta que entendí que podía pedir ayuda.",
+    content: `
+Durante años viví con una sensación constante de preocupación y tensión.
+Me costaba dormir, siempre estaba anticipando lo peor y sentía que no tenía control
+sobre mis pensamientos.
+
+Buscar apoyo psicológico fue un antes y un después. Aprendí a identificar mis
+desencadenantes, a respirar de forma consciente y a tratarme con más compasión.
+La ansiedad no desapareció por completo, pero hoy tengo herramientas para manejarla
+y no dejar que dirija mi vida.
+    `,
+    category: "Testimonio",
+    date: "12 Ene 2026",
+    datetime: "2026-01-12",
+    author: {
+      name: "María G.",
+      role: "Paciente",
+    },
+  },
+
+  {
+    id: "testimonio-autocuidado",
+    title: "Cuidar mi salud mental cambió mi forma de vivir",
+    description:
+      "Un relato personal sobre el impacto del autocuidado emocional en la vida diaria.",
+    excerpt:
+      "Entendí que cuidarme emocionalmente no era egoísmo, sino una necesidad.",
+    content: `
+Hubo un momento en el que me sentía agotado emocionalmente todo el tiempo.
+Decía que sí a todo, ignoraba mis emociones y pensaba que descansar era perder el tiempo.
+
+Aprender sobre autocuidado emocional me ayudó a poner límites, a escucharme
+y a validar lo que sentía. Empecé a priorizar mi bienestar sin culpa.
+Hoy me siento más presente, más tranquilo y con una relación más sana conmigo mismo
+y con los demás.
+    `,
+    category: "Testimonio",
+    date: "20 Ene 2026",
+    datetime: "2026-01-20",
+    author: {
+      name: "Carlos R.",
+      role: "Paciente",
     },
   },
 ];

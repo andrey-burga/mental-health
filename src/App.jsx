@@ -12,6 +12,7 @@ const TrastornoDetalle = lazy(() => import("./pages/TrastornoDetalle"));
 const Autocuidado = lazy(() => import("./pages/Autocuidado"));
 const Help = lazy(() => import("./pages/Help"));
 const Articulos = lazy(() => import("./pages/Articulos"));
+const Testimonial = lazy(() => import("./pages/Testimonial"));
 
 function App() {
   const location = useLocation();
@@ -27,6 +28,7 @@ function App() {
           <Route path="/autocuidado" element={<Autocuidado />} />
           <Route path="/ayuda" element={<Help />} />
           <Route path="/articulos" element={<Articulos />} />
+          <Route path="/testimonios" element={<Testimonial/>}/>
         </Routes>
       </Suspense>
     </AnimatePresence>

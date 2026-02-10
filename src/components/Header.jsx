@@ -24,6 +24,8 @@ function Header() {
           <NavLink to="/salud-mental" className={linkClass}>Salud mental</NavLink>
           <NavLink to="/autocuidado" className={linkClass}>Autocuidado</NavLink>
           <NavLink to="/articulos" className={linkClass}>Artículos</NavLink>
+          <NavLink to="/testimonios" className={linkClass}>Testimonios</NavLink>
+
         </nav>
 
         {/* BOTONES DERECHA */}

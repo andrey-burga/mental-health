@@ -2,12 +2,15 @@ import Header from "../components/Header";
 import Section from "../components/Section";
 import ResourceCard from "../components/ResourceCard";
 import Footer from "../components/Footer";
+import PageTransition from "../components/PageTransition";
 
 import { wellbeingResources } from "../data/homeContent";
 
 function Autocuidado() {
   return (
     <>
+          <PageTransition>
+
       <Header />
 
       {/* INTRO */}
@@ -53,6 +56,8 @@ function Autocuidado() {
       </Section>
 
       <Footer />
+      </PageTransition>
+
     </>
   );
 }

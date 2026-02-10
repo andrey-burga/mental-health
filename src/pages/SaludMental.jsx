@@ -5,10 +5,21 @@ import Section from "../components/Section";
 import Warning from "../components/Warning";
 import Footer from "../components/Footer";
 import PageTransition from "../components/PageTransition";
+import { useEffect, useState } from "react";
+import { getDisorders } from "../services/disorders";
 
-import { mentalHealthIntro, commonDisorders } from "../data/homeContent";
+import { mentalHealthIntro } from "../data/homeContent";
 
 function SaludMental() {
+  const [disorders, setDisorders] = useState([]);
+  const [loadingDisorders, setLoadingDisorders] = useState(true);
+
+  useEffect(() => {
+    getDisorders()
+      .then(setDisorders)
+      .finally(() => setLoadingDisorders(false));
+  }, []);
+
   return (
     <>
       <PageTransition>
@@ -79,10 +90,21 @@ function SaludMental() {
             buscar apoyo oportunamente.
           </p>
           <div className="flex flex-wrap gap-4">
-            {commonDisorders.slice(0, 4).map((item, index) => (
-              <Warning key={index} title={item.title} text={item.text} />
-            ))}
+            {loadingDisorders ? (
+              <p>Cargando trastornos…</p>
+            ) : (
+              disorders
+                .slice(0, 4)
+                .map((item) => (
+                  <Warning
+                    key={item.id}
+                    title={item.title}
+                    text={item.description}
+                  />
+                ))
+            )}
           </div>
+
           <div className="mt-6">
             <NavLink
               to="/trastornos"
