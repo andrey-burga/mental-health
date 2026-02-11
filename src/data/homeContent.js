@@ -48,12 +48,12 @@ export const badHabitsResources = {
 
 export const wellbeingResources = [
   {
-    id: "stress",
-    title: "Estrés",
+    id: "stress-management",
+    title: "Gestión del estrés",
     description:
-      "Respuesta natural ante las demandas diarias que, si se vuelve crónica, puede afectar la salud mental y física.",
+      "Aprender a regular el estrés es clave para el equilibrio emocional.",
     content:
-      "El estrés prolongado puede generar ansiedad, irritabilidad, problemas de sueño y dificultades de concentración. Identificar sus causas y aplicar estrategias como ejercicio, respiración consciente, límites saludables y apoyo social ayuda a prevenir consecuencias más graves.",
+      "Practicar respiración consciente, establecer límites saludables y organizar prioridades ayuda a reducir la sobrecarga mental y prevenir ansiedad crónica.",
   },
   {
     id: "exercise",
@@ -65,32 +65,32 @@ export const wellbeingResources = [
   },
   {
     id: "nutrition",
-    title: "Alimentación",
+    title: "Alimentación equilibrada",
     description: "Lo que comes influye directamente en cómo te sientes.",
     content:
-      "Una dieta equilibrada rica en omega-3, vitaminas del complejo B y antioxidantes se asocia con mejor estado de ánimo, energía y concentración.",
+      "Una dieta variada rica en omega-3, vitaminas del complejo B y antioxidantes se asocia con mejor estado de ánimo, energía y concentración.",
   },
   {
     id: "sleep",
-    title: "Sueño",
+    title: "Higiene del sueño",
     description: "Dormir bien es una base esencial de la salud mental.",
     content:
-      "La falta de sueño afecta la regulación emocional y aumenta el riesgo de ansiedad y depresión. Mantener rutinas regulares y reducir pantallas antes de dormir mejora la calidad del descanso.",
+      "Mantener horarios regulares, reducir pantallas antes de dormir y crear un ambiente tranquilo mejora la calidad del descanso y la regulación emocional.",
   },
   {
     id: "social",
     title: "Conexión social",
-    description: "El apoyo emocional fortalece la resiliencia.",
+    description: "Cultivar relaciones fortalece la resiliencia.",
     content:
-      "Las relaciones cercanas reducen el riesgo de depresión y ansiedad. Mantener contacto frecuente y buscar espacios de apoyo mejora la calidad de vida.",
+      "Mantener contacto frecuente con personas de confianza y participar en espacios comunitarios reduce el riesgo de ansiedad y depresión.",
   },
   {
     id: "environment",
-    title: "Entorno",
+    title: "Cuidar tu entorno",
     description:
-      "El ambiente donde vives y trabajas influye en tu bienestar mental.",
+      "Un espacio ordenado y armonioso favorece el bienestar mental.",
     content:
-      "Tanto el entorno físico como el social puede afectar tu estado emocional. Espacios desordenados, falta de luz natural, ruido constante o relaciones conflictivas aumentan el estrés y la ansiedad. Mantener un entorno limpio, organizado y con apoyo social contribuye a una mejor salud mental.",
+      "Mantener tu espacio limpio, organizado y con buena iluminación reduce el estrés y mejora la concentración y el estado de ánimo.",
   },
 ];
 
@@ -105,23 +105,23 @@ export const mentalHealthStats = [
   {
     id: "treatment-gap",
     count: "60%",
-    title: "No recibe atención",
+    title: "Sin tratamiento",
     description:
-      "Muchas personas no acceden a ayuda profesional por estigma o falta de recursos.",
+      "De las personas con un trastorno mental no recibe atención profesional.",
   },
   {
-    id: "exercise",
-    count: "30%",
-    title: "Menos síntomas",
+    id: "anxiety",
+    count: "≈280M",
+    title: "Casos de ansiedad",
     description:
-      "La actividad física regular puede reducir ansiedad y depresión.",
+      "La ansiedad es uno de los trastornos mentales más comunes en el mundo.",
   },
   {
-    id: "sleep",
-    count: "7–9 h",
-    title: "De sueño",
+    id: "depression",
+    count: "≈280M",
+    title: "Casos de depresión",
     description:
-      "Dormir bien es clave para la regulación emocional y la salud mental.",
+      "La depresión es una de las principales causas de discapacidad global.",
   },
 ];
 
@@ -158,6 +158,29 @@ export const pornImpactStats = [
 
 export const articles = [
   {
+    id: "que-es-la-salud-mental",
+    title: "¿Qué es la salud mental y por qué importa?",
+    description:
+      "Una mirada clara a lo que significa bienestar emocional y cómo influye en la vida diaria.",
+    excerpt:
+      "La salud mental no es solo la ausencia de trastornos: es el equilibrio emocional que nos permite vivir con plenitud.",
+    content: `
+La salud mental es el estado de bienestar emocional y psicológico que nos permite afrontar el estrés, desarrollar relaciones sanas y tomar decisiones coherentes con nuestros valores.
+
+No se trata únicamente de evitar enfermedades, sino de fortalecer habilidades como la resiliencia, la regulación emocional y la capacidad de pedir ayuda cuando se necesita.
+
+Cuidar la salud mental implica atender nuestras necesidades, aprender a manejar la presión cotidiana y construir una vida en la que nos sintamos seguros, conectados y capaces de crecer.
+    `,
+    category: "Salud mental",
+    date: "01 Ene 2026",
+    datetime: "2026-01-01",
+    author: {
+      name: "Andrey",
+      role: "Autor",
+    },
+  },
+
+  {
     id: "estres-cronico",
     title: "Estrés crónico y salud mental",
     description:
@@ -165,13 +188,11 @@ export const articles = [
     excerpt:
       "Cuando el estrés se mantiene en el tiempo, puede afectar tanto la mente como el cuerpo.",
     content: `
-El estrés es una respuesta natural del organismo ante situaciones de presión.
-Sin embargo, cuando se vuelve constante, puede generar ansiedad, irritabilidad,
-problemas de sueño y dificultades de concentración.
+El estrés es una respuesta natural ante demandas o amenazas. En situaciones puntuales, puede ayudarnos a actuar con rapidez. Sin embargo, cuando se vuelve constante, el organismo se mantiene en alerta y la carga emocional se vuelve dañina.
 
-Identificar las fuentes de estrés y aplicar estrategias de autocuidado como la
-respiración consciente, el ejercicio y la regulación de límites puede marcar
-una gran diferencia en el bienestar emocional.
+El estrés prolongado puede generar ansiedad, irritabilidad, problemas de sueño y dificultades de concentración, además de afectar el sistema inmunológico y la salud física.
+
+Reconocer las fuentes de estrés y aplicar estrategias de regulación emocional —como respiración consciente, ejercicio, límites saludables y apoyo social— puede marcar una diferencia significativa en el bienestar diario.
     `,
     category: "Estrés",
     date: "16 Ene 2026",
@@ -190,11 +211,11 @@ una gran diferencia en el bienestar emocional.
     excerpt:
       "Dormir bien es una necesidad biológica que impacta directamente el equilibrio emocional.",
     content: `
-La falta de sueño afecta la regulación emocional, la memoria y la capacidad
-para afrontar el estrés diario.
+El sueño es un proceso biológico esencial para la recuperación del cuerpo y la mente. Dormir mal afecta la regulación emocional, la memoria, la capacidad de atención y la respuesta al estrés.
 
-Mantener horarios regulares y reducir pantallas antes de dormir ayuda a
-proteger la salud mental.
+La falta de sueño prolongada puede aumentar el riesgo de ansiedad, depresión y problemas físicos como fatiga crónica.
+
+Mantener horarios regulares, reducir el uso de pantallas antes de dormir y crear un ambiente tranquilo y oscuro son hábitos simples que mejoran significativamente la calidad del descanso.
     `,
     category: "Sueño",
     date: "31 Dic 2025",
@@ -213,11 +234,11 @@ proteger la salud mental.
     excerpt:
       "La ansiedad puede aparecer en lo cotidiano, pero es posible aprender a regularla.",
     content: `
-La ansiedad es una emoción común que suele activarse ante la incertidumbre
-o la sobrecarga de responsabilidades.
+La ansiedad es una emoción común que aparece ante la incertidumbre, la presión o la percepción de amenaza. En dosis moderadas, puede motivarnos y ayudarnos a prepararnos. Pero cuando se vuelve constante, puede interferir en la vida cotidiana.
 
-Practicar la atención plena, organizar prioridades y conectar con el presente
-son herramientas clave para disminuir su impacto.
+Aprender a manejar la ansiedad implica identificar los pensamientos que la alimentan, organizar prioridades y volver al presente. La atención plena, el autocuidado y la respiración profunda son herramientas efectivas.
+
+Si la ansiedad se vuelve intensa o persistente, es importante buscar apoyo profesional para recibir un acompañamiento adecuado.
     `,
     category: "Ansiedad",
     date: "05 Ene 2026",
@@ -236,11 +257,11 @@ son herramientas clave para disminuir su impacto.
     excerpt:
       "El autocuidado emocional va más allá de rutinas: es una actitud diaria.",
     content: `
-El autocuidado emocional consiste en reconocer tus necesidades internas
-y responder a ellas con amabilidad.
+El autocuidado emocional consiste en reconocer nuestras necesidades internas y responder a ellas con compasión. No es solo una lista de hábitos, sino una forma de relacionarnos con nosotros mismos.
 
-Decir no cuando es necesario, validar tus emociones y pedir ayuda
-son actos fundamentales de bienestar.
+Practicar el autocuidado implica validar emociones, permitirse descansar, pedir ayuda cuando se necesita y establecer límites saludables. También significa aceptar que no siempre tenemos que estar bien y que está bien sentir.
+
+Al cultivar una relación más amable con uno mismo, se fortalece la resiliencia y se mejora la capacidad de enfrentar dificultades con mayor equilibrio.
     `,
     category: "Autocuidado",
     date: "10 Ene 2026",
@@ -258,15 +279,66 @@ son actos fundamentales de bienestar.
     excerpt:
       "Las relaciones influyen profundamente en cómo nos sentimos con nosotros mismos.",
     content: `
-Las relaciones pueden ser una fuente de apoyo o de desgaste emocional,
-dependiendo de su dinámica.
+Las relaciones personales pueden ser una fuente de apoyo o un factor de desgaste emocional, dependiendo de su dinámica. La calidad de nuestros vínculos influye directamente en la autoestima, la sensación de seguridad y el bienestar emocional.
 
-La comunicación asertiva, el respeto mutuo y los límites claros
-son pilares de relaciones emocionalmente saludables.
+La comunicación asertiva, el respeto mutuo y los límites claros son pilares de relaciones saludables. También es importante reconocer cuándo una relación es tóxica o dañina y buscar apoyo para establecer cambios.
+
+Conectar con personas que nos escuchan, nos respetan y nos acompañan fortalece la resiliencia y reduce la sensación de soledad.
     `,
     category: "Relaciones",
     date: "18 Ene 2026",
     datetime: "2026-01-18",
+    author: {
+      name: "Andrey",
+      role: "Autor",
+    },
+  },
+
+  {
+    id: "cuando-buscar-ayuda",
+    title: "Cuándo buscar ayuda profesional",
+    description:
+      "Señales claras de que puede ser útil acudir a un especialista.",
+    excerpt:
+      "Buscar ayuda no es un signo de debilidad: es un acto de cuidado y valentía.",
+    content: `
+Pedir apoyo profesional es una decisión valiente que puede marcar un antes y un después en el bienestar emocional. No es necesario esperar a que la situación sea extrema.
+
+Es recomendable buscar ayuda si:
+- los síntomas interfieren en tu vida diaria,
+- sientes que no puedes manejar la ansiedad o tristeza,
+- hay cambios en el sueño, el apetito o la energía,
+- te sientes abrumado, aislado o sin motivación,
+- tienes pensamientos negativos persistentes o autodestructivos.
+
+Un profesional puede ayudarte a comprender lo que estás viviendo, identificar patrones y ofrecer herramientas concretas para recuperar el equilibrio.
+    `,
+    category: "Apoyo",
+    date: "22 Ene 2026",
+    datetime: "2026-01-22",
+    author: {
+      name: "Andrey",
+      role: "Autor",
+    },
+  },
+
+  {
+    id: "mitos-salud-mental",
+    title: "Mitos comunes sobre la salud mental",
+    description:
+      "Desmontar creencias que dificultan pedir ayuda y cuidar el bienestar emocional.",
+    excerpt:
+      "La salud mental está rodeada de mitos que pueden impedir que las personas busquen apoyo.",
+    content: `
+Existen ideas erróneas que estigmatizan la salud mental y dificultan el autocuidado. Por ejemplo, creer que “solo las personas débiles se deprimen” o que “la ansiedad es solo estrés”.
+
+La realidad es que los trastornos mentales pueden afectar a cualquier persona, independientemente de su fuerza o situación. Buscar ayuda profesional es un acto de autocuidado y responsabilidad.
+
+Desmitificar estas creencias ayuda a crear un entorno más compasivo, donde pedir apoyo sea algo natural y respetado.
+    `,
+    category: "Educación",
+    date: "28 Ene 2026",
+    datetime: "2026-01-28",
     author: {
       name: "Andrey",
       role: "Autor",
