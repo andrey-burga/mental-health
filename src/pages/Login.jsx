@@ -1,6 +1,6 @@
 import PageTransition from "../components/PageTransition";
 import Header from "../components/Header";
-import loginImg from "../../dist/assets/Login.png";
+import loginImg from "../resources/Login.png";
 
 function Login() {
   return (
