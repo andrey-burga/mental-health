@@ -15,6 +15,7 @@ const Articulos = lazy(() => import("./pages/Articulos"));
 const Testimonial = lazy(() => import("./pages/Testimonial"));
 const Contact = lazy(() => import("./pages/Contact"));
 import NotFound from "./pages/NotFound";
+import Login from "./pages/Login";
 
 function App() {
   const location = useLocation();
@@ -32,6 +33,7 @@ function App() {
           <Route path="/articulos" element={<Articulos />} />
           <Route path="/testimonios" element={<Testimonial />} />
           <Route path="/contacto" element={<Contact />} />
+          <Route path="/login" element={<Login/>} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </Suspense>

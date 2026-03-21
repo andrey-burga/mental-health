@@ -2,7 +2,7 @@ import { NavLink } from "react-router-dom";
 
 function Footer() {
   return (
-    <footer className="border-t border-default mt-20 bg-gradient-to-r bg-primaryFooter text-white">
+    <footer className="border-t border-default  bg-gradient-to-r bg-primaryFooter text-white">
       <div className="container mx-auto px-6 py-12 md:py-16">
         {/* Contenedor principal */}
         <div className="grid gap-10 md:grid-cols-2 lg:grid-cols-4">
