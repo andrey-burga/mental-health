@@ -16,6 +16,7 @@ const Testimonial = lazy(() => import("./pages/Testimonial"));
 const Contact = lazy(() => import("./pages/Contact"));
 import NotFound from "./pages/NotFound";
 import Login from "./pages/Login";
+import Register from "./pages/Register";
 
 function App() {
   const location = useLocation();
@@ -34,6 +35,7 @@ function App() {
           <Route path="/testimonios" element={<Testimonial />} />
           <Route path="/contacto" element={<Contact />} />
           <Route path="/login" element={<Login/>} />
+          <Route path="/register" element={<Register/>} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </Suspense>

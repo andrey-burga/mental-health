@@ -49,7 +49,7 @@ function Header() {
           </NavLink>
 
           <NavLink
-            to="/signup"
+            to="/register"
             className="hidden md:inline-block rounded-lg border border-primary px-4 py-2 text-sm font-medium text-primary hover:bg-primary hover:text-white transition"
           >
             Crear cuenta
