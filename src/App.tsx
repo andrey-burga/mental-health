@@ -14,6 +14,9 @@ const Help = lazy(() => import("./pages/Help"));
 const Articulos = lazy(() => import("./pages/Articulos"));
 const Testimonial = lazy(() => import("./pages/Testimonial"));
 const Contact = lazy(() => import("./pages/Contact"));
+const FactoresRiesgo = lazy(() => import("./pages/FactoresDeRiesgo"));
+const Terms = lazy(() => import("./pages/terms"));
+
 import NotFound from "./pages/NotFound";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
@@ -34,8 +37,11 @@ function App() {
           <Route path="/articulos" element={<Articulos />} />
           <Route path="/testimonios" element={<Testimonial />} />
           <Route path="/contacto" element={<Contact />} />
-          <Route path="/login" element={<Login/>} />
-          <Route path="/register" element={<Register/>} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/register" element={<Register />} />
+          <Route path="/factores-riesgo" element={<FactoresRiesgo />} />
+          <Route path="/terms" element={<Terms />} />
+
           <Route path="*" element={<NotFound />} />
         </Routes>
       </Suspense>

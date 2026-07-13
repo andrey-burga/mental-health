@@ -348,112 +348,372 @@ Desmitificar estas creencias ayuda a crear un entorno más compasivo, donde pedi
 
 export const testimonials = [
   {
-    id: "testimonio-ansiedad",
-    title: "Aprendí a convivir con mi ansiedad",
+    id: "testimonio-depresion",
+    title: "Descubrí que pedir ayuda no era rendirme",
     description:
-      "Un testimonio real sobre el proceso de reconocer la ansiedad y aprender a gestionarla.",
+      "Un testimonio sobre el proceso de enfrentar la depresión y comprender que buscar apoyo también es un acto de valentía.",
     excerpt:
-      "Durante mucho tiempo pensé que vivir con ansiedad era algo normal, hasta que entendí que podía pedir ayuda.",
+      "Pensé que debía salir solo de la depresión, hasta que entendí que nadie tiene que cargar ese peso sin ayuda.",
     content: `
-Durante años viví con una sensación constante de preocupación y tensión.
-Me costaba dormir, siempre estaba anticipando lo peor y sentía que no tenía control
-sobre mis pensamientos.
+Durante mucho tiempo sentí que todo había perdido sentido.
+Me levantaba porque tenía que hacerlo, pero por dentro estaba completamente vacío.
 
-Buscar apoyo psicológico fue un antes y un después. Aprendí a identificar mis
-desencadenantes, a respirar de forma consciente y a tratarme con más compasión.
-La ansiedad no desapareció por completo, pero hoy tengo herramientas para manejarla
-y no dejar que dirija mi vida.
+Intenté convencerme de que era solo una mala racha,
+que con fuerza de voluntad todo pasaría.
+Pero cada día era más difícil.
+
+Hablar con un profesional fue una de las decisiones más importantes de mi vida.
+Aprendí que la depresión no era una falta de carácter,
+sino una condición que necesitaba atención y cuidado.
+
+Hoy todavía tengo días difíciles,
+pero ya no camino solo.
+Aprendí que sanar también significa aceptar ayuda.
     `,
     category: "Testimonio",
-    date: "12 Ene 2026",
-    datetime: "2026-01-12",
+    date: "5 Ene 2026",
+    datetime: "2026-01-05",
     author: {
-      name: "María G.",
+      name: "Carlos M.",
       role: "Paciente",
     },
   },
-
   {
-    id: "testimonio-salud-mental-fe-y-proceso",
-    title: "Cuando entendí que aguantar no era sanar",
+    id: "testimonio-duelo",
+    title: "Aprendí que el duelo no tiene un reloj",
     description:
-      "Un testimonio personal sobre la salud mental, la fe y el proceso de aprender a cuidarse emocionalmente sin vivirlo en silencio.",
+      "Una experiencia sobre la pérdida de un ser querido y el proceso de aceptar el dolor.",
     excerpt:
-      "Durante mucho tiempo pensé que la salud mental era aguantar, hasta que entendí que sanar no se hace solo.",
+      "Quería dejar de llorar rápido, hasta que entendí que sanar también requiere tiempo.",
     content: `
-He pasado por muchas situaciones.
-Situaciones que me llevaron a escribir cartas. Cartas que no siempre escribí con la intención de sanar, sino para no romperme en silencio.
-Cartas escritas desde el cansancio, la confusión, la rabia, el miedo, la culpa… y también desde una esperanza tan pequeña que a veces parecía inexistente.
+Cuando perdí a mi padre sentí que mi vida se había detenido.
+Todos parecían seguir adelante mientras yo apenas podía respirar.
 
-Durante mucho tiempo pensé que la salud mental era aguantar.
-Aguantar pensamientos que pesaban demasiado.
-Aguantar emociones que no sabía nombrar.
-Aguantar versiones que no entendía, pero que tenía que sostener porque no veía otra opción.
+Durante meses escondí mis emociones.
+Creía que llorar era una señal de debilidad.
 
-Escribir fue algo muy pequeño que me mantuvo ocupado,
-una herramienta simple que me ayudaba a liberar emociones,
-una forma de no explotar por dentro.
-Pero siendo honesto, eso no fue lo que realmente me sanó.
+Con el tiempo comprendí que el duelo no se supera,
+se aprende a vivir con él.
+Hablar de lo que sentía y permitirme recordar sin culpa
+me ayudó a encontrar paz poco a poco.
 
-Lo que verdaderamente me ayudó fue buscar a Dios.
-Al Dios que siempre estuvo cuidando de mi familia,
-al mismo Dios al que durante mucho tiempo decidí no escuchar,
-porque preferí seguir viviendo una vida de libertinaje,
-creyendo que estaba siendo libre cuando en realidad estaba huyendo.
-
-Acercarme a Él fue clave para empezar a sanar muchas cosas,
-para aprender a cuidar mi salud mental desde la raíz.
-En el camino, Dios puso personas en mi vida que amo con todo mi corazón,
-personas que me han acompañado, que me han sostenido, que han sido parte del proceso.
-
-Eso no significa que no tenga malos días.
-Los tengo.
-De hecho, este proyecto nació en mi última recaída,
-en uno de los momentos donde mi salud mental se vio más afectada.
-Y fue ahí donde tomé una decisión:
-por esto no debía pasar nadie más en silencio.
-
-La salud mental no es algo que se deba tomar a la ligera.
-Es algo serio.
-Es algo que me apasiona.
-Y sé que cada día que invierto en este proyecto,
-cada palabra, cada reflexión, cada esfuerzo,
-se va a ver reflejado en vidas que hoy están luchando como yo luché.
-
-Dios me ha liberado de muchas batallas internas:
-de mi ego,
-de la impaciencia,
-de no saber escuchar consejo,
-del rencor, del resentimiento, del odio.
-Me ha ido transformando en una persona más tranquila, más calmada, más consciente.
-
-También me ayudó a enfrentar mi adicción a la pornografía,
-una adicción que esta sociedad normaliza y hasta promueve,
-pero que en realidad causa un daño profundo al cerebro y al alma.
-No ha sido fácil.
-No lo es.
-Es una lucha diaria, una batalla constante en la que debo estar alerta.
-
-Hoy no hablo desde alguien “perfecto” ni “totalmente sanado”.
-Hablo desde alguien que aprendió a caminar con sus procesos,
-sin negarlos, sin maquillarlos, sin huir.
-
-Y si estás leyendo esto, solo puedo decirte una cosa con el corazón en la mano:
-de una mala salud mental se puede salir.
-No solo.
-Nunca solo.
-Siempre acompañado de personas que nos aman.
-
-“La esperanza que se demora es tormento del corazón,
-pero el deseo cumplido es árbol de vida.”
-Proverbios 13:12
-
+Hoy sigo extrañándolo,
+pero también puedo sonreír al recordar todo lo que vivimos juntos.
     `,
     category: "Testimonio",
-    date: "2 Feb 2026",
-    datetime: "2026-02-10",
+    date: "20 Ene 2026",
+    datetime: "2026-01-20",
     author: {
-      name: "Andrey B.",
+      name: "Laura R.",
+      role: "Paciente",
+    },
+  },
+  {
+    id: "testimonio-autoesteem",
+    title: "Dejé de compararme con todo el mundo",
+    description:
+      "Un relato sobre autoestima y el impacto de las comparaciones constantes.",
+    excerpt:
+      "Vivía creyendo que nunca era suficiente hasta que aprendí a valorar mi propio proceso.",
+    content: `
+Las redes sociales me hicieron creer que todos tenían una vida perfecta.
+Comparaba mi cuerpo,
+mi trabajo,
+mis relaciones y hasta mis logros.
+
+Nunca me sentía suficiente.
+
+Empecé a trabajar en mi autoestima con ayuda profesional
+y entendí que cada persona vive un proceso distinto.
+
+Hoy sigo usando redes sociales,
+pero ya no dejo que definan cuánto valgo.
+Aprendí que mi identidad no depende de la aprobación de los demás.
+    `,
+    category: "Testimonio",
+    date: "8 Feb 2026",
+    datetime: "2026-02-08",
+    author: {
+      name: "Valentina P.",
+      role: "Paciente",
+    },
+  },
+  {
+    id: "testimonio-estres-laboral",
+    title: "Mi trabajo no podía seguir costándome la salud",
+    description:
+      "Un testimonio sobre estrés laboral, agotamiento y equilibrio entre la vida personal y profesional.",
+    excerpt:
+      "Pensaba que descansar era perder el tiempo, hasta que mi cuerpo me obligó a parar.",
+    content: `
+Trabajaba más de doce horas al día.
+Dormía poco,
+comía mal
+y siempre sentía que debía demostrar más.
+
+Llegó un momento en el que mi cuerpo simplemente dijo basta.
+
+Aprendí a poner límites,
+a respetar mis horarios
+y a entender que mi valor no depende únicamente de mi productividad.
+
+Hoy trabajo mejor,
+pero también vivo mejor.
+    `,
+    category: "Testimonio",
+    date: "18 Feb 2026",
+    datetime: "2026-02-18",
+    author: {
+      name: "Jorge A.",
+      role: "Paciente",
+    },
+  },
+  {
+    id: "testimonio-ataques-panico",
+    title: "Pensé que estaba muriendo, pero era un ataque de pánico",
+    description:
+      "Una historia sobre el miedo de vivir ataques de pánico y aprender a comprenderlos.",
+    excerpt:
+      "El primer ataque de pánico cambió mi vida, pero conocer lo que ocurría me devolvió la tranquilidad.",
+    content: `
+Recuerdo perfectamente la primera vez.
+Mi corazón latía muy rápido,
+me faltaba el aire
+y pensé que estaba teniendo un infarto.
+
+Después descubrí que era un ataque de pánico.
+
+Entender qué estaba ocurriendo redujo gran parte del miedo.
+Con terapia aprendí técnicas para controlar la respiración,
+reconocer las señales y recuperar el control.
+
+Hoy sé que puedo atravesar esos momentos sin sentir que mi vida termina.
+    `,
+    category: "Testimonio",
+    date: "28 Feb 2026",
+    datetime: "2026-02-28",
+    author: {
+      name: "Andrea S.",
+      role: "Paciente",
+    },
+  },
+  {
+    id: "testimonio-soledad",
+    title: "Descubrí que estar acompañado es diferente a sentirse acompañado",
+    description:
+      "Una reflexión sobre la soledad emocional y la importancia de construir vínculos saludables.",
+    excerpt:
+      "Podía estar rodeado de personas y aun así sentirme completamente solo.",
+    content: `
+Siempre había gente alrededor,
+pero nunca hablaba de lo que realmente sentía.
+
+Con el tiempo comprendí que necesitaba relaciones más auténticas.
+
+Aprendí a abrir mi corazón con personas de confianza
+y descubrí que muchos también estaban luchando en silencio.
+
+No desapareció la soledad de un día para otro,
+pero dejó de ser una carga imposible de llevar.
+    `,
+    category: "Testimonio",
+    date: "12 Mar 2026",
+    datetime: "2026-03-12",
+    author: {
+      name: "Sebastián C.",
+      role: "Paciente",
+    },
+  },
+  {
+    id: "testimonio-ansiedad-universidad",
+    title: "La universidad no debía costarme mi paz",
+    description:
+      "Una experiencia sobre la presión académica y el autocuidado.",
+    excerpt:
+      "Creía que descansar era fracasar, hasta que entendí que mi salud era una prioridad.",
+    content: `
+Quería obtener las mejores calificaciones.
+Aceptaba todos los proyectos,
+dormía poco
+y vivía con ansiedad permanente.
+
+Cuando busqué orientación entendí que mi rendimiento también dependía de mi bienestar.
+
+Aprendí a organizar mejor mi tiempo,
+a descansar sin culpa
+y a reconocer mis límites.
+
+Hoy disfruto mucho más estudiar.
+    `,
+    category: "Testimonio",
+    date: "26 Mar 2026",
+    datetime: "2026-03-26",
+    author: {
+      name: "Daniela F.",
+      role: "Estudiante",
+    },
+  },
+  {
+    id: "testimonio-familia",
+    title: "Hablar en familia cambió muchas cosas",
+    description:
+      "Una historia sobre la importancia de la comunicación familiar durante una crisis emocional.",
+    excerpt:
+      "Guardé todo durante años porque no quería preocupar a nadie.",
+    content: `
+Siempre intenté aparentar que todo estaba bien.
+
+Pensaba que contar lo que sentía solo iba a preocupar a mi familia.
+
+Cuando finalmente hablé,
+descubrí que nunca estuve solo.
+Mis padres no tenían todas las respuestas,
+pero sí el deseo de acompañarme.
+
+Esa conversación marcó el inicio de un proceso que transformó nuestra relación.
+    `,
+    category: "Testimonio",
+    date: "10 Abr 2026",
+    datetime: "2026-04-10",
+    author: {
+      name: "Miguel H.",
+      role: "Paciente",
+    },
+  },
+  {
+    id: "testimonio-habitos",
+    title: "Pequeños hábitos hicieron una gran diferencia",
+    description:
+      "Un testimonio sobre cómo pequeños cambios diarios fortalecieron la salud mental.",
+    excerpt:
+      "No hubo una solución mágica; fueron pequeños pasos repetidos cada día.",
+    content: `
+Esperaba encontrar una solución inmediata.
+
+Pero descubrí que mi recuperación estaba en cosas sencillas.
+
+Dormir mejor.
+Salir a caminar.
+Reducir el tiempo frente al celular.
+Escribir lo que sentía.
+Aceptar ayuda.
+
+Ninguna de esas acciones cambió mi vida por sí sola,
+pero juntas transformaron completamente mi manera de vivir.
+    `,
+    category: "Testimonio",
+    date: "24 Abr 2026",
+    datetime: "2026-04-24",
+    author: {
+      name: "Camila V.",
+      role: "Paciente",
+    },
+  },
+  {
+    id: "testimonio-esperanza",
+    title: "Hoy tengo esperanza otra vez",
+    description:
+      "Una reflexión sobre recuperar la esperanza después de un periodo difícil de salud mental.",
+    excerpt:
+      "Hubo un momento en el que pensé que nada volvería a mejorar.",
+    content: `
+Hubo días en los que no veía salida.
+
+Sentía que todo esfuerzo era inútil
+y que mi vida siempre sería igual.
+
+Con el tiempo entendí que sanar rara vez ocurre de un momento a otro.
+Es un camino lleno de pequeños avances,
+retrocesos
+y mucho aprendizaje.
+
+Hoy todavía sigo creciendo,
+pero ya no vivo sin esperanza.
+
+Si algo aprendí,
+es que incluso en los momentos más oscuros siempre existe la posibilidad de volver a empezar.
+    `,
+    category: "Testimonio",
+    date: "15 May 2026",
+    datetime: "2026-05-15",
+    author: {
+      name: "Natalia O.",
+      role: "Paciente",
+    },
+  },
+  {
+    id: "testimonio-ansiedad-generalizada",
+    title: "Aprender a vivir sin el control absoluto de todo",
+    description:
+      "Un relato honesto sobre el Trastorno de Ansiedad Generalizada (TAG) y cómo dejar de anticipar catástrofes.",
+    excerpt:
+      "Vivía en el futuro, imaginando el peor escenario posible para cada situación cotidiana.",
+    content: `
+Mi mente nunca descansaba. Si el teléfono sonaba, asumía que alguien había muerto. 
+Si mi jefe me pedía una reunión, daba por hecho que me despedirían. Vivir con Ansiedad Generalizada es como escuchar una alarma de incendios constante dentro de tu cabeza cuando ni siquiera hay humo.
+
+Fui al psicólogo cuando el dolor físico en el pecho y el insomnio se volvieron insoportables. 
+No se trataba de 'relajarse' con un té, sino de reentrenar mi cerebro.
+
+A través de la terapia cognitiva conductual, aprendí a cuestionar mis propios pensamientos catastróficos. 
+He descubierto que no puedo controlar el futuro, pero sí puedo gestionar mi presente. 
+Hoy sigo sintiendo miedo a veces, pero ya no dejo que dicte cómo vivo mis días.
+    `,
+    category: "Testimonio",
+    date: "2 Jun 2026",
+    datetime: "2026-06-02",
+    author: {
+      name: "Ricardo G.",
+      role: "Paciente",
+    },
+  },
+  {
+    id: "testimonio-salud-masculina",
+    title: "Romper el silencio: Los hombres también lloramos",
+    description:
+      "Un testimonio enfocado en superar el estigma de la salud mental masculina y la vulnerabilidad.",
+    excerpt:
+      "Me enseñaron que los hombres debían ser fuertes y callar. Casi me cuesta la vida.",
+    content: `
+Crecí en un entorno donde mostrar vulnerabilidad era sinónimo de debilidad. Si me sentía triste, me guardaba todo. 
+Cuando sufrí una crisis grave de angustia, me aislé por completo porque me daba vergüenza admitir que no podía solo.
+
+El día que me quebré frente a mi pareja fue aterrador, pero también un alivio inmenso. 
+Me di cuenta de que arrastrar ese personaje de hombre indestructible me estaba destruyendo por dentro.
+
+Empezar terapia fue un desafío a mi propio ego. 
+Hoy entiendo que hablar de mis emociones, pedir ayuda y llorar cuando lo necesito no me hace menos hombre; al contrario, me hace libre y mucho más fuerte.
+    `,
+    category: "Testimonio",
+    date: "14 Jun 2026",
+    datetime: "2026-06-14",
+    author: {
+      name: "Mateo B.",
+      role: "Paciente",
+    },
+  },
+  {
+    id: "testimonio-toc",
+    title: "Mi mente me mentía: Mi camino manejando el TOC",
+    description:
+      "Una mirada profunda al Trastorno Obsesivo Compulsivo más allá de los mitos comerciales.",
+    excerpt:
+      "El TOC no es ser ordenado; era una cárcel de pensamientos intrusivos y rituales eternos.",
+    content: `
+Mucha gente piensa que el TOC es un chiste sobre ordenar lápices por colores. 
+Para mí, era una prisión. Pasaba horas revisando si la estufa estaba apagada, regresando a casa tres veces seguidas por el miedo irracional de provocar un incendio que lastimara a otros.
+
+Los pensamientos intrusivos me hacían sentir como una mala persona. Estaba exhausto de mi propia mente.
+
+Gracias a una terapia especializada y un acompañamiento psiquiátrico empático, entendí el mecanismo de mi trastorno. 
+Aprendí a no validar la ansiedad que me generaban esos pensamientos y a romper los rituales. 
+No ha desaparecido por completo, pero ahora yo tengo el control de mi vida, no mis obsesiones.
+    `,
+    category: "Testimonio",
+    date: "01 Jul 2026",
+    datetime: "2026-07-01",
+    author: {
+      name: "Elena M.",
       role: "Paciente",
     },
   },
