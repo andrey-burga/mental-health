@@ -15,7 +15,7 @@ const Articulos = lazy(() => import("./pages/Articulos"));
 const Testimonial = lazy(() => import("./pages/Testimonial"));
 const Contact = lazy(() => import("./pages/Contact"));
 const FactoresRiesgo = lazy(() => import("./pages/FactoresDeRiesgo"));
-const Terms = lazy(() => import("./pages/terms"));
+const Terms = lazy(() => import("./pages/Terms"));
 
 import NotFound from "./pages/NotFound";
 import Login from "./pages/Login";
