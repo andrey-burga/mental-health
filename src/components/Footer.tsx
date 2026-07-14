@@ -12,10 +12,9 @@ function FooterLink({ to, children }: FooterLinkProps) {
       <NavLink
         to={to}
         className={({ isActive }) =>
-          `text-sm font-light transition-all duration-300 relative py-0.5 after:absolute after:bottom-0 after:left-0 after:h-[1px] after:w-full after:origin-bottom-right after:scale-x-0 after:bg-indigo-600 after:transition-transform after:duration-300 hover:after:origin-bottom-left hover:after:scale-x-100 dark:after:bg-indigo-400 ${
-            isActive
-              ? "text-indigo-600 dark:text-indigo-400 font-medium after:scale-x-100"
-              : "text-neutral-500 hover:text-neutral-900 dark:text-neutral-400 dark:hover:text-white"
+          `text-sm font-light transition-all duration-300 relative py-0.5 after:absolute after:bottom-0 after:left-0 after:h-[1px] after:w-full after:origin-bottom-right after:scale-x-0 after:bg-indigo-600 after:transition-transform after:duration-300 hover:after:origin-bottom-left hover:after:scale-x-100 dark:after:bg-indigo-400 ${isActive
+            ? "text-indigo-600 dark:text-indigo-400 font-medium after:scale-x-100"
+            : "text-neutral-500 hover:text-neutral-900 dark:text-neutral-400 dark:hover:text-white"
           }`
         }
       >
@@ -29,7 +28,7 @@ function Footer() {
   return (
     <footer className="w-full mt-20 px-4 pb-6 sm:px-6 lg:px-8 transition-colors duration-300">
       <div className="mx-auto max-w-7xl rounded-3xl border border-neutral-200/60 bg-white/50 backdrop-blur-md p-8 sm:p-12 dark:border-neutral-800/60 dark:bg-neutral-950/40 shadow-sm">
-        
+
         {/* Contenedor principal Grid */}
         <div className="grid gap-10 sm:grid-cols-2 lg:grid-cols-4 pb-10 border-b border-neutral-200/60 dark:border-neutral-800/60">
 
@@ -40,7 +39,7 @@ function Footer() {
               Bienestar
             </div>
             <p className="text-sm text-neutral-500 dark:text-neutral-400 leading-relaxed font-light">
-              Proyecto informativo sobre salud mental y bienestar emocional. 
+              Proyecto informativo sobre salud mental y bienestar emocional.
               Un espacio creado para aprender, reflexionar y acompañar.
             </p>
           </div>
@@ -94,8 +93,13 @@ function Footer() {
           <div>
             © {new Date().getFullYear()} AWD S.A.S. — Todos los derechos reservados.
           </div>
-          <div className="text-[10px] text-neutral-300 dark:text-neutral-700 font-mono">
-            v1.0.0
+          <div className="flex items-center gap-3 text-[10px] font-mono text-neutral-400 dark:text-neutral-600">
+            <span className="flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-amber-500/10 text-amber-600 dark:text-amber-400 font-sans font-medium">
+              <span className="h-1 w-1 rounded-full bg-amber-500 animate-pulse" />
+              En desarrollo (15%)
+            </span>
+            <span className="text-neutral-300 dark:text-neutral-700">|</span>
+            <span>v1.0.0</span>
           </div>
         </div>
 
