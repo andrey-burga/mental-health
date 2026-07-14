@@ -26,7 +26,7 @@ function ArticleModal({ article, onClose }: ArticleModalProps) {
       onClick={onClose} // Cierra el modal si haces clic fuera de la tarjeta
     >
       <motion.div
-        className="relative max-w-3xl w-full max-h-[85vh] overflow-y-auto rounded-2xl bg-white dark:bg-slate-900 border border-gray-100 dark:border-slate-800 p-6 sm:p-8 shadow-2xl"
+        className="relative max-w-3xl w-full max-h-[85vh] overflow-y-auto rounded-2xl bg-white dark:bg-neutral-900 border border-gray-100 dark:border-neutral-800 p-6 sm:p-8 shadow-2xl"
         initial={{ scale: 0.95, y: 15 }}
         animate={{ scale: 1, y: 0 }}
         exit={{ scale: 0.95, y: 15 }}
@@ -36,7 +36,7 @@ function ArticleModal({ article, onClose }: ArticleModalProps) {
         {/* BOTÓN CERRAR */}
         <button
           onClick={onClose}
-          className="absolute top-4 right-4 text-gray-400 dark:text-gray-500 hover:text-slate-900 dark:hover:text-white bg-gray-50 dark:bg-slate-800 hover:bg-gray-100 dark:hover:bg-slate-700 w-8 h-8 rounded-full flex items-center justify-center font-sans transition-colors outline-none"
+          className="absolute top-4 right-4 text-gray-400 dark:text-gray-500 hover:text-neutral-900 dark:hover:text-white bg-gray-50 dark:bg-neutral-800 hover:bg-gray-100 dark:hover:bg-neutral-700 w-8 h-8 rounded-full flex items-center justify-center font-sans transition-colors outline-none"
           aria-label="Cerrar modal"
         >
           ✕
@@ -46,12 +46,12 @@ function ArticleModal({ article, onClose }: ArticleModalProps) {
           {article.category}
         </span>
 
-        <h2 className="mt-4 text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-white tracking-tight leading-tight">
+        <h2 className="mt-4 text-2xl sm:text-3xl font-extrabold text-neutral-900 dark:text-white tracking-tight leading-tight">
           {article.title}
         </h2>
 
         {/* CONTENIDO TEXTO */}
-        <div className="mt-6 space-y-4 text-gray-600 dark:text-gray-300 font-light leading-relaxed text-base sm:text-lg whitespace-pre-line border-t border-gray-50 dark:border-slate-800/60 pt-6">
+        <div className="mt-6 space-y-4 text-gray-600 dark:text-gray-300 font-light leading-relaxed text-base sm:text-lg whitespace-pre-line border-t border-gray-50 dark:border-neutral-800/60 pt-6">
           {article.content || article.excerpt}
         </div>
       </motion.div>

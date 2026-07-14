@@ -9,7 +9,11 @@ function Terms() {
 
   return (
     <PageTransition>
-      <div className="min-h-screen flex flex-col bg-slate-50/30 dark:bg-slate-950 text-slate-800 dark:text-gray-100 transition-colors duration-300">
+      {/* 
+        LIMPIEZA: El contenedor principal ahora está limpio.
+        Hereda el fondo, el texto base y la transición suave directamente del body.
+      */}
+      <div className="min-h-screen flex flex-col">
         <Header />
 
         <main className="flex-grow">
@@ -19,13 +23,14 @@ function Terms() {
               <div className="absolute top-12 left-1/3 -z-10 h-72 w-72 rounded-full bg-indigo-400/10 blur-3xl dark:bg-indigo-500/5" />
               
               <div className="max-w-3xl">
-                <span className="inline-block bg-slate-100 dark:bg-slate-900 text-slate-600 dark:text-slate-400 text-xs font-semibold uppercase tracking-wider px-3 py-1.5 rounded-full mb-4 border border-slate-200/40 dark:border-slate-800/60">
+                {/* CAMBIO: Se unificó de slate a neutral */}
+                <span className="inline-block bg-neutral-100 dark:bg-neutral-900 text-neutral-600 dark:text-neutral-400 text-xs font-semibold uppercase tracking-wider px-3 py-1.5 rounded-full mb-4 border border-neutral-200/40 dark:border-neutral-800/60">
                   Legal y Transparencia
                 </span>
-                <h1 className="text-4xl sm:text-5xl font-extrabold tracking-tight text-slate-900 dark:text-white mb-4">
+                <h1 className="text-4xl sm:text-5xl font-extrabold tracking-tight text-neutral-900 dark:text-white mb-4">
                   Términos y Condiciones de Uso
                 </h1>
-                <p className="text-sm text-slate-500 dark:text-slate-400 font-light">
+                <p className="text-sm text-neutral-500 dark:text-neutral-400 font-light">
                   Última actualización: {lastUpdated}
                 </p>
               </div>
@@ -38,10 +43,10 @@ function Terms() {
               
               {/* Columna Izquierda: Mensaje de navegación/resumen */}
               <div className="lg:w-1/3 h-fit lg:sticky lg:top-28 space-y-4">
-                <h2 className="text-xl font-bold text-slate-900 dark:text-white tracking-tight">
+                <h2 className="text-xl font-bold text-neutral-900 dark:text-white tracking-tight">
                   Tu compromiso con el bienestar
                 </h2>
-                <p className="text-sm text-slate-500 dark:text-slate-400 font-light leading-relaxed">
+                <p className="text-sm text-neutral-500 dark:text-neutral-400 font-light leading-relaxed">
                   Por favor, lee atentamente estas disposiciones. Al navegar, registrarte o consumir el contenido de nuestra plataforma, aceptas de manera explícita cumplir con estos términos.
                 </p>
                 
@@ -54,11 +59,12 @@ function Terms() {
               </div>
 
               {/* Columna Derecha: Secciones Legales */}
-              <div className="lg:w-2/3 rounded-3xl border border-slate-200/60 bg-white/60 p-6 sm:p-10 dark:border-slate-800/60 dark:bg-slate-900/20 backdrop-blur-sm space-y-8 text-slate-600 dark:text-slate-400 font-light leading-relaxed text-sm sm:text-base">
+              {/* CAMBIO: Se cambiaron los bordes, textos y fondos de 'slate' a 'neutral' */}
+              <div className="lg:w-2/3 rounded-3xl border border-neutral-200/60 bg-white/60 p-6 sm:p-10 dark:border-neutral-800/60 dark:bg-neutral-900/20 backdrop-blur-sm space-y-8 text-neutral-600 dark:text-neutral-400 font-light leading-relaxed text-sm sm:text-base">
                 
                 {/* Sección 1 */}
                 <section className="space-y-3">
-                  <h3 className="text-lg font-bold text-slate-900 dark:text-white tracking-tight">
+                  <h3 className="text-lg font-bold text-neutral-900 dark:text-white tracking-tight">
                     1. Naturaleza del Servicio e Información
                   </h3>
                   <p>
@@ -69,11 +75,11 @@ function Terms() {
                   </p>
                 </section>
 
-                <hr className="border-slate-200/60 dark:border-slate-800/60" />
+                <hr className="border-neutral-200/60 dark:border-neutral-800/60" />
 
                 {/* Sección 2 */}
                 <section className="space-y-3">
-                  <h3 className="text-lg font-bold text-slate-900 dark:text-white tracking-tight">
+                  <h3 className="text-lg font-bold text-neutral-900 dark:text-white tracking-tight">
                     2. Registro de Cuentas y Privacidad
                   </h3>
                   <p>
@@ -84,11 +90,11 @@ function Terms() {
                   </p>
                 </section>
 
-                <hr className="border-slate-200/60 dark:border-slate-800/60" />
+                <hr className="border-neutral-200/60 dark:border-neutral-800/60" />
 
                 {/* Sección 3 */}
                 <section className="space-y-3">
-                  <h3 className="text-lg font-bold text-slate-900 dark:text-white tracking-tight">
+                  <h3 className="text-lg font-bold text-neutral-900 dark:text-white tracking-tight">
                     3. Comunidad y Testimonios
                   </h3>
                   <p>
@@ -101,11 +107,11 @@ function Terms() {
                   </ul>
                 </section>
 
-                <hr className="border-slate-200/60 dark:border-slate-800/60" />
+                <hr className="border-neutral-200/60 dark:border-neutral-800/60" />
 
                 {/* Sección 4 */}
                 <section className="space-y-3">
-                  <h3 className="text-lg font-bold text-slate-900 dark:text-white tracking-tight">
+                  <h3 className="text-lg font-bold text-neutral-900 dark:text-white tracking-tight">
                     4. Limitación de Responsabilidad
                   </h3>
                   <p>
@@ -116,11 +122,11 @@ function Terms() {
                   </p>
                 </section>
 
-                <hr className="border-slate-200/60 dark:border-slate-800/60" />
+                <hr className="border-neutral-200/60 dark:border-neutral-800/60" />
 
                 {/* Sección 5 */}
                 <section className="space-y-3">
-                  <h3 className="text-lg font-bold text-slate-900 dark:text-white tracking-tight">
+                  <h3 className="text-lg font-bold text-neutral-900 dark:text-white tracking-tight">
                     5. Modificaciones de los Términos
                   </h3>
                   <p>

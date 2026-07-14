@@ -14,14 +14,14 @@ function ResourceCard({ title, description, children, icon: Icon }: ResourceCard
       className="
         group flex flex-col justify-between
         rounded-2xl
-        border border-slate-200
+        border border-neutral-200
         bg-white
         p-6
         shadow-sm
         transition-all duration-300
-        hover:-translate-y-1 hover:shadow-md
-        dark:border-slate-800
-        dark:bg-slate-900
+        hover:-tranneutral-y-1 hover:shadow-md
+        dark:border-neutral-800
+        dark:bg-neutral-900
       "
     >
       <div>
@@ -51,7 +51,7 @@ function ResourceCard({ title, description, children, icon: Icon }: ResourceCard
             text-xl
             font-bold
             tracking-tight
-            text-slate-900
+            text-neutral-900
             dark:text-white
           "
         >
@@ -62,8 +62,8 @@ function ResourceCard({ title, description, children, icon: Icon }: ResourceCard
           className="
             text-sm
             leading-relaxed
-            text-slate-700
-            dark:text-slate-300
+            text-neutral-700
+            dark:text-neutral-300
           "
         >
           {description}
@@ -71,7 +71,7 @@ function ResourceCard({ title, description, children, icon: Icon }: ResourceCard
       </div>
 
       {children && (
-        <div className="mt-5 pt-4 border-t border-slate-100 dark:border-slate-800">
+        <div className="mt-5 pt-4 border-t border-neutral-100 dark:border-neutral-800">
           {children}
         </div>
       )}

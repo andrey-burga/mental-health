@@ -38,7 +38,7 @@ function Contact() {
 
   return (
     <PageTransition>
-      <div className="min-h-screen flex flex-col bg-slate-50/30 dark:bg-slate-950 text-slate-800 dark:text-gray-100 transition-colors duration-300">
+      <div className="min-h-screen flex flex-col bg-neutral-50/30 dark:bg-neutral-950 text-neutral-800 dark:text-gray-100 transition-colors duration-300">
         <Header />
 
         <main className="flex-grow flex items-center justify-center">
@@ -55,21 +55,21 @@ function Contact() {
                   <span className="inline-block bg-indigo-50 dark:bg-indigo-950/40 text-indigo-600 dark:text-indigo-400 text-xs font-semibold uppercase tracking-wider px-3 py-1.5 rounded-full">
                     Contacto directo
                   </span>
-                  <h1 className="text-4xl sm:text-5xl font-extrabold tracking-tight text-slate-900 dark:text-white leading-[1.1]">
+                  <h1 className="text-4xl sm:text-5xl font-extrabold tracking-tight text-neutral-900 dark:text-white leading-[1.1]">
                     Contáctanos
                   </h1>
-                  <p className="text-base sm:text-lg text-slate-600 dark:text-slate-400 font-light leading-relaxed">
+                  <p className="text-base sm:text-lg text-neutral-600 dark:text-neutral-400 font-light leading-relaxed">
                     Si tienes preguntas, sugerencias o deseas compartir algo con nosotros, 
                     puedes escribirnos. Tu mensaje es leído con atención y respeto.
                   </p>
                 </div>
 
                 {/* Mensaje Humano transformado en un discreto bloque de confianza */}
-                <div className="rounded-2xl border border-slate-200/50 bg-white/40 p-5 dark:border-slate-800/60 dark:bg-slate-900/20 backdrop-blur-sm">
-                  <h3 className="text-sm font-bold text-slate-900 dark:text-white tracking-tight mb-1">
+                <div className="rounded-2xl border border-neutral-200/50 bg-white/40 p-5 dark:border-neutral-800/60 dark:bg-neutral-900/20 backdrop-blur-sm">
+                  <h3 className="text-sm font-bold text-neutral-900 dark:text-white tracking-tight mb-1">
                     Gracias por confiar
                   </h3>
-                  <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 font-light leading-relaxed">
+                  <p className="text-xs sm:text-sm text-neutral-500 dark:text-neutral-400 font-light leading-relaxed">
                     Este proyecto busca crear un espacio informativo y humano sobre salud mental. 
                     Cada sugerencia nos ayuda a construir un entorno más seguro, accesible y útil para todos.
                   </p>
@@ -78,11 +78,11 @@ function Contact() {
 
               {/* COLUMNA DERECHA: Formulario como Tarjeta Premium Flotante */}
               <div className="lg:col-span-7">
-                <div className="rounded-3xl border border-slate-200/60 bg-white/70 dark:border-slate-800/60 dark:bg-slate-900/40 p-6 sm:p-10 shadow-xl shadow-slate-100/50 dark:shadow-none backdrop-blur-md">
+                <div className="rounded-3xl border border-neutral-200/60 bg-white/70 dark:border-neutral-800/60 dark:bg-neutral-900/40 p-6 sm:p-10 shadow-xl shadow-neutral-100/50 dark:shadow-none backdrop-blur-md">
                   <form onSubmit={handleSubmit} className="space-y-5">
                     
                     <div>
-                      <label className="block text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-2">
+                      <label className="block text-xs font-semibold text-neutral-500 dark:text-neutral-400 uppercase tracking-wider mb-2">
                         Nombre completo
                       </label>
                       <input
@@ -91,13 +91,13 @@ function Contact() {
                         value={formData.name}
                         onChange={handleChange}
                         required
-                        className="w-full rounded-xl border border-slate-200 dark:border-slate-800/80 bg-white dark:bg-slate-950 px-4 py-3 text-sm text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all duration-200"
+                        className="w-full rounded-xl border border-neutral-200 dark:border-neutral-800/80 bg-white dark:bg-neutral-950 px-4 py-3 text-sm text-neutral-900 dark:text-white placeholder-neutral-400 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all duration-200"
                         placeholder="Ej. Alejandro Delgado"
                       />
                     </div>
 
                     <div>
-                      <label className="block text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-2">
+                      <label className="block text-xs font-semibold text-neutral-500 dark:text-neutral-400 uppercase tracking-wider mb-2">
                         Correo electrónico
                       </label>
                       <input
@@ -106,13 +106,13 @@ function Contact() {
                         value={formData.email}
                         onChange={handleChange}
                         required
-                        className="w-full rounded-xl border border-slate-200 dark:border-slate-800/80 bg-white dark:bg-slate-950 px-4 py-3 text-sm text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all duration-200"
+                        className="w-full rounded-xl border border-neutral-200 dark:border-neutral-800/80 bg-white dark:bg-neutral-950 px-4 py-3 text-sm text-neutral-900 dark:text-white placeholder-neutral-400 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all duration-200"
                         placeholder="correo@ejemplo.com"
                       />
                     </div>
 
                     <div>
-                      <label className="block text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-2">
+                      <label className="block text-xs font-semibold text-neutral-500 dark:text-neutral-400 uppercase tracking-wider mb-2">
                         Mensaje
                       </label>
                       <textarea
@@ -121,7 +121,7 @@ function Contact() {
                         value={formData.message}
                         onChange={handleChange}
                         required
-                        className="w-full rounded-xl border border-slate-200 dark:border-slate-800/80 bg-white dark:bg-slate-950 px-4 py-3 text-sm text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all duration-200 resize-none"
+                        className="w-full rounded-xl border border-neutral-200 dark:border-neutral-800/80 bg-white dark:bg-neutral-950 px-4 py-3 text-sm text-neutral-900 dark:text-white placeholder-neutral-400 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all duration-200 resize-none"
                         placeholder="¿En qué podemos ayudarte o qué te gustaría compartir?"
                       />
                     </div>

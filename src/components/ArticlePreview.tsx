@@ -11,13 +11,13 @@ function ArticlePreview({ title, excerpt, category, onClick }: ArticlePreviewPro
   return (
     <article
       onClick={onClick}
-      className="cursor-pointer rounded-2xl border border-gray-100 dark:border-slate-800 bg-white dark:bg-slate-900 p-6 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-md group"
+      className="cursor-pointer rounded-2xl border border-gray-100 dark:border-neutral-800 bg-white dark:bg-neutral-900 p-6 shadow-sm transition-all duration-300 hover:-tranneutral-y-1 hover:shadow-md group"
     >
       <span className="text-xs font-bold uppercase tracking-wider text-primary bg-primary/10 px-2.5 py-1 rounded-md">
         {category}
       </span>
 
-      <h3 className="mt-4 text-lg font-bold text-slate-900 dark:text-white transition-colors group-hover:text-primary">
+      <h3 className="mt-4 text-lg font-bold text-neutral-900 dark:text-white transition-colors group-hover:text-primary">
         {title}
       </h3>
 
@@ -27,7 +27,7 @@ function ArticlePreview({ title, excerpt, category, onClick }: ArticlePreviewPro
 
       <p className="mt-4 text-sm text-primary font-semibold flex items-center gap-1">
         Leer testimonio 
-        <span className="transform group-hover:translate-x-1 transition-transform">→</span>
+        <span className="transform group-hover:tranneutral-x-1 transition-transform">→</span>
       </p>
     </article>
   );

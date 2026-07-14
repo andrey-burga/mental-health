@@ -44,12 +44,12 @@ function Header() {
     `text-sm font-medium transition-all duration-300 relative py-1.5 after:absolute after:bottom-0 after:left-0 after:h-[2px] after:w-full after:origin-bottom-right after:scale-x-0 after:bg-indigo-600 after:transition-transform after:duration-300 hover:after:origin-bottom-left hover:after:scale-x-100 dark:after:bg-indigo-400 ${
       isActive
         ? "text-indigo-600 dark:text-indigo-400 font-semibold after:scale-x-100"
-        : "text-slate-600 hover:text-slate-900 dark:text-slate-300 dark:hover:text-white"
+        : "text-neutral-600 hover:text-neutral-900 dark:text-neutral-300 dark:hover:text-white"
     }`;
 
   return (
     <header className="sticky top-4 z-50 w-full px-4 sm:px-6 lg:px-8 transition-all duration-300">
-      <div className="mx-auto max-w-7xl rounded-2xl border border-slate-200/80 bg-white/80 backdrop-blur-md dark:border-slate-800/80 dark:bg-slate-950/80 shadow-lg shadow-slate-100/40 dark:shadow-none transition-all duration-300">
+      <div className="mx-auto max-w-7xl rounded-2xl border border-neutral-200/80 bg-white/80 backdrop-blur-md dark:border-neutral-800/80 dark:bg-neutral-950/80 shadow-lg shadow-neutral-100/40 dark:shadow-none transition-all duration-300">
         <div className="px-4 sm:px-6 lg:px-8">
           <div className="flex h-16 items-center justify-between">
 
@@ -79,7 +79,7 @@ function Header() {
               {/* BOTÓN DARK MODE */}
               <button
                 onClick={toggleDarkMode}
-                className="flex items-center justify-center h-10 w-10 rounded-xl border border-slate-200 bg-white text-slate-600 shadow-sm hover:bg-slate-50 transition-all dark:border-slate-800 dark:bg-slate-900 dark:text-indigo-400 dark:hover:bg-slate-800/60 transform active:scale-95"
+                className="flex items-center justify-center h-10 w-10 rounded-xl border border-neutral-200 bg-white text-neutral-600 shadow-sm hover:bg-neutral-50 transition-all dark:border-neutral-800 dark:bg-neutral-900 dark:text-indigo-400 dark:hover:bg-neutral-800/60 transform active:scale-95"
                 aria-label={darkMode ? "Activar modo claro" : "Activar modo oscuro"}
               >
                 {darkMode ? (
@@ -87,7 +87,7 @@ function Header() {
                     <path strokeLinecap="round" strokeLinejoin="round" d="M12 3v2.25m0 13.5V21M4.22 4.22l1.58 1.58m12.42 12.42l1.58 1.58M3 12h2.25m13.5 0H21M4.22 19.78l1.58-1.58M17.66 6.34l1.58-1.58M12 7.5a4.5 4.5 0 100 9 4.5 4.5 0 000-9z" />
                   </svg>
                 ) : (
-                  <svg className="h-5 w-5 text-slate-600 animate-fadeIn" fill="none" viewBox="0 0 24 24" strokeWidth="2" stroke="currentColor">
+                  <svg className="h-5 w-5 text-neutral-600 animate-fadeIn" fill="none" viewBox="0 0 24 24" strokeWidth="2" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" d="M21.75 12.83A9.5 9.5 0 0110.17 2.17 9 9 0 1021.75 12.83z" />
                   </svg>
                 )}
@@ -95,14 +95,14 @@ function Header() {
 
               <NavLink
                 to="/login"
-                className="hidden md:inline-block text-sm font-medium text-slate-600 hover:text-slate-900 dark:text-slate-300 dark:hover:text-white transition-colors"
+                className="hidden md:inline-block text-sm font-medium text-neutral-600 hover:text-neutral-900 dark:text-neutral-300 dark:hover:text-white transition-colors"
               >
                 Iniciar sesión
               </NavLink>
 
               <NavLink
                 to="/register"
-                className="hidden md:inline-block rounded-xl border border-slate-200 bg-white px-4 py-2 text-sm font-medium text-slate-700 shadow-sm hover:bg-slate-50 dark:border-slate-800 dark:bg-slate-900 dark:text-slate-300 dark:hover:bg-slate-800/50 transition-all duration-200"
+                className="hidden md:inline-block rounded-xl border border-neutral-200 bg-white px-4 py-2 text-sm font-medium text-neutral-700 shadow-sm hover:bg-neutral-50 dark:border-neutral-800 dark:bg-neutral-900 dark:text-neutral-300 dark:hover:bg-neutral-800/50 transition-all duration-200"
               >
                 Crear cuenta
               </NavLink>
@@ -117,7 +117,7 @@ function Header() {
               {/* HAMBURGUESA (Móvil) */}
               <button
                 onClick={() => setMenuOpen(!menuOpen)}
-                className="inline-flex md:hidden items-center justify-center p-2 rounded-xl text-slate-500 hover:bg-slate-100 hover:text-slate-700 dark:text-slate-400 dark:hover:bg-slate-900 dark:hover:text-slate-200 transition-colors transform active:scale-95"
+                className="inline-flex md:hidden items-center justify-center p-2 rounded-xl text-neutral-500 hover:bg-neutral-100 hover:text-neutral-700 dark:text-neutral-400 dark:hover:bg-neutral-900 dark:hover:text-neutral-200 transition-colors transform active:scale-95"
                 aria-label={menuOpen ? "Cerrar menú" : "Abrir menú"}
               >
                 <svg className="h-6 w-6 transform transition-transform duration-200" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor">
@@ -134,7 +134,7 @@ function Header() {
 
         {/* NAV MOBILE (Drawer) */}
         {menuOpen && (
-          <nav className="md:hidden border-t border-slate-200/60 bg-white/95 backdrop-blur-lg dark:border-slate-800/60 dark:bg-slate-950/95 rounded-b-2xl overflow-hidden animate-fadeIn duration-200">
+          <nav className="md:hidden border-t border-neutral-200/60 bg-white/95 backdrop-blur-lg dark:border-neutral-800/60 dark:bg-neutral-950/95 rounded-b-2xl overflow-hidden animate-fadeIn duration-200">
             <div className="space-y-1 px-4 py-4">
               {routes.map((route) => (
                 <NavLink
@@ -144,7 +144,7 @@ function Header() {
                     `block rounded-xl px-4 py-3 text-base font-medium transition-colors ${
                       isActive
                         ? "bg-indigo-50 text-indigo-600 dark:bg-indigo-950/50 dark:text-indigo-400"
-                        : "text-slate-600 hover:bg-slate-50 hover:text-slate-900 dark:text-slate-400 dark:hover:bg-slate-900 dark:hover:text-slate-200"
+                        : "text-neutral-600 hover:bg-neutral-50 hover:text-neutral-900 dark:text-neutral-400 dark:hover:bg-neutral-900 dark:hover:text-neutral-200"
                     }`
                   }
                   onClick={() => setMenuOpen(false)}
@@ -153,17 +153,17 @@ function Header() {
                 </NavLink>
               ))}
 
-              <div className="mt-4 pt-4 border-t border-slate-200 dark:border-slate-800 flex flex-col gap-2 px-2">
+              <div className="mt-4 pt-4 border-t border-neutral-200 dark:border-neutral-800 flex flex-col gap-2 px-2">
                 <NavLink
                   to="/login"
-                  className="w-full text-center rounded-xl py-2.5 text-sm font-medium text-slate-600 hover:bg-slate-50 dark:text-slate-300 dark:hover:bg-slate-900 transition-colors"
+                  className="w-full text-center rounded-xl py-2.5 text-sm font-medium text-neutral-600 hover:bg-neutral-50 dark:text-neutral-300 dark:hover:bg-neutral-900 transition-colors"
                   onClick={() => setMenuOpen(false)}
                 >
                   Iniciar sesión
                 </NavLink>
                 <NavLink
                   to="/register"
-                  className="w-full text-center rounded-xl bg-gradient-to-r from-slate-900 to-slate-800 dark:from-white dark:to-slate-100 py-2.5 text-sm font-semibold text-white dark:text-slate-900 shadow hover:opacity-95 transition-opacity"
+                  className="w-full text-center rounded-xl bg-gradient-to-r from-neutral-900 to-neutral-800 dark:from-white dark:to-neutral-100 py-2.5 text-sm font-semibold text-white dark:text-neutral-900 shadow hover:opacity-95 transition-opacity"
                   onClick={() => setMenuOpen(false)}
                 >
                   Crear cuenta

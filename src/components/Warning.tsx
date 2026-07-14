@@ -26,7 +26,7 @@ function Warning({ title, text, slug }: WarningProps) {
           ${
             show
               ? "bg-primary text-white border-primary shadow-md"
-              : "bg-gray-50 hover:bg-gray-100 text-gray-800 border-gray-200 dark:bg-slate-800 dark:hover:bg-slate-700 dark:text-gray-200 dark:border-slate-700"
+              : "bg-gray-50 hover:bg-gray-100 text-gray-800 border-gray-200 dark:bg-neutral-800 dark:hover:bg-neutral-700 dark:text-gray-200 dark:border-neutral-700"
           }
         `}
       >
@@ -51,7 +51,7 @@ function Warning({ title, text, slug }: WarningProps) {
             : "max-h-0 opacity-0 pointer-events-none"
         }`}
       >
-        <div className="p-4 rounded-2xl bg-gray-50/50 dark:bg-slate-900/50 border border-gray-100 dark:border-slate-800/80 shadow-inner">
+        <div className="p-4 rounded-2xl bg-gray-50/50 dark:bg-neutral-900/50 border border-gray-100 dark:border-neutral-800/80 shadow-inner">
           <p className="text-gray-600 dark:text-gray-300 text-sm leading-relaxed mb-3">
             {text}
           </p>
@@ -62,7 +62,7 @@ function Warning({ title, text, slug }: WarningProps) {
               className="inline-flex items-center text-primary font-semibold hover:underline text-xs group"
             >
               Leer más 
-              <span className="ml-1 transform group-hover:translate-x-0.5 transition-transform">→</span>
+              <span className="ml-1 transform group-hover:tranneutral-x-0.5 transition-transform">→</span>
             </NavLink>
           )}
         </div>

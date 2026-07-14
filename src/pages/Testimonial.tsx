@@ -40,7 +40,11 @@ function Testimonial() {
 
   return (
     <PageTransition>
-      <div className="min-h-screen flex flex-col bg-slate-50/30 dark:bg-slate-950 text-slate-800 dark:text-gray-100 transition-colors duration-300">
+      {/* 
+        LIMPIEZA: El div ahora está limpio. El fondo, color de texto principal y la 
+        transición fluida son manejados automáticamente por el body global.
+      */}
+      <div className="min-h-screen flex flex-col">
         <Header />
 
         {/* CONTENIDO PRINCIPAL */}
@@ -56,13 +60,13 @@ function Testimonial() {
                 <span className="inline-block bg-violet-50 dark:bg-violet-950/40 text-violet-600 dark:text-violet-400 text-xs font-semibold uppercase tracking-wider px-3 py-1.5 rounded-full mb-4">
                   Voces compartidas
                 </span>
-                <h1 className="text-4xl sm:text-6xl font-extrabold tracking-tight text-slate-900 dark:text-white leading-[1.1] mb-4">
+                <h1 className="text-4xl sm:text-6xl font-extrabold tracking-tight text-neutral-900 dark:text-white leading-[1.1] mb-4">
                   Historias de{" "}
                   <span className="bg-gradient-to-r from-indigo-600 to-violet-600 bg-clip-text text-transparent">
                     valentía
                   </span>
                 </h1>
-                <p className="text-lg sm:text-xl text-slate-600 dark:text-slate-400 font-light leading-relaxed">
+                <p className="text-lg sm:text-xl text-neutral-600 dark:text-neutral-400 font-light leading-relaxed">
                   Experiencias reales y anónimas que reflejan procesos profundos de crecimiento, sanación y el camino hacia el bienestar emocional.
                 </p>
               </div>
@@ -73,7 +77,6 @@ function Testimonial() {
           <Section>
             <div className="max-w-7xl mx-auto">
 
-              {/* CORRECCIÓN: Clases separadas correctamente con espacios */}
               <div className="grid gap-6 grid-cols-1 md:grid-cols-2 lg:grid-cols-3 auto-rows-[240px] md:auto-rows-[280px] grid-flow-dense">
                 {testimonials.slice(0, visibleCount).map((testimonial, idx) => {
                   const sizeClasses = getSizeClasses(idx);
@@ -88,7 +91,7 @@ function Testimonial() {
                     <div
                       key={testimonial.id}
                       onClick={() => setSelectedTestimonial(testimonial)}
-                      className={`${sizeClasses} rounded-3xl border border-slate-200/60 bg-white/70 p-6 sm:p-8 dark:border-slate-800/60 dark:bg-slate-900/40 backdrop-blur-md shadow-sm hover:shadow-xl hover:shadow-indigo-500/5 dark:hover:shadow-none transition-all duration-300 cursor-pointer group flex flex-col justify-between overflow-hidden relative`}
+                      className={`${sizeClasses} rounded-3xl border border-neutral-200/60 bg-white/70 p-6 sm:p-8 dark:border-neutral-800/60 dark:bg-neutral-900/40 backdrop-blur-md shadow-sm hover:shadow-xl hover:shadow-indigo-500/5 dark:hover:shadow-none transition-all duration-300 cursor-pointer group flex flex-col justify-between overflow-hidden relative`}
                     >
                       <div className="relative h-full flex flex-col justify-between z-10">
                         <div className="flex flex-col justify-center flex-grow">
@@ -102,19 +105,19 @@ function Testimonial() {
                               {testimonial.category}
                             </span>
                             {testimonial.date && (
-                              <span className="text-xs text-slate-400 dark:text-slate-500 font-light">
+                              <span className="text-xs text-neutral-400 dark:text-neutral-500 font-light">
                                 {testimonial.date}
                               </span>
                             )}
                           </div>
 
                           {/* Ajuste de fuentes: Título más grande para la tarjeta protagonista */}
-                          <h3 className={`font-bold text-slate-900 dark:text-white tracking-tight leading-snug mb-2 group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors ${isProtagonist ? "text-xl sm:text-2xl" : "text-base sm:text-lg"}`}>
+                          <h3 className={`font-bold text-neutral-900 dark:text-white tracking-tight leading-snug mb-2 group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors ${isProtagonist ? "text-xl sm:text-2xl" : "text-base sm:text-lg"}`}>
                             {testimonial.title}
                           </h3>
 
                           {/* Ajuste inteligente de corte de texto por tipo de caja */}
-                          <p className={`text-slate-600 dark:text-slate-400 font-light leading-relaxed mb-4 
+                          <p className={`text-neutral-600 dark:text-neutral-400 font-light leading-relaxed mb-4 
                             ${isProtagonist ? "text-sm sm:text-base line-clamp-6 md:line-clamp-10" : ""}
                             ${isVertical ? "text-sm line-clamp-8 md:line-clamp-11" : ""}
                             ${isHorizontal ? "text-sm line-clamp-3 md:line-clamp-4" : ""}
@@ -125,15 +128,15 @@ function Testimonial() {
                         </div>
 
                         {/* Meta Info del Autor */}
-                        <div className="pt-4 border-t border-slate-100 dark:border-slate-800/60 flex items-center gap-3 bg-white/10 dark:bg-transparent backdrop-blur-sm mt-auto">
-                          <div className="h-9 w-9 rounded-full bg-gradient-to-br from-indigo-500/20 to-violet-500/20 dark:from-indigo-500/10 dark:to-violet-500/10 border border-indigo-100 dark:border-slate-800 flex items-center justify-center text-xs font-bold text-indigo-600 dark:text-indigo-400 uppercase">
+                        <div className="pt-4 border-t border-neutral-100 dark:border-neutral-800/60 flex items-center gap-3 bg-white/10 dark:bg-transparent backdrop-blur-sm mt-auto">
+                          <div className="h-9 w-9 rounded-full bg-gradient-to-br from-indigo-500/20 to-violet-500/20 dark:from-indigo-500/10 dark:to-violet-500/10 border border-indigo-100 dark:border-neutral-800 flex items-center justify-center text-xs font-bold text-indigo-600 dark:text-indigo-400 uppercase">
                             {testimonial.author?.name ? testimonial.author.name.charAt(0) : "A"}
                           </div>
                           <div>
-                            <h4 className="text-xs font-bold text-slate-900 dark:text-white">
+                            <h4 className="text-xs font-bold text-neutral-900 dark:text-white">
                               {testimonial.author?.name || "Anónimo"}
                             </h4>
-                            <p className="text-[11px] text-slate-400 dark:text-slate-500 font-light">
+                            <p className="text-[11px] text-neutral-400 dark:text-neutral-500 font-light">
                               {testimonial.author?.role || "Testimonio Verificado"}
                             </p>
                           </div>

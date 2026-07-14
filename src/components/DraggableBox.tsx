@@ -68,7 +68,7 @@ function DraggableBox({
   return (
     <motion.div
       ref={constraintsRef}
-      className="border border-dashed border-gray-200 dark:border-slate-800/80 shadow-inner flex items-center justify-center transition-colors duration-300"
+      className="border border-dashed border-gray-200 dark:border-neutral-800/80 shadow-inner flex items-center justify-center transition-colors duration-300"
       style={{
         width,
         height,

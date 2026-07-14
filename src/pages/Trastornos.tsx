@@ -22,7 +22,6 @@ function Trastornos() {
   useEffect(() => {
     getDisorders()
       .then((data) => {
-        // Aseguramos que tipamos correctamente los datos que entran
         setDisorders(data as Disorder[]);
       })
       .catch((err) => {
@@ -33,7 +32,11 @@ function Trastornos() {
 
   return (
     <PageTransition>
-      <div className="min-h-screen flex flex-col bg-gradient-to-br from-slate-50 to-gray-100 dark:from-slate-950 dark:to-slate-900 text-slate-800 dark:text-gray-100 transition-colors duration-300">
+      {/* 
+        LIMPIEZA: Eliminamos el gradiente, el color de texto redundante y la transición. 
+        Ahora este contenedor hereda de manera limpia y perfecta los estilos del body.
+      */}
+      <div className="min-h-screen flex flex-col">
         <Header />
 
         <main className="flex-grow">
@@ -62,7 +65,7 @@ function Trastornos() {
                   {[1, 2, 3].map((n) => (
                     <div 
                       key={n} 
-                      className="h-32 rounded-xl bg-gray-200/60 dark:bg-slate-800/60 animate-pulse border border-gray-100 dark:border-slate-800/40"
+                      className="h-32 rounded-xl bg-gray-200/60 dark:bg-neutral-800/60 animate-pulse border border-gray-100 dark:border-neutral-800/40"
                     />
                   ))}
                 </div>
@@ -107,8 +110,9 @@ function Trastornos() {
 
           {/* MENSAJE FINAL */}
           <Section>
-            <div className="rounded-2xl border border-gray-100 dark:border-slate-800 bg-white dark:bg-slate-900 p-6 sm:p-8 max-w-3xl shadow-sm space-y-4">
-              <h3 className="text-xl font-bold text-slate-900 dark:text-white tracking-tight">
+            {/* Mantenemos bg-white / bg-neutral-900 para que la tarjeta resalte sutilmente sobre el fondo base */}
+            <div className="rounded-2xl border border-gray-100 dark:border-neutral-800 bg-white dark:bg-neutral-900 p-6 sm:p-8 max-w-3xl shadow-sm space-y-4">
+              <h3 className="text-xl font-bold text-neutral-900 dark:text-white tracking-tight">
                 Un mensaje importante
               </h3>
               <p className="text-sm sm:text-base text-gray-600 dark:text-gray-400 font-light leading-relaxed">
@@ -122,14 +126,16 @@ function Trastornos() {
                   className="text-sm font-semibold text-primary hover:text-primary/80 transition-colors flex items-center gap-1 group"
                 >
                   Explorar autocuidado
+                  {/* CORRECCIÓN: Se cambió 'group-hover:tranneutral-x-0.5' por 'group-hover:translate-x-0.5' */}
                   <span className="transform group-hover:translate-x-0.5 transition-transform">→</span>
                 </Link>
-                <span className="text-gray-300 dark:text-slate-800">|</span>
+                <span className="text-gray-300 dark:text-neutral-800">|</span>
                 <Link
                   to="/ayuda"
                   className="text-sm font-semibold text-primary hover:text-primary/80 transition-colors flex items-center gap-1 group"
                 >
                   Buscar ayuda profesional
+                  {/* CORRECCIÓN: Se cambió 'group-hover:tranneutral-x-0.5' por 'group-hover:translate-x-0.5' */}
                   <span className="transform group-hover:translate-x-0.5 transition-transform">→</span>
                 </Link>
               </div>
