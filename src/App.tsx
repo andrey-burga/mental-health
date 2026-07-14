@@ -16,6 +16,8 @@ const Testimonial = lazy(() => import("./pages/Testimonial"));
 const Contact = lazy(() => import("./pages/Contact"));
 const FactoresRiesgo = lazy(() => import("./pages/FactoresDeRiesgo"));
 const Terms = lazy(() => import("./pages/TermsConditions"));
+const ProtectedRoute = lazy(() => import("./components/ProtectedRoute"));
+const Dashboard = lazy(() => import("./pages/Dashboard"));
 
 import NotFound from "./pages/NotFound";
 import Login from "./pages/Login";
@@ -36,6 +38,10 @@ function App() {
           <Route path="/ayuda" element={<Help />} />
           <Route path="/articulos" element={<Articulos />} />
           <Route path="/testimonios" element={<Testimonial />} />
+
+          <Route element={<ProtectedRoute />}>
+            <Route path="/dashboard" element={<Dashboard />} />
+          </Route>
           <Route path="/contacto" element={<Contact />} />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />

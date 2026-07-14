@@ -1,15 +1,15 @@
+import api from "./axios"; // 👈 Importamos nuestra instancia centralizada
 import { Disorder } from "../types/disorder";
 
-const API_URL = import.meta.env.VITE_API_URL;
-
+// GET /api/disorders (FastAPI tiene este endpoint en "/api/disorders")
 export async function getDisorders(): Promise<Disorder[]> {
-  const res = await fetch(`${API_URL}/disorders`);
-  if (!res.ok) throw new Error("Error fetching disorders");
-  return (await res.json()) as Disorder[];
+  // Axios ya resuelve la respuesta a JSON automáticamente y la guarda en '.data'
+  const { data } = await api.get<Disorder[]>("/api/disorders");
+  return data;
 }
 
+// GET /api/disorders/slug/{slug} (FastAPI lo tiene en "/api/disorders/slug/{slug}")
 export async function getDisorderBySlug(slug: string): Promise<Disorder> {
-  const res = await fetch(`${API_URL}/disorders/${slug}`);
-  if (!res.ok) throw new Error("Error fetching disorder");
-  return res.json();
+  const { data } = await api.get<Disorder>(`/api/disorders/slug/${slug}`);
+  return data;
 }

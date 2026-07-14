@@ -1,13 +1,48 @@
-import React, { FormEvent } from "react";
-import { Link } from "react-router-dom";
+import React, { FormEvent, useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import PageTransition from "../components/PageTransition";
 import Header from "../components/Header";
 import IMG from "../resources/Login.png";
+import { loginUser } from "../services/auth";
 
 function Login() {
-  const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
+  const navigate = useNavigate();
+
+  // 1. Estados para el formulario y el control de UI
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [rememberMe, setRememberMe] = useState(false);
+  
+  const [error, setError] = useState<string | null>(null);
+  const [loading, setLoading] = useState(false);
+
+  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    // Aquí irá tu lógica de autenticación futura
+    setError(null);
+    setLoading(true);
+
+    try {
+      // 2. Llamada al endpoint de login
+      const response = await loginUser({ email, password });
+      
+      // 3. Almacenamiento seguro del token
+      // Si el usuario marca "Recordarme", usamos localStorage (persiste tras cerrar el navegador).
+      // Si no, usamos sessionStorage (se borra al cerrar la pestaña).
+      const storage = rememberMe ? localStorage : sessionStorage;
+      storage.setItem("token", response.access_token);
+      
+      // Opcional: También puedes guardar los datos básicos del usuario
+      storage.setItem("user", JSON.stringify(response.user));
+
+      // Redirigir al dashboard o ruta principal de la aplicación
+      navigate("/dashboard");
+    } catch (err: any) {
+      // Capturamos el error detallado que configuramos en FastAPI
+      const message = err.response?.data?.detail || "Error al intentar iniciar sesión. Por favor, verifica tus datos.";
+      setError(message);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -25,7 +60,7 @@ function Login() {
 
             <div className="grid md:grid-cols-2 items-stretch">
 
-              {/* Imagen lado izquierdo (Corregido: añadida la clase h-full absoluta para que no queden líneas blancas) */}
+              {/* Imagen lado izquierdo */}
               <div className="relative hidden md:block overflow-hidden h-full min-h-[550px]">
                 <div className="absolute inset-0 bg-gradient-to-t from-neutral-950/80 via-neutral-950/30 to-transparent z-10" />
                 <img
@@ -62,15 +97,23 @@ function Login() {
                     </p>
                   </div>
 
+                  {/* Alerta de Error */}
+                  {error && (
+                    <div className="bg-red-50 dark:bg-red-950/30 border border-red-200 dark:border-red-900/50 text-red-600 dark:text-red-400 text-xs p-3.5 rounded-xl font-medium leading-relaxed">
+                      ⚠️ {error}
+                    </div>
+                  )}
+
                   {/* Email */}
                   <div className="space-y-1.5">
                     <label className="text-xs font-semibold uppercase tracking-wider text-neutral-500 dark:text-neutral-400">
                       Correo electrónico
                     </label>
                     <input
-                      name="email"
                       type="email"
                       required
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
                       placeholder="ejemplo@correo.com"
                       className="w-full text-sm bg-neutral-50 dark:bg-neutral-800 text-neutral-900 dark:text-white border border-neutral-200 dark:border-neutral-700/80 rounded-xl px-4 py-2.5 outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 transition-all dark:focus:border-indigo-400"
                     />
@@ -90,9 +133,10 @@ function Login() {
                       </Link>
                     </div>
                     <input
-                      name="password"
                       type="password"
                       required
+                      value={password}
+                      onChange={(e) => setPassword(e.target.value)}
                       placeholder="••••••••"
                       className="w-full text-sm bg-neutral-50 dark:bg-neutral-800 text-neutral-900 dark:text-white border border-neutral-200 dark:border-neutral-700/80 rounded-xl px-4 py-2.5 outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 transition-all dark:focus:border-indigo-400"
                     />
@@ -103,9 +147,11 @@ function Login() {
                     <input
                       id="remember-me"
                       type="checkbox"
-                      className="h-4 w-4 rounded border-neutral-300 dark:border-neutral-700 text-indigo-600 focus:ring-indigo-500 dark:bg-neutral-800 dark:checked:bg-indigo-500"
+                      checked={rememberMe}
+                      onChange={(e) => setRememberMe(e.target.checked)}
+                      className="h-4 w-4 rounded border-neutral-300 dark:border-neutral-700 text-indigo-600 focus:ring-indigo-500 dark:bg-neutral-800 dark:checked:bg-indigo-500 cursor-pointer"
                     />
-                    <label htmlFor="remember-me" className="text-neutral-600 dark:text-neutral-400 ml-2.5 text-sm select-none">
+                    <label htmlFor="remember-me" className="text-neutral-600 dark:text-neutral-400 ml-2.5 text-sm select-none cursor-pointer">
                       Recordarme en este dispositivo
                     </label>
                   </div>
@@ -114,9 +160,10 @@ function Login() {
                   <div className="pt-2">
                     <button
                       type="submit"
-                      className="w-full shadow-lg shadow-indigo-500/10 py-3 px-4 text-sm font-semibold rounded-xl text-white bg-gradient-to-r from-indigo-600 to-violet-600 hover:opacity-95 active:scale-[0.98] transition-all duration-150"
+                      disabled={loading}
+                      className="w-full shadow-lg shadow-indigo-500/10 py-3 px-4 text-sm font-semibold rounded-xl text-white bg-gradient-to-r from-indigo-600 to-violet-600 hover:opacity-95 active:scale-[0.98] transition-all duration-150 disabled:opacity-75 disabled:cursor-not-allowed"
                     >
-                      Ingresar
+                      {loading ? "Iniciando sesión..." : "Ingresar"}
                     </button>
 
                     <p className="text-neutral-500 dark:text-neutral-400 text-sm text-center mt-6">
