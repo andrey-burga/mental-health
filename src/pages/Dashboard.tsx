@@ -30,7 +30,7 @@ const tools: ToolCard[] = [
     title: "Respiración Guiada",
     description: "Tómate 3 minutos para calmar tu sistema nervioso con nuestro ejercicio de respiración cuadrada de ritmo constante.",
     icon: "🧘‍♂️",
-    actionText: "Iniciar sesión",
+    actionText: "Iniciar respiración", // 👈 Texto corregido
     to: "/respiracion",
   },
   {
@@ -40,7 +40,7 @@ const tools: ToolCard[] = [
     badge: "Nuevo",
     badgeColor: "bg-primary/10 text-primary border-primary/20",
     actionText: "Ver mis hábitos",
-    to: "/autocuidado",
+    to: "/autocuidadoPage",
   },
   {
     title: "Biblioteca de Sonidos",

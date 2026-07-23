@@ -4,15 +4,17 @@ import PageTransition from "../components/PageTransition";
 import Header from "../components/Header";
 import IMG from "../resources/Login.png";
 import { loginUser } from "../services/auth";
+import { useAuth } from "../context/AuthContext";
 
 function Login() {
   const navigate = useNavigate();
+  const { login } = useAuth();
 
   // 1. Estados para el formulario y el control de UI
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [rememberMe, setRememberMe] = useState(false);
-  
+
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
 
@@ -24,18 +26,23 @@ function Login() {
     try {
       // 2. Llamada al endpoint de login
       const response = await loginUser({ email, password });
-      
+      login(
+        response.access_token,
+        response.user,
+        rememberMe
+      );
+      navigate("/dashboard");
+
       // 3. Almacenamiento seguro del token
       // Si el usuario marca "Recordarme", usamos localStorage (persiste tras cerrar el navegador).
       // Si no, usamos sessionStorage (se borra al cerrar la pestaña).
       const storage = rememberMe ? localStorage : sessionStorage;
       storage.setItem("token", response.access_token);
-      
+
       // Opcional: También puedes guardar los datos básicos del usuario
       storage.setItem("user", JSON.stringify(response.user));
 
       // Redirigir al dashboard o ruta principal de la aplicación
-      navigate("/dashboard");
     } catch (err: any) {
       // Capturamos el error detallado que configuramos en FastAPI
       const message = err.response?.data?.detail || "Error al intentar iniciar sesión. Por favor, verifica tus datos.";
