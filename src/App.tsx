@@ -18,6 +18,13 @@ const FactoresRiesgo = lazy(() => import("./pages/FactoresDeRiesgo"));
 const Terms = lazy(() => import("./pages/TermsConditions"));
 const ProtectedRoute = lazy(() => import("./components/ProtectedRoute"));
 const Dashboard = lazy(() => import("./pages/Dashboard"));
+const DiarioPage = lazy(() => import("./pages/DiarioPage"));
+const RespiracionPage = lazy(() => import("./pages/RespiracionPage"));
+const AutocuidadoPage = lazy(() => import("./pages/AutocuidadoPage"));
+const SonidosPage = lazy(() => import("./pages/SonidosPage"));
+
+const ForgotPassword = lazy(() => import("./pages/ForgotPassword"));
+const ResetPassword = lazy(() => import("./pages/ResetPassword"));
 
 import NotFound from "./pages/NotFound";
 import Login from "./pages/Login";
@@ -38,9 +45,14 @@ function App() {
           <Route path="/ayuda" element={<Help />} />
           <Route path="/articulos" element={<Articulos />} />
           <Route path="/testimonios" element={<Testimonial />} />
-
+          <Route path="/forgot-password" element={<ForgotPassword />} />
+          <Route path="/reset-password" element={<ResetPassword />} />
           <Route element={<ProtectedRoute />}>
             <Route path="/dashboard" element={<Dashboard />} />
+            <Route path="/diario" element={<DiarioPage />} />
+            <Route path="/respiracion" element={<RespiracionPage />} />
+            <Route path="/autocuidadoPage" element={<AutocuidadoPage />} />
+            <Route path="/sonidos" element={<SonidosPage />} />
           </Route>
           <Route path="/contacto" element={<Contact />} />
           <Route path="/login" element={<Login />} />

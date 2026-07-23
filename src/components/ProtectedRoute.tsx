@@ -1,23 +1,21 @@
+import React from "react";
 import { Navigate, Outlet } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
+import PageLoader from "../components/PageLoader";
 
 export default function ProtectedRoute() {
   const { isAuthenticated, isLoading } = useAuth();
 
-  // Mientras leemos si hay token en localStorage, mostramos un spinner estético
+  // 1. Reutilizamos tu PageLoader premium para mantener coherencia estética
   if (isLoading) {
-    return (
-      <div className="flex h-screen w-screen items-center justify-center bg-white dark:bg-neutral-950">
-        <div className="h-8 w-8 animate-spin rounded-full border-4 border-indigo-600 border-t-transparent dark:border-indigo-400" />
-      </div>
-    );
+    return <PageLoader fullScreen={true} />;
   }
 
-  // Si no está autenticado, lo redirigimos al login
+  // 2. Si no está autenticado, redirigimos al login de forma segura
   if (!isAuthenticated) {
     return <Navigate to="/login" replace />;
   }
 
-  // Si está autenticado, renderizamos la ruta hija (el Dashboard)
+  // 3. Si está autenticado, renderizamos las rutas protegidas (ej. el Dashboard)
   return <Outlet />;
 }
