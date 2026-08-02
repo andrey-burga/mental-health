@@ -1,23 +1,13 @@
 import { useState, useEffect } from "react";
-
-export interface ArticleType {
-    id: string;
-    slug: string;
-    title: string;
-    description: string;
-    excerpt: string;
-    content: string;
-    category: string;
-    published_at: string;
-    author_id?: string | null;
-}
+import { ArticleType } from "../pages/Articulos"; // O desde tu archivo de tipos compartido
+import { createArticle, updateArticle } from "../services/articlesServices";
 
 interface ArticleFormModalProps {
     isOpen: boolean;
     articleToEdit: ArticleType | null;
     onClose: () => void;
     onSuccess: () => void;
-    token: string; // Token de autenticación
+    token: string;
 }
 
 export default function ArticleFormModal({
@@ -41,7 +31,6 @@ export default function ArticleFormModal({
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
 
-    // Cargar datos en el formulario si se pasa un artículo a editar
     useEffect(() => {
         if (articleToEdit) {
             setFormData({
@@ -53,7 +42,6 @@ export default function ArticleFormModal({
                 content: articleToEdit.content,
             });
         } else {
-            // Limpiar datos si es creación
             setFormData({
                 title: "",
                 slug: "",
@@ -65,7 +53,6 @@ export default function ArticleFormModal({
         }
     }, [articleToEdit, isOpen]);
 
-    // Generador automático de slug básico al escribir el título
     const handleTitleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const title = e.target.value;
         const generatedSlug = title
@@ -78,7 +65,7 @@ export default function ArticleFormModal({
         setFormData((prev) => ({
             ...prev,
             title,
-            slug: articleToEdit ? prev.slug : generatedSlug, // Solo autogenera si es nuevo
+            slug: articleToEdit ? prev.slug : generatedSlug,
         }));
     };
 
@@ -87,30 +74,20 @@ export default function ArticleFormModal({
         setLoading(true);
         setError(null);
 
-        const url = isEdit
-            ? `http://localhost:8000/api/articles/${articleToEdit?.id}`
-            : "http://localhost:8000/api/articles";
-        const method = isEdit ? "PATCH" : "POST";
-
         try {
-            const response = await fetch(url, {
-                method,
-                headers: {
-                    "Content-Type": "application/json",
-                    Authorization: `Bearer ${token}`, // Pasa tu Bearer token
-                },
-                body: JSON.stringify(formData),
-            });
-
-            if (!response.ok) {
-                const errData = await response.json();
-                throw new Error(errData.detail || "Error al procesar la solicitud");
+            if (isEdit && articleToEdit) {
+                await updateArticle(articleToEdit.id, formData, token);
+            } else {
+                await createArticle(formData, token);
             }
 
-            onSuccess(); // Recarga la lista o ejecuta callback
-            onClose();   // Cierra el modal
+            onSuccess();
+            onClose();
         } catch (err: any) {
-            setError(err.message);
+            // Axios guarda la respuesta de error del backend en err.response?.data
+            const errorMsg =
+                err.response?.data?.detail || err.message || "Error al procesar la solicitud";
+            setError(errorMsg);
         } finally {
             setLoading(false);
         }

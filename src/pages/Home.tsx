@@ -8,25 +8,33 @@ import StatsCard from "../components/StatsCard";
 import Footer from "../components/Footer";
 import PageTransition from "../components/PageTransition";
 
-// Mantenemos solo la data que aún sea estática (Stats y Recurso de autocuidado)
+// Data estática necesaria (Stats y Recursos de autocuidado)
 import {
-  mentalHealthIntro,
   wellbeingResources,
   mentalHealthStats,
 } from "../data/homeContent";
 
-// Servicio dinámico para traer artículos/testimonios de la API
+import { DailyReflection } from "../types/reflections";
+
+// Servicios dinámicos para la API
 import { testimonialService } from "../services/testimonialService";
+// IMPORTANTE: Asegúrate de importar tu servicio para las reflexiones, por ejemplo:
+import { getDailyReflection } from "../services/reflectionsServices";
 
 export default function Home() {
   const [articles, setArticles] = useState<any[]>([]);
   const [isLoadingArticles, setIsLoadingArticles] = useState(true);
 
-  // Cargar artículos/historias desde la API
+  // Estados para la reflexión diaria dinámica usando tu interfaz
+  const [dailyReflection, setDailyReflection] = useState<DailyReflection | null>(null);
+  const [isLoadingReflection, setIsLoadingReflection] = useState(true);
+
+  // Cargar artículos y reflexión diaria desde la API
   useEffect(() => {
-    const fetchArticles = async () => {
+    const fetchData = async () => {
+      // 1. Cargar artículos
       try {
-        const data = await testimonialService.getAll(0, 3); // Traer los últimos 3
+        const data = await testimonialService.getAll(0, 3);
         setArticles(data);
       } catch (err) {
         console.error("Error al cargar artículos de la Home:", err);
@@ -35,7 +43,21 @@ export default function Home() {
       }
     };
 
-    fetchArticles();
+    const fetchDailyReflection = async () => {
+      // 2. Cargar reflexión diaria
+      try {
+        const reflectionData = await getDailyReflection();
+        setDailyReflection(reflectionData);
+      } catch (err) {
+        console.error("Error al cargar la reflexión diaria:", err);
+      } finally {
+        setIsLoadingReflection(false);
+      }
+    };
+
+    // Ejecutamos ambas de forma concurrente (en paralelo)
+    fetchData();
+    fetchDailyReflection();
   }, []);
 
   return (
@@ -81,17 +103,31 @@ export default function Home() {
                 </div>
               </div>
 
-              {/* Tarjeta Visual de Reflexión */}
+              {/* Tarjeta Visual de Reflexión Dinámica */}
               <div className="w-full max-w-md lg:w-[440px] flex-shrink-0 relative">
                 <div className="absolute inset-0 bg-gradient-to-tr from-indigo-500 to-violet-500 rounded-3xl opacity-10 blur-xl dark:opacity-20" />
-                <div className="relative rounded-3xl border border-neutral-200/80 bg-white/80 p-6 backdrop-blur-md dark:border-neutral-800/80 dark:bg-neutral-950/80 shadow-xl">
-                  <div className="flex items-center gap-3 mb-4">
+                <div className="relative rounded-3xl border border-neutral-200/80 bg-white/80 p-6 backdrop-blur-md dark:border-neutral-800/80 dark:bg-neutral-950/80 shadow-xl space-y-3">
+                  <div className="flex items-center gap-3">
                     <div className="h-3 w-3 rounded-full bg-emerald-500 animate-pulse" />
                     <span className="text-xs font-semibold text-neutral-500 uppercase tracking-wider">Reflexión diaria</span>
                   </div>
-                  <p className="text-neutral-700 dark:text-neutral-300 font-serif italic text-base sm:text-lg leading-relaxed">
-                    "{mentalHealthIntro?.paragraphs?.[0] || "El autocuidado es el primer paso hacia el bienestar."}"
-                  </p>
+
+                  {isLoadingReflection ? (
+                    <p className="text-neutral-400 dark:text-neutral-600 text-sm font-light animate-pulse">
+                      Cargando reflexión de hoy...
+                    </p>
+                  ) : (
+                    <>
+                      <p className="text-neutral-700 dark:text-neutral-300 font-serif italic text-base sm:text-lg leading-relaxed">
+                        "{dailyReflection?.phrase || "El autocuidado es el primer paso hacia el bienestar."}"
+                      </p>
+                      {dailyReflection?.author && (
+                        <span className="block text-xs text-neutral-500 dark:text-neutral-400 font-medium text-right">
+                          — {dailyReflection.author}
+                        </span>
+                      )}
+                    </>
+                  )}
                 </div>
               </div>
             </div>
@@ -160,7 +196,6 @@ export default function Home() {
               ) : (
                 <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
                   {articles.map((article) => {
-                    // Mapeo seguro de campos por si vienen como Objetos desde la API
                     const authorName = typeof article.author === "object" ? article.author?.name : article.author || "Anónimo";
                     const categoryName = typeof article.category === "object" ? article.category?.name : article.category || "General";
 
@@ -168,9 +203,9 @@ export default function Home() {
                       <ArticleCard
                         key={article.id}
                         title={article.title}
-                        description={article.excerpt}  // Mapeas excerpt a description
-                        date={article.created_at}      // Mapeas created_at a date
-                        datetime={article.created_at}  // O la fecha formateada
+                        description={article.excerpt}
+                        date={article.created_at}
+                        datetime={article.created_at}
                         category={categoryName}
                         author={authorName}
                       />

@@ -1,11 +1,3 @@
-export const mentalHealthIntro = {
-  title: "¿Qué es la salud mental?",
-  paragraphs: [
-    "La salud mental tiene que ver con cómo te sientes, cómo piensas y cómo manejas tu día a día. Influye en cómo enfrentas el estrés, cómo te relacionas con otras personas, cómo tomas decisiones y cómo te desarrollas en el estudio, el trabajo y la vida en general. No se trata solo de “no estar enfermo”. Todos tenemos salud mental, y esta puede cambiar con el tiempo: hay momentos en los que nos sentimos bien y otros en los que cuesta más.",
-    "Cuidar la salud mental es un derecho y una necesidad, no un lujo. Es clave para tu bienestar personal y también para la convivencia en sociedad. Hoy en día, muchos jóvenes viven ansiedad, depresión, agotamiento o problemas relacionados con el consumo de sustancias. Aun así, muchas personas no reciben ayuda por falta de recursos, miedo al qué dirán o desinformación. Hablar del tema y buscar apoyo puede marcar una gran diferencia.",
-  ],
-};  
-
 export const helpResources = [
   {
     id: "self-awareness",
@@ -99,6 +91,7 @@ export const mentalHealthStats = [
     id: "prevalence",
     count: "1 de cada 4",
     title: "Personas",
+
     description:
       "Experimentará un problema de salud mental en algún momento de su vida.",
   },

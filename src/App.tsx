@@ -25,6 +25,7 @@ const SonidosPage = lazy(() => import("./pages/SonidosPage"));
 
 const ForgotPassword = lazy(() => import("./pages/ForgotPassword"));
 const ResetPassword = lazy(() => import("./pages/ResetPassword"));
+const Privacy = lazy(() => import("./pages/Privacy"));
 
 import NotFound from "./pages/NotFound";
 import Login from "./pages/Login";
@@ -59,6 +60,7 @@ function App() {
           <Route path="/register" element={<Register />} />
           <Route path="/factores-riesgo" element={<FactoresRiesgo />} />
           <Route path="/terms" element={<Terms />} />
+          <Route path="/privacy" element={<Privacy />} />
 
           <Route path="*" element={<NotFound />} />
         </Routes>
