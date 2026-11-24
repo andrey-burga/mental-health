@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import { Link } from "react-router-dom";
 import Header from "../components/Header";
-import Section from "../components/Section";
 import Footer from "../components/Footer";
 import PageTransition from "../components/PageTransition";
 import ClinicalDisclaimer from "../components/ClinicalDisclaimer";
@@ -89,7 +88,7 @@ export default function DiarioPage() {
     }
   }, [user]);
 
-  // Evaluación determinista en tiempo real (sin latencia, evitando reabrir en bucle si el usuario ya cerró ese mismo nivel)
+  // Evaluación determinista en tiempo real
   useEffect(() => {
     const result = detectCrisisSignals(entry);
     if (result.riskLevel === "none") {
@@ -133,7 +132,6 @@ export default function DiarioPage() {
     );
   };
 
-  // Guardar nueva entrada
   const handleSave = async () => {
     const trimmedText = entry.trim();
     if (!trimmedText) return;
@@ -179,7 +177,7 @@ export default function DiarioPage() {
     setEntry("");
     lastAcknowledgedRiskRef.current = "none";
 
-    // Análisis emocional Opt-In con IA (solo si el usuario activó el consentimiento y no hay crisis determinista previa)
+    // Análisis emocional Opt-In con IA
     if (aiConsent && detection.riskLevel === "none") {
       setIsAnalyzingMood(true);
       setAiErrorNotice(null);
@@ -231,14 +229,12 @@ export default function DiarioPage() {
     setHabitAdded(true);
   };
 
-  // Eliminar entrada individual
   const handleDelete = (id: string) => {
     const updated = entries.filter((e) => e.id !== id);
     setEntries(updated);
     saveUserJournalEntries(user, updated);
   };
 
-  // Eliminar todos los datos locales con confirmación visual
   const handleConfirmClearAll = () => {
     clearUserLocalData(user);
     setEntries([]);
@@ -249,485 +245,511 @@ export default function DiarioPage() {
     );
   };
 
-  // Insertar prompt al escribir
   const handleUsePrompt = (promptText: string) => {
     setEntry((prev) => (prev ? `${prev}\n\n${promptText} ` : `${promptText} `));
   };
 
   return (
     <PageTransition>
-      <div className="min-h-screen flex flex-col bg-gradient-to-br from-slate-50 to-emerald-50/20 dark:from-slate-950 dark:to-slate-900 text-slate-800 dark:text-gray-100 transition-colors duration-300">
+      <div className="min-h-screen flex flex-col bg-neutral-50 dark:bg-neutral-950 text-neutral-900 dark:text-neutral-100 transition-colors duration-300 relative overflow-x-clip">
+        <div
+          aria-hidden="true"
+          className="pointer-events-none fixed inset-x-0 top-16 -z-0 flex justify-between overflow-hidden"
+        >
+          <div className="h-72 w-72 -translate-x-1/3 rounded-full bg-indigo-400/10 blur-3xl dark:bg-indigo-500/5" />
+          <div className="h-72 w-72 translate-x-1/3 rounded-full bg-teal-400/10 blur-3xl dark:bg-teal-500/5" />
+        </div>
+
         <Header />
 
-        <main className="flex-grow">
-          <Section>
-            <div className="max-w-3xl mx-auto space-y-6">
-              {/* Encabezado */}
-              <div>
-                <span className="text-xs font-bold uppercase tracking-wider text-emerald-600 dark:text-emerald-400 bg-emerald-500/10 px-3 py-1 rounded-full">
-                  Expresión & Reflexión
-                </span>
-                <h1 className="mt-3 text-3xl sm:text-4xl font-extrabold text-slate-900 dark:text-white">
-                  Diario de Emociones
-                </h1>
-                <p className="mt-2 text-slate-600 dark:text-slate-400">
-                  Escribir libera la carga mental. Tómate este espacio para plasmar tus pensamientos sin juicios.
+        <main className="flex-grow relative z-10">
+          <div className="mx-auto max-w-3xl px-4 sm:px-6 lg:px-8 py-10 sm:py-12 space-y-6">
+            {/* Encabezado editorial */}
+            <div className="space-y-2 border-b border-neutral-200/80 dark:border-neutral-800 pb-6">
+              <div className="flex items-center justify-between gap-4 flex-wrap">
+                <p className="text-xs font-semibold uppercase tracking-wider text-indigo-600 dark:text-indigo-400">
+                  Expresión y reflexión
                 </p>
+                <Link
+                  to="/dashboard"
+                  className="text-xs font-semibold text-neutral-500 hover:text-neutral-900 dark:text-neutral-400 dark:hover:text-white transition-colors"
+                >
+                  ← Volver a Mi Espacio
+                </Link>
               </div>
+              <h1 className="text-3xl sm:text-4xl font-extrabold tracking-tight text-neutral-900 dark:text-white">
+                Diario Emocional
+              </h1>
+              <p className="text-sm sm:text-base text-neutral-600 dark:text-neutral-400 leading-relaxed">
+                Escribir libera la carga mental. Tómate este espacio privado para plasmar tus pensamientos sin juicios.
+              </p>
+            </div>
 
-              {/* Aviso Clínico Contextual */}
-              <ClinicalDisclaimer compact />
+            {/* Aviso Clínico Contextual */}
+            <ClinicalDisclaimer compact />
 
-              {/* Barra de Privacidad y Modo Efímero */}
-              <div className="rounded-2xl border border-slate-200/80 dark:border-slate-800 bg-white/80 dark:bg-slate-900/70 p-4 sm:p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-                <div className="space-y-1">
-                  <div className="flex items-center gap-2">
-                    <span className="text-sm font-bold text-slate-900 dark:text-white">
-                      Modo Efímero (No guardar en este dispositivo)
-                    </span>
+            {/* Barra de Privacidad y Modo Efímero */}
+            <div className="rounded-2xl border border-neutral-200/80 dark:border-neutral-800 bg-white dark:bg-neutral-900/70 p-5 shadow-sm flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+              <div className="space-y-1">
+                <div className="flex items-center gap-2 flex-wrap">
+                  <span className="text-sm font-bold text-neutral-900 dark:text-white">
+                    Modo Efímero (no guardar en este dispositivo)
+                  </span>
+                  <span className="text-xs font-medium text-neutral-500 dark:text-neutral-400">
+                    ·{" "}
                     <span
-                      className={`text-[10px] font-semibold uppercase tracking-wider px-2 py-0.5 rounded-md ${
+                      className={
                         ephemeralMode
-                          ? "bg-teal-100 text-teal-800 dark:bg-teal-950/60 dark:text-teal-300"
-                          : "bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-400"
-                      }`}
+                          ? "text-teal-700 dark:text-teal-400 font-semibold"
+                          : "text-neutral-500 dark:text-neutral-400"
+                      }
                     >
                       {ephemeralMode ? "Activo" : "Inactivo"}
                     </span>
-                  </div>
-                  <p className="text-xs text-slate-500 dark:text-slate-400">
-                    {ephemeralMode
-                      ? "Tus textos permanecerán únicamente en memoria temporal y desaparecerán al cerrar la pestaña."
-                      : `Tus entradas se almacenan aisladas exclusivamente para ${user?.name || "tu cuenta"} en este navegador.`}
-                  </p>
+                  </span>
                 </div>
+                <p className="text-xs text-neutral-600 dark:text-neutral-400 leading-relaxed">
+                  {ephemeralMode
+                    ? "Tus textos permanecerán únicamente en memoria temporal y desaparecerán al cerrar la pestaña."
+                    : `Tus entradas se almacenan aisladas exclusivamente para ${
+                        user?.name || "tu cuenta"
+                      } en este navegador.`}
+                </p>
+              </div>
 
+              <button
+                type="button"
+                role="switch"
+                aria-checked={ephemeralMode}
+                onClick={handleToggleEphemeral}
+                className={`relative inline-flex h-7 w-12 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-indigo-500/40 ${
+                  ephemeralMode
+                    ? "bg-teal-600"
+                    : "bg-neutral-300 dark:bg-neutral-700"
+                }`}
+              >
+                <span className="sr-only">Activar Modo Efímero</span>
+                <span
+                  className={`pointer-events-none inline-block h-6 w-6 transform rounded-full bg-white shadow transition duration-200 ${
+                    ephemeralMode ? "translate-x-5" : "translate-x-0"
+                  }`}
+                />
+              </button>
+            </div>
+
+            {statusMessage && (
+              <div
+                role="status"
+                className="rounded-xl border border-teal-200 dark:border-teal-900/50 bg-teal-50/70 dark:bg-teal-950/30 px-4 py-3 text-xs sm:text-sm text-teal-900 dark:text-teal-300 flex items-center justify-between gap-3"
+              >
+                <span>{statusMessage}</span>
                 <button
                   type="button"
+                  onClick={() => setStatusMessage(null)}
+                  className="text-teal-800 dark:text-teal-300 hover:opacity-75 text-xs font-semibold cursor-pointer"
+                >
+                  Cerrar
+                </button>
+              </div>
+            )}
+
+            {/* Contenedor Principal de Escritura */}
+            <div className="rounded-2xl border border-neutral-200/80 dark:border-neutral-800 bg-white dark:bg-neutral-900/70 p-6 shadow-sm space-y-5">
+              {/* Selector de Ánimo */}
+              <div>
+                <label className="text-xs font-semibold text-neutral-500 dark:text-neutral-400 uppercase tracking-wider block mb-2.5">
+                  ¿Cómo te sientes en este momento?
+                </label>
+                <div className="flex flex-wrap gap-2">
+                  {MOODS.map((m) => (
+                    <button
+                      key={m.label}
+                      type="button"
+                      onClick={() => setSelectedMood(m.emoji)}
+                      className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl border text-sm transition-colors cursor-pointer ${
+                        selectedMood === m.emoji
+                          ? "bg-indigo-50 dark:bg-indigo-950/50 border-indigo-500 text-indigo-700 dark:text-indigo-300 font-semibold"
+                          : "border-neutral-200 dark:border-neutral-800 text-neutral-700 dark:text-neutral-300 hover:border-neutral-300 dark:hover:border-neutral-700"
+                      }`}
+                    >
+                      <span>{m.emoji}</span>
+                      <span>{m.label}</span>
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* Prompts Sugeridos */}
+              <div>
+                <span className="text-xs text-neutral-500 dark:text-neutral-400 block mb-2">
+                  Presiona una idea si no sabes qué escribir:
+                </span>
+                <div className="flex gap-2 overflow-x-auto pb-1 text-xs">
+                  {PROMPTS.map((prompt, i) => (
+                    <button
+                      key={i}
+                      type="button"
+                      onClick={() => handleUsePrompt(prompt)}
+                      className="whitespace-nowrap px-3 py-1.5 rounded-lg border border-neutral-200/80 dark:border-neutral-800 bg-neutral-50 dark:bg-neutral-950/60 text-neutral-600 dark:text-neutral-300 hover:border-indigo-300 dark:hover:border-indigo-700 transition-colors cursor-pointer"
+                    >
+                      {prompt}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* Área de Texto */}
+              <textarea
+                rows={6}
+                value={entry}
+                onChange={(e) => setEntry(e.target.value)}
+                placeholder="Escribe libremente aquí..."
+                className="w-full rounded-xl border border-neutral-200 dark:border-neutral-800 bg-neutral-50/70 dark:bg-neutral-950 p-4 text-neutral-900 dark:text-white placeholder-neutral-400 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 focus:outline-none transition-all resize-none text-sm leading-relaxed"
+              />
+
+              {/* Aviso discreto si hay señales activas */}
+              {crisisRisk !== "none" && (
+                <div className="rounded-xl border border-amber-200 dark:border-amber-900/50 bg-amber-50/70 dark:bg-amber-950/30 p-3.5 flex flex-col sm:flex-row sm:items-center justify-between gap-2 text-xs text-amber-900 dark:text-amber-300">
+                  <span>
+                    Si necesitas apoyo humano inmediato, hay líneas gratuitas 24/7 disponibles para escucharte.
+                  </span>
+                  <button
+                    type="button"
+                    onClick={() => setIsCrisisModalOpen(true)}
+                    className="font-semibold underline text-left sm:text-right shrink-0 cursor-pointer"
+                  >
+                    Ver líneas de ayuda
+                  </button>
+                </div>
+              )}
+
+              {/* Consentimiento Opt-In para Reflexión Empática de IA */}
+              <div className="pt-3 border-t border-neutral-100 dark:border-neutral-800 flex items-start justify-between gap-4">
+                <div className="space-y-0.5">
+                  <label
+                    htmlFor="ai-reflection-consent"
+                    className="text-xs sm:text-sm font-semibold text-neutral-900 dark:text-white cursor-pointer"
+                  >
+                    Recibir reflexión empática de IA al guardar
+                  </label>
+                  <p className="text-xs text-neutral-500 dark:text-neutral-400 leading-relaxed">
+                    Opcional y apagado por defecto. Nunca enviamos tu nombre, correo ni datos de cuenta; solo el texto actual para devolución psicoeducativa.
+                  </p>
+                </div>
+                <button
+                  id="ai-reflection-consent"
+                  type="button"
                   role="switch"
-                  aria-checked={ephemeralMode}
-                  onClick={handleToggleEphemeral}
-                  className={`relative inline-flex h-7 w-12 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-emerald-500/40 ${
-                    ephemeralMode
-                      ? "bg-emerald-600"
-                      : "bg-slate-300 dark:bg-slate-700"
+                  aria-checked={aiConsent}
+                  onClick={() => setAiConsent((prev) => !prev)}
+                  className={`relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-indigo-500/40 ${
+                    aiConsent
+                      ? "bg-indigo-600"
+                      : "bg-neutral-300 dark:bg-neutral-700"
                   }`}
                 >
-                  <span className="sr-only">Activar Modo Efímero</span>
+                  <span className="sr-only">
+                    Activar reflexión empática de IA al guardar
+                  </span>
                   <span
-                    className={`pointer-events-none inline-block h-6 w-6 transform rounded-full bg-white shadow transition duration-200 ${
-                      ephemeralMode ? "translate-x-5" : "translate-x-0"
+                    className={`pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow transition duration-200 ${
+                      aiConsent ? "translate-x-5" : "translate-x-0"
                     }`}
                   />
                 </button>
               </div>
 
-              {statusMessage && (
-                <div
-                  role="status"
-                  className="rounded-xl border border-emerald-200 dark:border-emerald-900/50 bg-emerald-50/70 dark:bg-emerald-950/30 px-4 py-3 text-xs sm:text-sm text-emerald-800 dark:text-emerald-300 flex items-center justify-between gap-3"
-                >
-                  <span>{statusMessage}</span>
-                  <button
-                    type="button"
-                    onClick={() => setStatusMessage(null)}
-                    className="text-emerald-700 dark:text-emerald-400 hover:opacity-75 text-xs font-semibold"
+              {/* Opciones y Guardado */}
+              <div className="flex flex-col sm:flex-row justify-between items-center gap-3 pt-2">
+                <div className="flex items-center gap-2 w-full sm:w-auto">
+                  <label
+                    htmlFor="journal-tag-select"
+                    className="text-xs text-neutral-500 dark:text-neutral-400"
                   >
-                    Cerrar
-                  </button>
-                </div>
-              )}
-
-              {/* Contenedor Principal de Escritura */}
-              <div className="rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-6 shadow-sm space-y-5">
-                {/* Selector de Ánimo */}
-                <div>
-                  <label className="text-xs font-semibold text-slate-500 uppercase tracking-wider block mb-2">
-                    ¿Cómo te sientes en este momento?
+                    Etiqueta:
                   </label>
-                  <div className="flex flex-wrap gap-2">
-                    {MOODS.map((m) => (
-                      <button
-                        key={m.label}
-                        type="button"
-                        onClick={() => setSelectedMood(m.emoji)}
-                        className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl border text-sm transition-all ${
-                          selectedMood === m.emoji
-                            ? "bg-emerald-500/10 border-emerald-500 text-emerald-700 dark:text-emerald-300 font-semibold"
-                            : "border-slate-200 dark:border-slate-800 hover:border-slate-300 dark:hover:border-slate-700"
-                        }`}
-                      >
-                        <span>{m.emoji}</span>
-                        <span>{m.label}</span>
-                      </button>
-                    ))}
-                  </div>
-                </div>
-
-                {/* Prompts Sugeridos */}
-                <div>
-                  <span className="text-xs text-slate-400 block mb-1.5">
-                    Presiona una idea si no sabes qué escribir:
-                  </span>
-                  <div className="flex gap-2 overflow-x-auto pb-1 text-xs">
-                    {PROMPTS.map((prompt, i) => (
-                      <button
-                        key={i}
-                        type="button"
-                        onClick={() => handleUsePrompt(prompt)}
-                        className="whitespace-nowrap px-3 py-1 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-emerald-50 dark:hover:bg-slate-700 transition-colors"
-                      >
-                        {prompt}
-                      </button>
-                    ))}
-                  </div>
-                </div>
-
-                {/* Área de Texto */}
-                <textarea
-                  rows={6}
-                  value={entry}
-                  onChange={(e) => setEntry(e.target.value)}
-                  placeholder="Escribe libremente aquí..."
-                  className="w-full rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 p-4 text-slate-900 dark:text-white placeholder-slate-400 focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 focus:outline-none transition-all resize-none text-sm leading-relaxed"
-                />
-
-                {/* Aviso discreto si hay señales activas */}
-                {crisisRisk !== "none" && (
-                  <div className="rounded-xl border border-amber-200 dark:border-amber-900/50 bg-amber-50/70 dark:bg-amber-950/30 p-3 flex flex-col sm:flex-row sm:items-center justify-between gap-2 text-xs text-amber-900 dark:text-amber-300">
-                    <span>
-                      Si necesitas apoyo humano inmediato, hay líneas gratuitas 24/7 disponibles para escucharte.
-                    </span>
-                    <button
-                      type="button"
-                      onClick={() => setIsCrisisModalOpen(true)}
-                      className="font-semibold underline text-left sm:text-right shrink-0"
-                    >
-                      Ver líneas de ayuda
-                    </button>
-                  </div>
-                )}
-
-                {/* Consentimiento Opt-In para Reflexión Empática de IA */}
-                <div className="rounded-xl border border-indigo-100 dark:border-indigo-900/40 bg-indigo-50/50 dark:bg-indigo-950/20 p-3.5 flex items-start justify-between gap-3">
-                  <div className="space-y-0.5">
-                    <label
-                      htmlFor="ai-reflection-consent"
-                      className="text-xs sm:text-sm font-semibold text-slate-900 dark:text-white cursor-pointer"
-                    >
-                      Recibir reflexión empática de IA al guardar
-                    </label>
-                    <p className="text-[11px] text-slate-600 dark:text-slate-400 leading-relaxed">
-                      Opcional y apagado por defecto. Nunca enviamos tu nombre, correo ni datos de cuenta; solo el texto actual para devolución psicoeducativa.
-                    </p>
-                  </div>
-                  <button
-                    id="ai-reflection-consent"
-                    type="button"
-                    role="switch"
-                    aria-checked={aiConsent}
-                    onClick={() => setAiConsent((prev) => !prev)}
-                    className={`relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-indigo-500/40 ${
-                      aiConsent
-                        ? "bg-indigo-600"
-                        : "bg-slate-300 dark:bg-slate-700"
-                    }`}
+                  <select
+                    id="journal-tag-select"
+                    value={selectedTag}
+                    onChange={(e) => setSelectedTag(e.target.value)}
+                    className="text-xs px-3 py-1.5 rounded-lg border border-neutral-200 dark:border-neutral-800 bg-white dark:bg-neutral-900 text-neutral-700 dark:text-neutral-300 focus:outline-none focus:ring-2 focus:ring-indigo-500/40"
                   >
-                    <span className="sr-only">
-                      Activar reflexión empática de IA al guardar
-                    </span>
-                    <span
-                      className={`pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow transition duration-200 ${
-                        aiConsent ? "translate-x-5" : "translate-x-0"
-                      }`}
-                    />
-                  </button>
+                    <option value="General">General</option>
+                    <option value="Pensamientos">Pensamientos</option>
+                    <option value="Gratitud">Gratitud</option>
+                    <option value="Ansiedad">Ansiedad</option>
+                    <option value="Logros">Logros</option>
+                  </select>
                 </div>
 
-                {/* Opciones y Guardado */}
-                <div className="flex flex-col sm:flex-row justify-between items-center gap-3">
-                  <div className="flex items-center gap-2 w-full sm:w-auto">
-                    <span className="text-xs text-slate-400">Etiqueta:</span>
-                    <select
-                      value={selectedTag}
-                      onChange={(e) => setSelectedTag(e.target.value)}
-                      className="text-xs px-2.5 py-1.5 rounded-lg border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 text-slate-700 dark:text-slate-300 focus:outline-none"
-                    >
-                      <option value="General">General</option>
-                      <option value="Pensamientos">Pensamientos</option>
-                      <option value="Gratitud">Gratitud</option>
-                      <option value="Ansiedad">Ansiedad</option>
-                      <option value="Logros">Logros</option>
-                    </select>
-                  </div>
-
-                  <button
-                    type="button"
-                    onClick={handleSave}
-                    disabled={!entry.trim() || isAnalyzingMood}
-                    className="w-full sm:w-auto px-6 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 disabled:opacity-50 disabled:cursor-not-allowed text-white font-semibold text-sm transition-all shadow-sm"
-                  >
-                    {isAnalyzingMood
-                      ? "Guardando y analizando..."
-                      : ephemeralMode
-                      ? "Registrar (Efímero)"
-                      : "Guardar Entrada"}
-                  </button>
-                </div>
-              </div>
-
-              {/* Estado de carga o devolución empática Opt-In de IA */}
-              {isAnalyzingMood && (
-                <div className="rounded-2xl border border-indigo-200/70 dark:border-indigo-900/50 bg-indigo-50/60 dark:bg-indigo-950/20 p-5 flex items-center gap-3 animate-pulse">
-                  <div className="h-4 w-4 rounded-full border-2 border-indigo-600 border-t-transparent animate-spin shrink-0" />
-                  <p className="text-sm text-indigo-900 dark:text-indigo-200">
-                    Preparando una reflexión empática y recomendaciones personalizadas para ti...
-                  </p>
-                </div>
-              )}
-
-              {aiErrorNotice && (
-                <div
-                  role="status"
-                  className="rounded-2xl border border-amber-200 dark:border-amber-900/50 bg-amber-50/70 dark:bg-amber-950/20 p-4 flex items-center justify-between gap-3 text-xs sm:text-sm text-amber-900 dark:text-amber-300"
+                <button
+                  type="button"
+                  onClick={handleSave}
+                  disabled={!entry.trim() || isAnalyzingMood}
+                  className="w-full sm:w-auto px-6 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-700 disabled:opacity-50 disabled:cursor-not-allowed text-white font-semibold text-sm transition-colors shadow-xs cursor-pointer"
                 >
-                  <span>{aiErrorNotice}</span>
-                  <button
-                    type="button"
-                    onClick={() => setAiErrorNotice(null)}
-                    className="text-xs font-semibold underline shrink-0"
-                  >
-                    Cerrar
-                  </button>
-                </div>
-              )}
-
-              {aiAnalysis && (
-                <section
-                  aria-label="Reflexión empática de IA"
-                  className="rounded-2xl border border-indigo-200/80 dark:border-indigo-900/50 bg-white dark:bg-slate-900 p-6 shadow-sm space-y-5 animate-fadeIn"
-                >
-                  <div className="flex items-start justify-between gap-3 flex-wrap">
-                    <div className="space-y-1">
-                      <span className="inline-block text-[11px] font-bold uppercase tracking-wider px-2.5 py-0.5 rounded-full bg-indigo-50 text-indigo-700 dark:bg-indigo-950/60 dark:text-indigo-300">
-                        {aiAnalysis.emotionalTone}
-                      </span>
-                      <h2 className="text-base font-bold text-slate-900 dark:text-white pt-1">
-                        Acompañamiento empático
-                      </h2>
-                    </div>
-                    <button
-                      type="button"
-                      onClick={() => setAiAnalysis(null)}
-                      className="text-xs text-slate-400 hover:text-slate-600 dark:hover:text-slate-200"
-                    >
-                      Ocultar
-                    </button>
-                  </div>
-
-                  <p className="text-sm text-slate-700 dark:text-slate-300 leading-relaxed">
-                    {aiAnalysis.compassionateFeedback}
-                  </p>
-
-                  {/* Micro-hábito sugerido con botón de 1 clic */}
-                  <div className="rounded-xl border border-emerald-200/70 dark:border-emerald-900/40 bg-emerald-50/50 dark:bg-emerald-950/20 p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-                    <div className="space-y-1">
-                      <div className="flex items-center gap-2 text-xs font-semibold text-emerald-800 dark:text-emerald-300">
-                        <span>Micro-hábito sugerido</span>
-                        <span className="px-2 py-0.5 rounded bg-white/80 dark:bg-slate-900/60 text-[10px]">
-                          {aiAnalysis.suggestedMicroHabit.category} · {aiAnalysis.suggestedMicroHabit.durationMinutes} min
-                        </span>
-                      </div>
-                      <p className="text-sm font-medium text-slate-800 dark:text-slate-200">
-                        {aiAnalysis.suggestedMicroHabit.title}
-                      </p>
-                    </div>
-
-                    {habitAdded ? (
-                      <div className="flex items-center gap-2 shrink-0">
-                        <span className="text-xs font-semibold text-emerald-700 dark:text-emerald-300">
-                          Añadido a tu Autocuidado
-                        </span>
-                        <Link
-                          to="/autocuidado-diario"
-                          className="text-xs font-semibold text-indigo-600 dark:text-indigo-400 underline"
-                        >
-                          Ver hábitos
-                        </Link>
-                      </div>
-                    ) : (
-                      <button
-                        type="button"
-                        onClick={handleAddSuggestedHabit}
-                        className="shrink-0 px-4 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-semibold transition-colors shadow-sm"
-                      >
-                        Añadir micro-hábito a mi Autocuidado
-                      </button>
-                    )}
-                  </div>
-
-                  {/* Recursos recomendados */}
-                  {aiAnalysis.recommendedResources.length > 0 && (
-                    <div className="space-y-2.5">
-                      <h3 className="text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">
-                        Recursos recomendados para ti
-                      </h3>
-                      <div className="grid gap-3 sm:grid-cols-2">
-                        {aiAnalysis.recommendedResources.map((resItem, idx) => (
-                          <Link
-                            key={`${resItem.route}-${idx}`}
-                            to={resItem.route}
-                            className="group rounded-xl border border-slate-200/80 dark:border-slate-800 bg-slate-50/70 dark:bg-slate-950/50 p-3.5 hover:border-indigo-400 transition-colors flex flex-col justify-between gap-2"
-                          >
-                            <div className="space-y-1">
-                              <span className="text-sm font-semibold text-slate-900 dark:text-white group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors block">
-                                {resItem.title}
-                              </span>
-                              <p className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed">
-                                {resItem.reason}
-                              </p>
-                            </div>
-                            <span className="text-xs font-semibold text-indigo-600 dark:text-indigo-400">
-                              Abrir recurso →
-                            </span>
-                          </Link>
-                        ))}
-                      </div>
-                    </div>
-                  )}
-
-                  <p className="text-[11px] text-slate-500 dark:text-slate-400 border-t border-slate-100 dark:border-slate-800 pt-3">
-                    Orientación psicoeducativa generada como apoyo reflexivo; no constituye diagnóstico ni reemplaza acompañamiento clínico profesional.
-                  </p>
-                </section>
-              )}
-
-              {/* Soberanía de Datos: Exportar y Borrar */}
-              <div className="rounded-2xl border border-slate-200/80 dark:border-slate-800 bg-white/70 dark:bg-slate-900/50 p-5 space-y-4">
-                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-                  <div>
-                    <h2 className="text-sm font-bold text-slate-900 dark:text-white">
-                      Control y privacidad de tus datos
-                    </h2>
-                    <p className="text-xs text-slate-500 dark:text-slate-400">
-                      Descarga una copia de tu diario o borra todo el historial guardado en este dispositivo.
-                    </p>
-                  </div>
-
-                  <div className="flex flex-wrap gap-2">
-                    <button
-                      type="button"
-                      onClick={() => exportJournalAsJson(entries, user)}
-                      disabled={entries.length === 0}
-                      className="px-3 py-2 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-xs font-semibold text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-700 disabled:opacity-50 transition-colors"
-                    >
-                      Exportar .JSON
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => exportJournalAsTxt(entries, user)}
-                      disabled={entries.length === 0}
-                      className="px-3 py-2 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-xs font-semibold text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-700 disabled:opacity-50 transition-colors"
-                    >
-                      Exportar .TXT
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => setConfirmClearOpen(true)}
-                      disabled={entries.length === 0}
-                      className="px-3 py-2 rounded-xl border border-rose-200 dark:border-rose-900/50 bg-rose-50/70 dark:bg-rose-950/30 text-xs font-semibold text-rose-700 dark:text-rose-300 hover:bg-rose-100 dark:hover:bg-rose-950/60 disabled:opacity-50 transition-colors"
-                    >
-                      Eliminar datos locales
-                    </button>
-                  </div>
-                </div>
-
-                {confirmClearOpen && (
-                  <div
-                    role="alertdialog"
-                    aria-labelledby="confirm-clear-diario-title"
-                    className="rounded-xl border border-rose-200 dark:border-rose-900/60 bg-rose-50/90 dark:bg-rose-950/40 p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3"
-                  >
-                    <p
-                      id="confirm-clear-diario-title"
-                      className="text-xs sm:text-sm text-rose-900 dark:text-rose-200"
-                    >
-                      ¿Confirmas que deseas eliminar permanentemente todas tus entradas locales de este navegador? Esta acción no se puede deshacer.
-                    </p>
-                    <div className="flex items-center gap-2 shrink-0">
-                      <button
-                        type="button"
-                        onClick={() => setConfirmClearOpen(false)}
-                        className="px-3 py-1.5 rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-xs font-medium text-slate-700 dark:text-slate-200"
-                      >
-                        Cancelar
-                      </button>
-                      <button
-                        type="button"
-                        onClick={handleConfirmClearAll}
-                        className="px-3 py-1.5 rounded-lg bg-rose-600 hover:bg-rose-700 text-xs font-semibold text-white"
-                      >
-                        Sí, eliminar todo
-                      </button>
-                    </div>
-                  </div>
-                )}
-              </div>
-
-              {/* Historial de Entradas */}
-              <div className="space-y-4 pt-2">
-                <h3 className="text-lg font-bold text-slate-900 dark:text-white flex items-center gap-2">
-                  <span>Tus entradas ({entries.length})</span>
-                </h3>
-
-                {entries.length === 0 ? (
-                  <div className="p-8 text-center rounded-2xl border border-dashed border-slate-200 dark:border-slate-800">
-                    <p className="text-sm text-slate-400">
-                      Aún no has guardado ninguna entrada. Tómate un momento para escribir la primera.
-                    </p>
-                  </div>
-                ) : (
-                  <div className="space-y-3">
-                    {entries.map((item) => (
-                      <div
-                        key={item.id}
-                        className="p-5 rounded-2xl border border-slate-200/80 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-sm space-y-2 relative group"
-                      >
-                        <div className="flex justify-between items-center">
-                          <div className="flex items-center gap-2 flex-wrap">
-                            <span className="text-xl">{item.mood}</span>
-                            <span className="text-xs font-semibold px-2 py-0.5 rounded-md bg-emerald-500/10 text-emerald-600 dark:text-emerald-400">
-                              {item.tag}
-                            </span>
-                            {item.ephemeral && (
-                              <span className="text-[10px] font-semibold px-2 py-0.5 rounded-md bg-teal-50 dark:bg-teal-950/50 text-teal-700 dark:text-teal-300">
-                                Efímera · Solo esta sesión
-                              </span>
-                            )}
-                          </div>
-                          <div className="flex items-center gap-3">
-                            <span className="text-xs text-slate-400">{item.date}</span>
-                            <button
-                              type="button"
-                              onClick={() => handleDelete(item.id)}
-                              className="text-slate-400 hover:text-red-500 text-xs transition-colors"
-                              title="Eliminar entrada"
-                              aria-label="Eliminar entrada"
-                            >
-                              ✕
-                            </button>
-                          </div>
-                        </div>
-                        <p className="text-sm text-slate-700 dark:text-slate-300 whitespace-pre-wrap leading-relaxed">
-                          {item.text}
-                        </p>
-                      </div>
-                    ))}
-                  </div>
-                )}
+                  {isAnalyzingMood
+                    ? "Guardando y analizando..."
+                    : ephemeralMode
+                    ? "Registrar (Efímero)"
+                    : "Guardar Entrada"}
+                </button>
               </div>
             </div>
-          </Section>
+
+            {/* Estado de carga o devolución empática Opt-In de IA */}
+            {isAnalyzingMood && (
+              <div className="rounded-2xl border border-indigo-200/70 dark:border-indigo-900/50 bg-white dark:bg-neutral-900/70 p-5 flex items-center gap-3">
+                <div className="h-4 w-4 rounded-full border-2 border-indigo-600 border-t-transparent animate-spin shrink-0" />
+                <p className="text-sm text-neutral-700 dark:text-neutral-200">
+                  Preparando una reflexión empática y recomendaciones personalizadas para ti...
+                </p>
+              </div>
+            )}
+
+            {aiErrorNotice && (
+              <div
+                role="status"
+                className="rounded-2xl border border-amber-200 dark:border-amber-900/50 bg-amber-50/70 dark:bg-amber-950/20 p-4 flex items-center justify-between gap-3 text-xs sm:text-sm text-amber-900 dark:text-amber-300"
+              >
+                <span>{aiErrorNotice}</span>
+                <button
+                  type="button"
+                  onClick={() => setAiErrorNotice(null)}
+                  className="text-xs font-semibold underline shrink-0 cursor-pointer"
+                >
+                  Cerrar
+                </button>
+              </div>
+            )}
+
+            {aiAnalysis && (
+              <section
+                aria-label="Reflexión empática de IA"
+                className="rounded-2xl border border-indigo-200/80 dark:border-indigo-900/50 bg-white dark:bg-neutral-900/70 p-6 shadow-sm space-y-5 animate-fadeIn"
+              >
+                <div className="flex items-start justify-between gap-3 flex-wrap">
+                  <div className="space-y-1">
+                    <span className="text-xs font-semibold uppercase tracking-wider text-indigo-600 dark:text-indigo-400">
+                      {aiAnalysis.emotionalTone}
+                    </span>
+                    <h2 className="text-lg font-bold text-neutral-900 dark:text-white">
+                      Acompañamiento empático
+                    </h2>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => setAiAnalysis(null)}
+                    className="text-xs text-neutral-500 hover:text-neutral-800 dark:hover:text-neutral-200 cursor-pointer"
+                  >
+                    Ocultar
+                  </button>
+                </div>
+
+                <p className="text-sm text-neutral-700 dark:text-neutral-300 leading-relaxed">
+                  {aiAnalysis.compassionateFeedback}
+                </p>
+
+                {/* Micro-hábito sugerido con separador hairline */}
+                <div className="pt-4 border-t border-neutral-100 dark:border-neutral-800 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                  <div className="space-y-1">
+                    <p className="text-xs font-semibold text-teal-700 dark:text-teal-400 tabular-nums">
+                      Micro-hábito sugerido · {aiAnalysis.suggestedMicroHabit.category} ·{" "}
+                      {aiAnalysis.suggestedMicroHabit.durationMinutes} min
+                    </p>
+                    <p className="text-sm font-medium text-neutral-900 dark:text-neutral-100">
+                      {aiAnalysis.suggestedMicroHabit.title}
+                    </p>
+                  </div>
+
+                  {habitAdded ? (
+                    <div className="flex items-center gap-2 shrink-0">
+                      <span className="text-xs font-semibold text-teal-700 dark:text-teal-300">
+                        Añadido a tu Autocuidado
+                      </span>
+                      <Link
+                        to="/autocuidado-diario"
+                        className="text-xs font-semibold text-indigo-600 dark:text-indigo-400 underline"
+                      >
+                        Ver hábitos
+                      </Link>
+                    </div>
+                  ) : (
+                    <button
+                      type="button"
+                      onClick={handleAddSuggestedHabit}
+                      className="shrink-0 px-4 py-2 rounded-xl bg-teal-600 hover:bg-teal-700 text-white text-xs font-semibold transition-colors shadow-xs cursor-pointer"
+                    >
+                      Añadir micro-hábito a mi Autocuidado
+                    </button>
+                  )}
+                </div>
+
+                {/* Recursos recomendados */}
+                {aiAnalysis.recommendedResources.length > 0 && (
+                  <div className="pt-4 border-t border-neutral-100 dark:border-neutral-800 space-y-3">
+                    <h3 className="text-xs font-semibold uppercase tracking-wider text-neutral-500 dark:text-neutral-400">
+                      Recursos recomendados para ti
+                    </h3>
+                    <div className="divide-y divide-neutral-100 dark:divide-neutral-800">
+                      {aiAnalysis.recommendedResources.map((resItem, idx) => (
+                        <Link
+                          key={`${resItem.route}-${idx}`}
+                          to={resItem.route}
+                          className="group py-3 first:pt-1 last:pb-1 flex items-center justify-between gap-4"
+                        >
+                          <div className="space-y-0.5">
+                            <span className="text-sm font-semibold text-neutral-900 dark:text-white group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors block">
+                              {resItem.title}
+                            </span>
+                            <p className="text-xs text-neutral-600 dark:text-neutral-400 leading-relaxed">
+                              {resItem.reason}
+                            </p>
+                          </div>
+                          <span className="text-xs font-semibold text-indigo-600 dark:text-indigo-400 shrink-0">
+                            Abrir →
+                          </span>
+                        </Link>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                <p className="text-xs text-neutral-500 dark:text-neutral-400 border-t border-neutral-100 dark:border-neutral-800 pt-3">
+                  Orientación psicoeducativa generada como apoyo reflexivo; no constituye diagnóstico ni reemplaza acompañamiento clínico profesional.
+                </p>
+              </section>
+            )}
+
+            {/* Soberanía de Datos: Exportar y Borrar */}
+            <div className="rounded-2xl border border-neutral-200/80 dark:border-neutral-800 bg-white dark:bg-neutral-900/70 p-5 shadow-sm space-y-4">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                <div>
+                  <h2 className="text-sm font-bold text-neutral-900 dark:text-white">
+                    Control y privacidad de tus datos
+                  </h2>
+                  <p className="text-xs text-neutral-500 dark:text-neutral-400">
+                    Descarga una copia de tu diario o borra todo el historial guardado en este dispositivo.
+                  </p>
+                </div>
+
+                <div className="flex flex-wrap gap-2">
+                  <button
+                    type="button"
+                    onClick={() => exportJournalAsJson(entries, user)}
+                    disabled={entries.length === 0}
+                    className="px-3 py-2 rounded-xl border border-neutral-200 dark:border-neutral-700 bg-white dark:bg-neutral-800 text-xs font-semibold text-neutral-700 dark:text-neutral-200 hover:bg-neutral-50 dark:hover:bg-neutral-700 disabled:opacity-50 transition-colors cursor-pointer"
+                  >
+                    Exportar .JSON
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => exportJournalAsTxt(entries, user)}
+                    disabled={entries.length === 0}
+                    className="px-3 py-2 rounded-xl border border-neutral-200 dark:border-neutral-700 bg-white dark:bg-neutral-800 text-xs font-semibold text-neutral-700 dark:text-neutral-200 hover:bg-neutral-50 dark:hover:bg-neutral-700 disabled:opacity-50 transition-colors cursor-pointer"
+                  >
+                    Exportar .TXT
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setConfirmClearOpen(true)}
+                    disabled={entries.length === 0}
+                    className="px-3 py-2 rounded-xl border border-rose-200 dark:border-rose-900/50 bg-rose-50/70 dark:bg-rose-950/30 text-xs font-semibold text-rose-700 dark:text-rose-300 hover:bg-rose-100 dark:hover:bg-rose-950/60 disabled:opacity-50 transition-colors cursor-pointer"
+                  >
+                    Eliminar datos locales
+                  </button>
+                </div>
+              </div>
+
+              {confirmClearOpen && (
+                <div
+                  role="alertdialog"
+                  aria-labelledby="confirm-clear-diario-title"
+                  className="pt-3 border-t border-rose-200/70 dark:border-rose-900/50 flex flex-col sm:flex-row sm:items-center justify-between gap-3"
+                >
+                  <p
+                    id="confirm-clear-diario-title"
+                    className="text-xs sm:text-sm text-rose-900 dark:text-rose-200"
+                  >
+                    ¿Confirmas que deseas eliminar permanentemente todas tus entradas locales de este navegador? Esta acción no se puede deshacer.
+                  </p>
+                  <div className="flex items-center gap-2 shrink-0">
+                    <button
+                      type="button"
+                      onClick={() => setConfirmClearOpen(false)}
+                      className="px-3 py-1.5 rounded-lg border border-neutral-300 dark:border-neutral-700 bg-white dark:bg-neutral-800 text-xs font-medium text-neutral-700 dark:text-neutral-200 cursor-pointer"
+                    >
+                      Cancelar
+                    </button>
+                    <button
+                      type="button"
+                      onClick={handleConfirmClearAll}
+                      className="px-3 py-1.5 rounded-lg bg-rose-600 hover:bg-rose-700 text-xs font-semibold text-white cursor-pointer"
+                    >
+                      Sí, eliminar todo
+                    </button>
+                  </div>
+                </div>
+              )}
+            </div>
+
+            {/* Historial de Entradas */}
+            <div className="space-y-4 pt-2">
+              <h3 className="text-lg font-bold text-neutral-900 dark:text-white tabular-nums">
+                Tus entradas ({entries.length})
+              </h3>
+
+              {entries.length === 0 ? (
+                <div className="p-8 text-center rounded-2xl border border-dashed border-neutral-300 dark:border-neutral-800">
+                  <p className="text-sm text-neutral-500 dark:text-neutral-400">
+                    Aún no has guardado ninguna entrada. Tómate un momento para escribir la primera.
+                  </p>
+                </div>
+              ) : (
+                <div className="space-y-3">
+                  {entries.map((item) => (
+                    <div
+                      key={item.id}
+                      className="p-5 rounded-2xl border border-neutral-200/80 dark:border-neutral-800 bg-white dark:bg-neutral-900/70 shadow-sm space-y-2 relative group"
+                    >
+                      <div className="flex justify-between items-center gap-2">
+                        <div className="flex items-center gap-2 flex-wrap text-xs text-neutral-600 dark:text-neutral-400">
+                          <span className="text-lg" aria-hidden="true">
+                            {item.mood}
+                          </span>
+                          <span className="font-semibold text-indigo-700 dark:text-indigo-400">
+                            {item.tag}
+                          </span>
+                          {item.ephemeral && (
+                            <span className="text-teal-700 dark:text-teal-300 font-medium">
+                              · Efímera (solo esta sesión)
+                            </span>
+                          )}
+                        </div>
+                        <div className="flex items-center gap-3">
+                          <span className="text-xs text-neutral-400 tabular-nums">
+                            {item.date}
+                          </span>
+                          <button
+                            type="button"
+                            onClick={() => handleDelete(item.id)}
+                            className="text-neutral-400 hover:text-rose-500 text-xs transition-colors cursor-pointer"
+                            title="Eliminar entrada"
+                            aria-label="Eliminar entrada"
+                          >
+                            ✕
+                          </button>
+                        </div>
+                      </div>
+                      <p className="text-sm text-neutral-700 dark:text-neutral-300 whitespace-pre-wrap leading-relaxed">
+                        {item.text}
+                      </p>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          </div>
         </main>
 
         <CrisisModal

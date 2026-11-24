@@ -9,6 +9,10 @@ export default {
 
   theme: {
     extend: {
+      fontFamily: {
+        sans: ['"Plus Jakarta Sans"', "system-ui", "-apple-system", "sans-serif"],
+        serif: ['"Lora"', "Georgia", "serif"],
+      },
       colors: {
         primary: {
           DEFAULT: "#4338CA",
