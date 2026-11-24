@@ -1,7 +1,7 @@
 import {
   GEMINI_TEXT_MODEL,
   isGeminiConfigured,
-} from "../_lib/gemini.ts";
+} from "../_lib/gemini.js";
 import {
   applyCors,
   checkRateLimit,
@@ -9,7 +9,7 @@ import {
   sendJson,
   type ApiRequest,
   type ApiResponse,
-} from "../_lib/http.ts";
+} from "../_lib/http.js";
 
 export default async function handler(
   req: ApiRequest,

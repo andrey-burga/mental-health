@@ -23,12 +23,12 @@ interface AuthorType {
 
 interface TestimonialType {
   id: string;
-  slug: string;
+  slug?: string;
   title: string;
   excerpt: string;
   content: string;
   author?: AuthorType | string;
-  created_at: string;
+  created_at?: string;
   category?: string;
 }
 
@@ -257,7 +257,9 @@ function Testimonial() {
                     const isVertical = currentPatternIdx === 1 || currentPatternIdx === 5;
                     const isHorizontal = currentPatternIdx === 3;
 
-                    const formattedDate = new Date(testimonial.created_at).toLocaleDateString("es-ES", {
+                    const formattedDate = new Date(
+                      testimonial.created_at || Date.now()
+                    ).toLocaleDateString("es-ES", {
                       day: "numeric",
                       month: "short",
                       year: "numeric",

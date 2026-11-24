@@ -2,7 +2,7 @@ import { GoogleGenAI, ThinkingLevel, Type } from "@google/genai";
 import {
   detectDeterministicCrisisSignals,
   type CrisisRiskLevel,
-} from "./crisisPatterns.ts";
+} from "./crisisPatterns.js";
 
 export const GEMINI_TEXT_MODEL = "gemini-4-hydrogen";
 

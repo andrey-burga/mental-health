@@ -3,12 +3,12 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 import dotenv from "dotenv";
 import express from "express";
-import healthHandler from "./api/ai/health.ts";
-import safetyHandler from "./api/ai/safety.ts";
-import reflectionHandler from "./api/ai/reflection.ts";
-import analyzeMoodHandler from "./api/ai/analyze-mood.ts";
-import companionHandler from "./api/ai/companion.ts";
-import { sendError } from "./api/_lib/http.ts";
+import healthHandler from "./api/ai/health.js";
+import safetyHandler from "./api/ai/safety.js";
+import reflectionHandler from "./api/ai/reflection.js";
+import analyzeMoodHandler from "./api/ai/analyze-mood.js";
+import companionHandler from "./api/ai/companion.js";
+import { sendError } from "./api/_lib/http.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);

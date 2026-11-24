@@ -7,7 +7,7 @@ import {
   isGeminiQuotaCoolingDown,
   isQuotaExhaustedError,
   markGeminiQuotaCooldown,
-} from "../_lib/gemini.ts";
+} from "../_lib/gemini.js";
 import {
   applyCors,
   checkRateLimit,
@@ -16,7 +16,7 @@ import {
   sendJson,
   type ApiRequest,
   type ApiResponse,
-} from "../_lib/http.ts";
+} from "../_lib/http.js";
 
 type TimeOfDay = "mañana" | "tarde" | "noche";
 

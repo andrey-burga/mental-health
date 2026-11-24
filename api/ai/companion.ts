@@ -7,8 +7,8 @@ import {
   isGeminiQuotaCoolingDown,
   isQuotaExhaustedError,
   markGeminiQuotaCooldown,
-} from "../_lib/gemini.ts";
-import type { CrisisRiskLevel } from "../_lib/crisisPatterns.ts";
+} from "../_lib/gemini.js";
+import type { CrisisRiskLevel } from "../_lib/crisisPatterns.js";
 import {
   applyCors,
   checkRateLimit,
@@ -16,7 +16,7 @@ import {
   sendError,
   type ApiRequest,
   type ApiResponse,
-} from "../_lib/http.ts";
+} from "../_lib/http.js";
 
 type CompanionRole = "user" | "assistant";
 export type CompanionActionCategory = "herramienta" | "lectura" | "trastorno";
