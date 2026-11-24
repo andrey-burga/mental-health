@@ -4,7 +4,7 @@ export interface ApiRequest extends IncomingMessage {
   method?: string;
   headers: Record<string, string | string[] | undefined>;
   body?: unknown;
-  query?: Record<string, string | string[] | undefined>;
+  query?: Record<string, unknown>;
   ip?: string;
 }
 
@@ -43,8 +43,11 @@ export function sendJson(
   payload: unknown
 ): void {
   if (typeof res.status === "function" && typeof res.json === "function") {
-    res.status(statusCode).json(payload);
-    return;
+    const jsonResponder = res.status(statusCode);
+    if (jsonResponder && typeof jsonResponder.json === "function") {
+      jsonResponder.json(payload);
+      return;
+    }
   }
 
   res.statusCode = statusCode;
@@ -218,13 +221,17 @@ export async function parseJsonBody<T = Record<string, unknown>>(
     throw new Error("Cuerpo de solicitud inválido.");
   }
 
-  const chunks: Buffer[] = [];
+  const chunks: Uint8Array<ArrayBuffer>[] = [];
   let totalBytes = 0;
   const maxBytes = 256 * 1024;
 
   for await (const chunk of req) {
-    const buf = Buffer.isBuffer(chunk) ? chunk : Buffer.from(chunk);
-    totalBytes += buf.length;
+    const rawBytes =
+      typeof chunk === "string"
+        ? new TextEncoder().encode(chunk)
+        : new Uint8Array(chunk);
+    const buf = new Uint8Array(rawBytes.buffer.slice(rawBytes.byteOffset, rawBytes.byteOffset + rawBytes.byteLength)) as Uint8Array<ArrayBuffer>;
+    totalBytes += buf.byteLength;
     if (totalBytes > maxBytes) {
       throw new Error("El cuerpo de la solicitud excede el tamaño máximo permitido.");
     }

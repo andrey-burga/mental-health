@@ -71,11 +71,11 @@ export default function Home() {
       if (result.reflection) {
         setDailyReflection(result.reflection);
       }
-      if (result.rateLimited && result.notice) {
+      if (result.notice) {
         setReflectionNotice(result.notice);
       }
     } catch (err) {
-      console.error("Error al actualizar reflexión diaria:", err);
+      console.warn("No se pudo actualizar la reflexión diaria:", err);
     } finally {
       setIsRefreshingReflection(false);
     }

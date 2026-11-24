@@ -2,8 +2,11 @@ import { ThinkingLevel, Type } from "@google/genai";
 import {
   CLINICAL_SYSTEM_INSTRUCTION,
   GEMINI_TEXT_MODEL,
-  classifyGeminiError,
   getGeminiClient,
+  getQuotaCooldownSecondsRemaining,
+  isGeminiQuotaCoolingDown,
+  isQuotaExhaustedError,
+  markGeminiQuotaCooldown,
 } from "../_lib/gemini.ts";
 import {
   applyCors,
@@ -41,7 +44,99 @@ const VALID_REFLECTION_ROUTES = [
   "/salud-mental",
 ] as const;
 
+const CURATED_REFLECTIONS_BY_TIME: Record<TimeOfDay, DailyReflectionPayload[]> = {
+  mañana: [
+    {
+      phrase:
+        "No necesitas resolver toda la semana hoy; basta con elegir un primer paso amable y realista para esta mañana.",
+      author: "Psicología del Autocuidado",
+      theme: "Inicio sereno",
+      reflectionPrompt: "¿Cuál es una cosa pequeña que puedes priorizar con calma hoy?",
+      suggestedRoute: "/autocuidado-diario",
+      suggestedLabel: "Planificar un micro-hábito",
+    },
+    {
+      phrase:
+        "Respirar profundo antes de mirar tus pendientes le recuerda a tu cuerpo que estás a salvo para comenzar a tu ritmo.",
+      author: "Enfoque Mindfulness",
+      theme: "Presencia matutina",
+      reflectionPrompt: "¿Cómo se siente tu cuerpo al despertar y qué necesita ahora?",
+      suggestedRoute: "/respiracion",
+      suggestedLabel: "Respiración guiada",
+    },
+    {
+      phrase:
+        "Cuidar tu energía mental desde temprano no es perder tiempo, es construir base firme para todo el día.",
+      author: "Tu Espacio Seguro",
+      theme: "Cuidado preventivo",
+      reflectionPrompt: "¿Qué límite saludable quieres proteger en tu jornada de hoy?",
+      suggestedRoute: "/autocuidado",
+      suggestedLabel: "Ver guías de autocuidado",
+    },
+  ],
+  tarde: [
+    {
+      phrase:
+        "Hacer una pausa breve a mitad del día no detiene tu avance; te devuelve claridad para seguir sin agotarte.",
+      author: "Psicología del Autocuidado",
+      theme: "Pausa restauradora",
+      reflectionPrompt: "¿Qué tensión acumulada podrías soltar durante cinco minutos ahora?",
+      suggestedRoute: "/respiracion",
+      suggestedLabel: "Tomar 3 minutos de calma",
+    },
+    {
+      phrase:
+        "Tus pensamientos pueden ir rápido por la tarde; ponerlos en palabras te ayuda a mirarlos con perspectiva.",
+      author: "Escritura Terapéutica",
+      theme: "Orden mental",
+      reflectionPrompt: "¿Qué emoción merece un poco de espacio y escucha en este momento?",
+      suggestedRoute: "/diario",
+      suggestedLabel: "Escribir en mi diario",
+    },
+    {
+      phrase:
+        "No todo lo que exige atención hoy merece tu desgaste; distingue lo urgente de lo verdaderamente importante.",
+      author: "Tu Espacio Seguro",
+      theme: "Equilibrio diario",
+      reflectionPrompt: "¿Qué tarea puede esperar o hacerse de forma más sencilla hoy?",
+      suggestedRoute: "/articulos",
+      suggestedLabel: "Explorar artículos de apoyo",
+    },
+  ],
+  noche: [
+    {
+      phrase:
+        "Al caer la noche, permítete soltar lo que quedó pendiente; descansar también es una forma activa de cuidarte.",
+      author: "Tu Espacio Seguro",
+      theme: "Cierre y descanso",
+      reflectionPrompt: "¿Qué pequeño momento de hoy puedes agradecer o dejar ir antes de dormir?",
+      suggestedRoute: "/sonidos",
+      suggestedLabel: "Escuchar sonidos relajantes",
+    },
+    {
+      phrase:
+        "Hiciste lo que pudiste con los recursos que tenías hoy; hablarte con amabilidad al cerrar el día sana la mente.",
+      author: "Autocompasión Clínica",
+      theme: "Trato amable",
+      reflectionPrompt: "¿Qué palabras de aliento le darías hoy a alguien que quieres?",
+      suggestedRoute: "/diario",
+      suggestedLabel: "Soltar pensamientos en el diario",
+    },
+    {
+      phrase:
+        "Bajar el ritmo antes de dormir le da permiso a tu sistema nervioso para salir del modo alerta.",
+      author: "Enfoque Mindfulness",
+      theme: "Calma nocturna",
+      reflectionPrompt: "¿Qué señal de tranquilidad puedes regalarte en los próximos diez minutos?",
+      suggestedRoute: "/respiracion",
+      suggestedLabel: "Hacer respiración nocturna",
+    },
+  ],
+};
+
 const reflectionCache = new Map<string, CacheEntry>();
+const inFlightGenerations = new Map<string, Promise<DailyReflectionPayload>>();
+const curatedCursorByTime = new Map<TimeOfDay, number>();
 const MAX_CACHE_ENTRIES = 200;
 const CACHE_TTL_MS = 1000 * 60 * 60 * 12; // 12 horas
 
@@ -93,6 +188,26 @@ function sanitizeSuggestedRoute(route?: string): string {
     return route.trim();
   }
   return "/respiracion";
+}
+
+function pickCuratedReflection(
+  timeOfDay: TimeOfDay,
+  excludePhrase?: string
+): DailyReflectionPayload {
+  const pool = CURATED_REFLECTIONS_BY_TIME[timeOfDay];
+  const currentIdx = curatedCursorByTime.get(timeOfDay) ?? 0;
+
+  for (let offset = 0; offset < pool.length; offset += 1) {
+    const idx = (currentIdx + offset) % pool.length;
+    const candidate = pool[idx];
+    if (!excludePhrase || candidate.phrase !== excludePhrase) {
+      curatedCursorByTime.set(timeOfDay, (idx + 1) % pool.length);
+      return candidate;
+    }
+  }
+
+  curatedCursorByTime.set(timeOfDay, (currentIdx + 1) % pool.length);
+  return pool[currentIdx % pool.length];
 }
 
 interface ReflectionRequestBody {
@@ -193,6 +308,44 @@ export default async function handler(
     return;
   }
 
+  // Si hay una generación concurrente en curso para el mismo cacheKey (p. ej. StrictMode), reutilizarla
+  if (!wantsRefresh) {
+    const existingPromise = inFlightGenerations.get(cacheKey);
+    if (existingPromise) {
+      try {
+        const sharedPayload = await existingPromise;
+        sendJson(res, 200, {
+          ok: true,
+          ...sharedPayload,
+          timeOfDay,
+          cached: true,
+        });
+        return;
+      } catch {
+        // Continúa hacia respaldo curado abajo si falló la promesa compartida
+      }
+    }
+  }
+
+  // Si la cuota de Gemini está en enfriamiento, responder amablemente con reflexión curada (sin disparar 429)
+  if (isGeminiQuotaCoolingDown()) {
+    const waitSeconds = getQuotaCooldownSecondsRemaining();
+    const fallback = pickCuratedReflection(timeOfDay, cached?.data.phrase);
+    sendJson(res, 200, {
+      ok: true,
+      ...fallback,
+      timeOfDay,
+      cached: false,
+      fallback: true,
+      ...(wantsRefresh
+        ? {
+            notice: `Mostrando una reflexión curada mientras se restablece el límite temporal de IA (~${waitSeconds}s).`,
+          }
+        : {}),
+    });
+    return;
+  }
+
   const moodContext = moodScore
     ? `La persona reportó de forma anónima un nivel de ánimo/energía de ${moodScore} sobre 5.`
     : "No se especificó nivel de ánimo; brinda una reflexión equilibrada y acogedora para cualquier estado emocional.";
@@ -210,7 +363,7 @@ Elige exactamente una ruta de herramienta sugerida entre estas opciones reales:
 - "/articulos" (para leer contenido psicoeducativo)
 - "/salud-mental" (para comprender mejor las emociones)`;
 
-  try {
+  const generationPromise = (async (): Promise<DailyReflectionPayload> => {
     const response = await ai.models.generateContent({
       model: GEMINI_TEXT_MODEL,
       contents: prompt,
@@ -271,7 +424,7 @@ Para esta tarea de reflexión diaria:
       (response.text ?? "{}").trim()
     ) as Partial<DailyReflectionPayload>;
 
-    const payload: DailyReflectionPayload = {
+    return {
       phrase:
         parsed.phrase?.trim() ||
         "Permítete avanzar a un ritmo amable hoy; incluso una pausa consciente es una forma de cuidado.",
@@ -284,9 +437,17 @@ Para esta tarea de reflexión diaria:
       suggestedLabel:
         parsed.suggestedLabel?.trim() || "Practicar respiración guiada",
     };
+  })();
 
-    pruneCache(now);
-    reflectionCache.set(cacheKey, { data: payload, createdAt: now });
+  if (!wantsRefresh) {
+    inFlightGenerations.set(cacheKey, generationPromise);
+  }
+
+  try {
+    const payload = await generationPromise;
+
+    pruneCache(Date.now());
+    reflectionCache.set(cacheKey, { data: payload, createdAt: Date.now() });
 
     sendJson(res, 200, {
       ok: true,
@@ -295,8 +456,41 @@ Para esta tarea de reflexión diaria:
       cached: false,
     });
   } catch (error) {
-    const classified = classifyGeminiError(error);
-    console.error("Error generando reflexión diaria con Gemini:", error);
-    sendError(res, classified.status, classified.code, classified.message);
+    if (isQuotaExhaustedError(error)) {
+      const waitSeconds = markGeminiQuotaCooldown(error);
+      console.warn(
+        `Reflexión diaria en respaldo curado temporal por cuota de Gemini (${waitSeconds}s).`
+      );
+      const fallback = pickCuratedReflection(timeOfDay, cached?.data.phrase);
+      sendJson(res, 200, {
+        ok: true,
+        ...fallback,
+        timeOfDay,
+        cached: false,
+        fallback: true,
+        ...(wantsRefresh
+          ? {
+              notice: `Mostrando una reflexión curada mientras se restablece el límite temporal de IA (~${waitSeconds}s).`,
+            }
+          : {}),
+      });
+      return;
+    }
+
+    const reason = error instanceof Error ? error.message : String(error);
+    console.warn("Reflexión diaria degradada a respaldo curado:", reason);
+
+    const fallback = pickCuratedReflection(timeOfDay, cached?.data.phrase);
+    sendJson(res, 200, {
+      ok: true,
+      ...fallback,
+      timeOfDay,
+      cached: false,
+      fallback: true,
+    });
+  } finally {
+    if (!wantsRefresh) {
+      inFlightGenerations.delete(cacheKey);
+    }
   }
 }

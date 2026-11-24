@@ -16,6 +16,7 @@ import {
 } from "../utils/privacyStorage";
 import { getDailyReflection } from "../services/reflectionsServices";
 import type { DailyReflection } from "../types/reflections";
+import { openEmotionalCompanion } from "../components/EmotionalCompanion";
 
 interface ToolCard {
   title: string;
@@ -221,6 +222,24 @@ export default function Dashboard() {
                   </div>
                 </div>
               ))}
+            </div>
+
+            <div className="mt-6 rounded-2xl border border-teal-200/70 dark:border-teal-900/40 bg-gradient-to-r from-indigo-50/70 to-teal-50/70 dark:from-indigo-950/30 dark:to-teal-950/20 p-5 sm:p-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+              <div className="space-y-1">
+                <h3 className="text-base font-bold text-slate-900 dark:text-white">
+                  ¿No sabes por dónde empezar hoy?
+                </h3>
+                <p className="text-xs sm:text-sm text-gray-600 dark:text-gray-300 font-light">
+                  Conversa en tiempo real con el Acompañante Emocional para recibir orientación psicoeducativa y encontrar la herramienta ideal para este momento.
+                </p>
+              </div>
+              <button
+                type="button"
+                onClick={() => openEmotionalCompanion()}
+                className="shrink-0 rounded-xl bg-gradient-to-r from-indigo-600 to-teal-600 px-5 py-2.5 text-sm font-semibold text-white shadow-sm hover:opacity-95 transition-opacity cursor-pointer"
+              >
+                Abrir acompañante emocional
+              </button>
             </div>
           </Section>
 

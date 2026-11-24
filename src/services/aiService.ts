@@ -38,6 +38,8 @@ export interface DailyReflectionAiResponse {
   suggestedLabel: string;
   timeOfDay: TimeOfDay;
   cached: boolean;
+  fallback?: boolean;
+  notice?: string;
 }
 
 export interface SuggestedMicroHabit {
@@ -77,6 +79,7 @@ export type AnalyzeMoodResponse =
       compassionateFeedback: string;
       suggestedMicroHabit: SuggestedMicroHabit;
       recommendedResources: RecommendedResource[];
+      fallback?: boolean;
     };
 
 export type AiServiceStatus =
@@ -255,4 +258,204 @@ export async function analyzeMoodEntry(
     },
     timeoutMs
   );
+}
+
+export interface CompanionMessage {
+  role: "user" | "assistant";
+  content: string;
+}
+
+export type CompanionActionCategory = "herramienta" | "lectura" | "trastorno";
+
+export interface CompanionActionItem {
+  label: string;
+  route: string;
+  category: CompanionActionCategory;
+}
+
+export interface CompanionCatalogContext {
+  disorders?: Array<{
+    title: string;
+    slug: string;
+    category?: string;
+  }>;
+  articles?: Array<{
+    title: string;
+    category?: string;
+  }>;
+}
+
+export interface CompanionCrisisEvent {
+  riskLevel: "moderate" | "high";
+  reason?: string;
+  matchedSignals?: string[];
+  safetySource?: "deterministic" | "semantic" | "hybrid";
+}
+
+export interface StreamCompanionChatParams {
+  messages: CompanionMessage[];
+  catalogContext?: CompanionCatalogContext;
+  signal?: AbortSignal;
+  onChunk: (text: string) => void;
+  onActions?: (items: CompanionActionItem[]) => void;
+  onCrisis?: (crisis: CompanionCrisisEvent) => void;
+  onDone?: () => void;
+  onError?: (message: string) => void;
+}
+
+export async function streamCompanionChat({
+  messages,
+  catalogContext,
+  signal,
+  onChunk,
+  onActions,
+  onCrisis,
+  onDone,
+  onError,
+}: StreamCompanionChatParams): Promise<void> {
+  const controller = new AbortController();
+  const handleExternalAbort = () => controller.abort();
+
+  if (signal) {
+    if (signal.aborted) {
+      controller.abort();
+    } else {
+      signal.addEventListener("abort", handleExternalAbort, { once: true });
+    }
+  }
+
+  try {
+    const response = await fetch("/api/ai/companion", {
+      method: "POST",
+      signal: controller.signal,
+      headers: {
+        "Content-Type": "application/json",
+        Accept: "text/event-stream, application/json",
+        "X-Session-Id": getClientSessionId(),
+      },
+      body: JSON.stringify({
+        messages: messages.slice(-10),
+        catalogContext,
+      }),
+    });
+
+    const contentType = response.headers.get("content-type") || "";
+
+    if (!response.ok) {
+      const errPayload = await response.json().catch(() => null);
+      onError?.(
+        errPayload?.error?.message ||
+          "No se pudo conectar con el acompañante en este momento."
+      );
+      return;
+    }
+
+    if (contentType.includes("application/json")) {
+      const json = await response.json().catch(() => null);
+      if (json?.type === "crisis") {
+        onCrisis?.({
+          riskLevel: json.riskLevel === "high" ? "high" : "moderate",
+          reason: json.reason,
+          matchedSignals: json.matchedSignals,
+          safetySource: json.safetySource,
+        });
+        onDone?.();
+        return;
+      }
+      if (json?.error?.message) {
+        onError?.(json.error.message);
+        return;
+      }
+    }
+
+    if (!response.body) {
+      onError?.("El navegador no recibió flujo de respuesta del servidor.");
+      return;
+    }
+
+    const reader = response.body.getReader();
+    const decoder = new TextDecoder("utf-8");
+    let lineBuffer = "";
+    let finished = false;
+
+    const processLine = (rawLine: string) => {
+      const line = rawLine.trim();
+      if (!line.startsWith("data:")) return;
+      const jsonStr = line.slice(5).trim();
+      if (!jsonStr || jsonStr === "[DONE]") return;
+
+      try {
+        const event = JSON.parse(jsonStr) as {
+          type?: string;
+          text?: string;
+          items?: CompanionActionItem[];
+          riskLevel?: string;
+          reason?: string;
+          matchedSignals?: string[];
+          safetySource?: "deterministic" | "semantic" | "hybrid";
+          message?: string;
+        };
+
+        if (event.type === "chunk" && typeof event.text === "string") {
+          onChunk(event.text);
+        } else if (event.type === "actions" && Array.isArray(event.items)) {
+          onActions?.(event.items);
+        } else if (event.type === "crisis") {
+          finished = true;
+          onCrisis?.({
+            riskLevel: event.riskLevel === "high" ? "high" : "moderate",
+            reason: event.reason,
+            matchedSignals: event.matchedSignals,
+            safetySource: event.safetySource,
+          });
+        } else if (event.type === "error") {
+          finished = true;
+          onError?.(
+            event.message ||
+              "Ocurrió una interrupción al generar la respuesta."
+          );
+        } else if (event.type === "done") {
+          finished = true;
+          onDone?.();
+        }
+      } catch {
+        // Ignorar líneas SSE parciales o comentarios
+      }
+    };
+
+    while (true) {
+      const { value, done } = await reader.read();
+      if (done) break;
+
+      lineBuffer += decoder.decode(value, { stream: true });
+      const lines = lineBuffer.split(/\r?\n/);
+      lineBuffer = lines.pop() ?? "";
+
+      for (const line of lines) {
+        processLine(line);
+      }
+    }
+
+    const tail = decoder.decode();
+    if (tail) {
+      lineBuffer += tail;
+    }
+    if (lineBuffer.trim()) {
+      processLine(lineBuffer);
+    }
+
+    if (!finished) {
+      onDone?.();
+    }
+  } catch (err) {
+    if (err instanceof DOMException && err.name === "AbortError") {
+      onDone?.();
+      return;
+    }
+    onError?.("No se pudo mantener la conexión con el acompañante emocional.");
+  } finally {
+    if (signal) {
+      signal.removeEventListener("abort", handleExternalAbort);
+    }
+  }
 }

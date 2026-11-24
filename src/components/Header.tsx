@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
+import { openEmotionalCompanion } from "./EmotionalCompanion";
 
 interface NavRoute {
   path: string;
@@ -200,6 +201,17 @@ function Header() {
                             {tool.label}
                           </NavLink>
                         ))}
+                        <button
+                          type="button"
+                          role="menuitem"
+                          onClick={() => {
+                            setToolsOpen(false);
+                            openEmotionalCompanion();
+                          }}
+                          className="w-full text-left rounded-xl px-3.5 py-2.5 text-sm font-medium text-teal-700 dark:text-teal-300 hover:bg-teal-50 dark:hover:bg-teal-950/40 transition-colors cursor-pointer"
+                        >
+                          Acompañante emocional
+                        </button>
                       </div>
                     )}
                   </div>
@@ -306,6 +318,16 @@ function Header() {
                           {tool.label}
                         </NavLink>
                       ))}
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setMenuOpen(false);
+                          openEmotionalCompanion();
+                        }}
+                        className="w-full text-left block rounded-xl px-4 py-2.5 text-sm font-medium text-teal-700 dark:text-teal-300 hover:bg-teal-50 dark:hover:bg-teal-950/40 transition-colors cursor-pointer"
+                      >
+                        Acompañante emocional
+                      </button>
                     </div>
                     <p className="text-sm text-center text-neutral-600 dark:text-neutral-400 pt-2 border-t border-neutral-200/60 dark:border-neutral-800/60">
                       Sesión iniciada como <strong className="text-indigo-600 dark:text-indigo-400">{userName}</strong>

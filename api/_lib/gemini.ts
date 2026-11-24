@@ -17,9 +17,45 @@ REGLAS ÉTICAS Y CLÍNICAS OBLIGATORIAS:
 
 let cachedClient: GoogleGenAI | null = null;
 let cachedApiKey: string | undefined;
+let quotaCooldownUntil = 0;
 
 export function isGeminiConfigured(): boolean {
   return Boolean(process.env.GEMINI_API_KEY?.trim());
+}
+
+export function isGeminiQuotaCoolingDown(now = Date.now()): boolean {
+  return now < quotaCooldownUntil;
+}
+
+export function getQuotaCooldownSecondsRemaining(now = Date.now()): number {
+  if (now >= quotaCooldownUntil) return 0;
+  return Math.max(1, Math.ceil((quotaCooldownUntil - now) / 1000));
+}
+
+export function isQuotaExhaustedError(error: unknown): boolean {
+  const rawMessage =
+    error instanceof Error ? error.message : String(error ?? "");
+  const normalized = rawMessage.toUpperCase();
+  return (
+    normalized.includes("RESOURCE_EXHAUSTED") ||
+    normalized.includes("QUOTA") ||
+    normalized.includes("429")
+  );
+}
+
+export function markGeminiQuotaCooldown(error: unknown): number {
+  const rawMessage =
+    error instanceof Error ? error.message : String(error ?? "");
+  const retryMatch =
+    rawMessage.match(/retryDelay["']?\s*:\s*["']?(\d+(?:\.\d+)?)s/i) ||
+    rawMessage.match(/retry in\s+(\d+(?:\.\d+)?)s/i);
+  const parsedSeconds = retryMatch ? Math.ceil(Number(retryMatch[1])) : 45;
+  const boundedSeconds = Number.isFinite(parsedSeconds)
+    ? Math.min(90, Math.max(15, parsedSeconds))
+    : 45;
+
+  quotaCooldownUntil = Date.now() + boundedSeconds * 1000;
+  return boundedSeconds;
 }
 
 export function getGeminiClient(): GoogleGenAI | null {
@@ -67,7 +103,7 @@ export function classifyGeminiError(error: unknown): ClassifiedGeminiError {
     };
   }
 
-  if (normalized.includes("RESOURCE_EXHAUSTED") || normalized.includes("429")) {
+  if (isQuotaExhaustedError(error)) {
     return {
       status: 429,
       code: "AI_QUOTA_EXCEEDED",
@@ -139,7 +175,7 @@ export async function evaluateSafetyServerSide(
   }
 
   const ai = getGeminiClient();
-  if (!ai || safeText.length < 4) {
+  if (!ai || safeText.length < 4 || isGeminiQuotaCoolingDown()) {
     return {
       isCrisis: deterministic.riskLevel !== "none",
       riskLevel: deterministic.riskLevel,
@@ -223,7 +259,15 @@ ${safeText}
       aiConfigured,
     };
   } catch (error) {
-    console.error("Error en evaluación semántica de seguridad:", error);
+    if (isQuotaExhaustedError(error)) {
+      const waitSec = markGeminiQuotaCooldown(error);
+      console.warn(
+        `Evaluación semántica en modo determinista temporal por límite de cuota (${waitSec}s).`
+      );
+    } else {
+      const msg = error instanceof Error ? error.message : String(error);
+      console.warn("Evaluación semántica degradada a modo determinista:", msg);
+    }
     return {
       isCrisis: deterministic.riskLevel !== "none",
       riskLevel: deterministic.riskLevel,

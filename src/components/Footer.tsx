@@ -26,7 +26,7 @@ function FooterLink({ to, children }: FooterLinkProps) {
 
 function Footer() {
   return (
-    <footer className="w-full mt-20 px-4 pb-6 sm:px-6 lg:px-8 transition-colors duration-300">
+    <footer className="w-full mt-20 px-4 pb-20 sm:pb-16 sm:px-6 lg:px-8 transition-colors duration-300">
       <div className="mx-auto max-w-7xl rounded-3xl border border-neutral-200/60 bg-white/50 backdrop-blur-md p-8 sm:p-12 dark:border-neutral-800/60 dark:bg-neutral-950/40 shadow-sm">
 
         {/* Contenedor principal Grid */}

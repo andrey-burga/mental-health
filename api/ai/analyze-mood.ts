@@ -1,10 +1,15 @@
 import { ThinkingLevel, Type } from "@google/genai";
 import {
+  detectDeterministicCrisisSignals,
+  type CrisisRiskLevel,
+} from "../_lib/crisisPatterns.ts";
+import {
   CLINICAL_SYSTEM_INSTRUCTION,
   GEMINI_TEXT_MODEL,
-  classifyGeminiError,
-  evaluateSafetyServerSide,
   getGeminiClient,
+  isGeminiQuotaCoolingDown,
+  isQuotaExhaustedError,
+  markGeminiQuotaCooldown,
 } from "../_lib/gemini.ts";
 import {
   applyCors,
@@ -31,6 +36,9 @@ export interface RecommendedResource {
 }
 
 export interface MoodAnalysisPayload {
+  riskLevel?: CrisisRiskLevel;
+  isCrisis?: boolean;
+  crisisReason?: string;
   emotionalTone: string;
   compassionateFeedback: string;
   suggestedMicroHabit: SuggestedMicroHabit;
@@ -72,6 +80,61 @@ function sanitizeRoute(raw?: string): string {
     return raw.trim();
   }
   return "/respiracion";
+}
+
+function buildCuratedMoodFallback(
+  moodScore?: number,
+  moodLabel?: string
+): Omit<MoodAnalysisPayload, "riskLevel" | "isCrisis" | "crisisReason"> {
+  const lowerLabel = (moodLabel || "").toLowerCase();
+
+  if ((moodScore !== undefined && moodScore <= 2) || lowerLabel.includes("triste") || lowerLabel.includes("ansio")) {
+    return {
+      emotionalTone: "Cansancio emocional que merece cuidado",
+      compassionateFeedback:
+        "Gracias por expresarlo. Cuando el ánimo baja o la mente se siente cargada, no tienes que exigirte rendir al máximo; darte una pausa breve y amable ayuda a regular el cuerpo y ordenar lo que sientes.",
+      suggestedMicroHabit: {
+        title: "Realizar 3 minutos de respiración pausada exhalando más lento de lo que inhalas",
+        category: "Físico",
+        durationMinutes: 3,
+      },
+      recommendedResources: [
+        {
+          title: "Respiración Guiada",
+          reason: "Ayuda a disminuir la activación física y recuperar sensación de calma.",
+          route: "/respiracion",
+        },
+        {
+          title: "Canales de Ayuda y Orientación",
+          reason: "Si sientes que necesitas hablar con alguien, siempre hay apoyo disponible.",
+          route: "/ayuda",
+        },
+      ],
+    };
+  }
+
+  return {
+    emotionalTone: "Introspección y autocuidado consciente",
+    compassionateFeedback:
+      "Tomarte un momento para observar tus emociones fortalece tu claridad y bienestar diario. Reconocer lo que vives hoy, sin juzgarte, ya es un paso valioso para cuidar tu equilibrio.",
+    suggestedMicroHabit: {
+      title: "Hacer una pausa de 5 minutos lejos de pantallas para estirar hombros y respirar",
+      category: "Mental",
+      durationMinutes: 5,
+    },
+    recommendedResources: [
+      {
+        title: "Planificador de Autocuidado Diario",
+        reason: "Convierte pequeñas pausas en hábitos sostenibles a tu propio ritmo.",
+        route: "/autocuidado-diario",
+      },
+      {
+        title: "Biblioteca de Sonidos",
+        reason: "Acompaña tu momento de calma o concentración con audios relajantes.",
+        route: "/sonidos",
+      },
+    ],
+  };
 }
 
 interface AnalyzeMoodBody {
@@ -158,23 +221,24 @@ export default async function handler(
     return;
   }
 
-  // 1. Capa obligatoria de seguridad y detección de crisis ANTES de generar consejos
-  if (rawText.length > 0) {
-    const safety = await evaluateSafetyServerSide(rawText);
-    if (safety.isCrisis || safety.riskLevel === "moderate" || safety.riskLevel === "high") {
-      sendJson(res, 200, {
-        ok: true,
-        isCrisis: true,
-        riskLevel: safety.riskLevel === "none" ? "moderate" : safety.riskLevel,
-        reason: safety.reason,
-        matchedSignals: safety.matchedSignals,
-        safetySource: safety.source,
-      });
-      return;
-    }
+  // 1. Capa determinista instantánea (sin consumo de cuota) ANTES de llamar al modelo
+  const deterministic = rawText
+    ? detectDeterministicCrisisSignals(rawText)
+    : { riskLevel: "none" as CrisisRiskLevel, matchedSignals: [] as string[] };
+
+  if (deterministic.riskLevel === "high") {
+    sendJson(res, 200, {
+      ok: true,
+      isCrisis: true,
+      riskLevel: "high",
+      reason: "Se detectaron expresiones explícitas de riesgo vital o autolesión.",
+      matchedSignals: deterministic.matchedSignals,
+      safetySource: "deterministic",
+    });
+    return;
   }
 
-  // 2. Verificar cliente Gemini para análisis emocional
+  // 2. Verificar cliente Gemini o enfriamiento de cuota
   const ai = getGeminiClient();
   if (!ai) {
     sendError(
@@ -183,6 +247,30 @@ export default async function handler(
       "AI_NOT_CONFIGURED",
       "El análisis empático con IA no está configurado en el servidor todavía."
     );
+    return;
+  }
+
+  if (isGeminiQuotaCoolingDown()) {
+    if (deterministic.riskLevel === "moderate") {
+      sendJson(res, 200, {
+        ok: true,
+        isCrisis: true,
+        riskLevel: "moderate",
+        reason: "Se detectaron señales emocionales que ameritan apoyo prioritario.",
+        matchedSignals: deterministic.matchedSignals,
+        safetySource: "deterministic",
+      });
+      return;
+    }
+
+    const fallbackAnalysis = buildCuratedMoodFallback(moodScore, moodLabel);
+    sendJson(res, 200, {
+      ok: true,
+      isCrisis: false,
+      riskLevel: "none",
+      fallback: true,
+      ...fallbackAnalysis,
+    });
     return;
   }
 
@@ -198,15 +286,18 @@ export default async function handler(
     contextLines.push(`Texto anónimo:\n"""\n${rawText}\n"""`);
   }
 
-  const prompt = `Analiza de manera empática, cálida y psicoeducativa el siguiente registro emocional anónimo (sin datos personales):
+  const prompt = `Primero evalúa el nivel de riesgo clínico/de crisis del registro emocional anónimo (ideación suicida, autolesión, despedida implícita, deseo de desaparecer o desesperanza extrema):
+- Si detectas riesgo "high" o "moderate", marca 'isCrisis: true' y explica brevemente en 'crisisReason'.
+- Si 'riskLevel' es "none", analiza de manera empática, cálida y psicoeducativa el registro (sin datos personales):
 
 ${contextLines.join("\n")}
 
 Devuelve:
-1. 'emotionalTone': una etiqueta descriptiva, humana y no patologizante (ej. "Sobrecarga y cansancio mental", "Inquietud con búsqueda de calma", "Serenidad agradecida").
-2. 'compassionateFeedback': devolución breve (2 a 3 oraciones) en español que valide lo que siente la persona con cercanía y enfoque psicoeducativo, sin diagnosticar trastornos ni mencionar medicación.
-3. 'suggestedMicroHabit': un micro-hábito concreto, amable y realizable hoy mismo (duración entre 2 y 20 minutos) en una de estas categorías exactas: "Físico", "Mental", "Emocional", "Social".
-4. 'recommendedResources': hasta 2 recursos reales de la plataforma elegidos estrictamente de estas rutas según la necesidad del momento:
+1. 'riskLevel' ("none" | "moderate" | "high") e 'isCrisis' (boolean).
+2. 'emotionalTone': etiqueta descriptiva, humana y no patologizante.
+3. 'compassionateFeedback': devolución breve (2 a 3 oraciones) en español que valide lo que siente la persona con cercanía y enfoque psicoeducativo, sin diagnosticar trastornos ni mencionar medicación.
+4. 'suggestedMicroHabit': un micro-hábito concreto, amable y realizable hoy mismo (duración entre 2 y 20 minutos) en una de estas categorías exactas: "Físico", "Mental", "Emocional", "Social".
+5. 'recommendedResources': hasta 2 recursos reales de la plataforma elegidos estrictamente de estas rutas según la necesidad del momento:
    - "/respiracion" (Ejercicio de respiración guiada para regular activación o ansiedad)
    - "/sonidos" (Biblioteca de sonidos relajantes y ruido blanco)
    - "/diario" (Diario de emociones para seguir procesando pensamientos)
@@ -230,6 +321,19 @@ Devuelve:
         responseSchema: {
           type: Type.OBJECT,
           properties: {
+            riskLevel: {
+              type: Type.STRING,
+              enum: ["none", "moderate", "high"],
+              description: "Nivel de riesgo de crisis detectado en el texto.",
+            },
+            isCrisis: {
+              type: Type.BOOLEAN,
+              description: "True si se detecta ideación suicida, autolesión o riesgo vital.",
+            },
+            crisisReason: {
+              type: Type.STRING,
+              description: "Justificación breve y respetuosa si isCrisis es true.",
+            },
             emotionalTone: {
               type: Type.STRING,
               description: "Etiqueta empática y no clínica del tono emocional.",
@@ -281,6 +385,8 @@ Devuelve:
             },
           },
           required: [
+            "riskLevel",
+            "isCrisis",
             "emotionalTone",
             "compassionateFeedback",
             "suggestedMicroHabit",
@@ -296,6 +402,34 @@ Devuelve:
     const parsed = JSON.parse(
       (response.text ?? "{}").trim()
     ) as Partial<MoodAnalysisPayload>;
+
+    const semanticRisk: CrisisRiskLevel =
+      parsed.riskLevel === "high" ||
+      parsed.riskLevel === "moderate" ||
+      parsed.riskLevel === "none"
+        ? parsed.riskLevel
+        : parsed.isCrisis
+        ? "moderate"
+        : "none";
+
+    const finalRisk: CrisisRiskLevel =
+      deterministic.riskLevel === "moderate" && semanticRisk === "none"
+        ? "moderate"
+        : semanticRisk;
+
+    if (finalRisk !== "none" || parsed.isCrisis) {
+      sendJson(res, 200, {
+        ok: true,
+        isCrisis: true,
+        riskLevel: finalRisk === "none" ? "moderate" : finalRisk,
+        reason:
+          parsed.crisisReason?.trim() ||
+          "Se detectaron señales emocionales que ameritan apoyo prioritario.",
+        matchedSignals: deterministic.matchedSignals,
+        safetySource: deterministic.riskLevel !== "none" ? "hybrid" : "semantic",
+      });
+      return;
+    }
 
     const rawHabit = parsed.suggestedMicroHabit;
     const durationRaw = Number(rawHabit?.durationMinutes ?? 5);
@@ -333,7 +467,7 @@ Devuelve:
       });
     }
 
-    const analysis: MoodAnalysisPayload = {
+    const analysis = {
       emotionalTone:
         parsed.emotionalTone?.trim() || "Momento de introspección emocional",
       compassionateFeedback:
@@ -350,8 +484,35 @@ Devuelve:
       ...analysis,
     });
   } catch (error) {
-    const classified = classifyGeminiError(error);
-    console.error("Error analizando estado de ánimo con Gemini:", error);
-    sendError(res, classified.status, classified.code, classified.message);
+    if (isQuotaExhaustedError(error)) {
+      const waitSeconds = markGeminiQuotaCooldown(error);
+      console.warn(
+        `Análisis de ánimo en respaldo empático temporal por cuota de Gemini (${waitSeconds}s).`
+      );
+    } else {
+      const reason = error instanceof Error ? error.message : String(error);
+      console.warn("Análisis de ánimo degradado a respaldo empático:", reason);
+    }
+
+    if (deterministic.riskLevel !== "none") {
+      sendJson(res, 200, {
+        ok: true,
+        isCrisis: true,
+        riskLevel: deterministic.riskLevel,
+        reason: "Se detectaron señales emocionales que ameritan apoyo prioritario.",
+        matchedSignals: deterministic.matchedSignals,
+        safetySource: "deterministic",
+      });
+      return;
+    }
+
+    const fallbackAnalysis = buildCuratedMoodFallback(moodScore, moodLabel);
+    sendJson(res, 200, {
+      ok: true,
+      isCrisis: false,
+      riskLevel: "none",
+      fallback: true,
+      ...fallbackAnalysis,
+    });
   }
 }

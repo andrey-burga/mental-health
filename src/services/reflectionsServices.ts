@@ -24,6 +24,44 @@ function getCurrentTimeOfDay(): TimeOfDay {
   return "noche";
 }
 
+function getClientCacheKey(timeOfDay: TimeOfDay): string {
+  const now = new Date();
+  const y = now.getFullYear();
+  const m = String(now.getMonth() + 1).padStart(2, "0");
+  const d = String(now.getDate()).padStart(2, "0");
+  return `reflection_cache:${y}-${m}-${d}:${timeOfDay}`;
+}
+
+function readClientReflectionCache(timeOfDay: TimeOfDay): DailyReflection | null {
+  try {
+    const raw = sessionStorage.getItem(getClientCacheKey(timeOfDay));
+    if (!raw) return null;
+    const parsed = JSON.parse(raw) as DailyReflection;
+    if (parsed && parsed.phrase) {
+      return { ...parsed, cached: true };
+    }
+    return null;
+  } catch {
+    return null;
+  }
+}
+
+function writeClientReflectionCache(
+  timeOfDay: TimeOfDay,
+  reflection: DailyReflection
+): void {
+  try {
+    sessionStorage.setItem(
+      getClientCacheKey(timeOfDay),
+      JSON.stringify(reflection)
+    );
+  } catch {
+    // Ignorar errores de almacenamiento (modo privado / cuota)
+  }
+}
+
+const inFlightClientRequests = new Map<string, Promise<DailyReflectionFetchResult>>();
+
 const LOCAL_EMERGENCY_REFLECTION: DailyReflection = {
   id: "local-fallback",
   phrase:
@@ -36,11 +74,10 @@ const LOCAL_EMERGENCY_REFLECTION: DailyReflection = {
   source: "fallback",
 };
 
-export async function fetchDailyReflectionWithFallback(
-  options: FetchDailyReflectionOptions = {}
+async function performFetchDailyReflection(
+  options: FetchDailyReflectionOptions,
+  timeOfDay: TimeOfDay
 ): Promise<DailyReflectionFetchResult> {
-  const timeOfDay = options.timeOfDay ?? getCurrentTimeOfDay();
-
   // 1. Intentar obtener reflexión dinámica desde el BFF de IA (/api/ai/reflection)
   const aiResult = await generateDailyReflection({
     timeOfDay,
@@ -49,19 +86,26 @@ export async function fetchDailyReflectionWithFallback(
   });
 
   if (aiResult.status === "ok" && aiResult.data) {
+    const reflection: DailyReflection = {
+      id: `ai-${Date.now()}`,
+      phrase: aiResult.data.phrase,
+      author: aiResult.data.author,
+      theme: aiResult.data.theme,
+      reflectionPrompt: aiResult.data.reflectionPrompt,
+      suggestedRoute: aiResult.data.suggestedRoute,
+      suggestedLabel: aiResult.data.suggestedLabel,
+      source: aiResult.data.fallback ? "fallback" : "ai",
+      cached: aiResult.data.cached,
+    };
+
+    if (!options.moodScore && !aiResult.data.fallback) {
+      writeClientReflectionCache(timeOfDay, reflection);
+    }
+
     return {
-      reflection: {
-        id: `ai-${Date.now()}`,
-        phrase: aiResult.data.phrase,
-        author: aiResult.data.author,
-        theme: aiResult.data.theme,
-        reflectionPrompt: aiResult.data.reflectionPrompt,
-        suggestedRoute: aiResult.data.suggestedRoute,
-        suggestedLabel: aiResult.data.suggestedLabel,
-        source: "ai",
-        cached: aiResult.data.cached,
-      },
+      reflection,
       rateLimited: false,
+      notice: aiResult.data.notice,
     };
   }
 
@@ -92,13 +136,44 @@ export async function fetchDailyReflectionWithFallback(
       };
     }
   } catch (error) {
-    console.error("Error fetching fallback daily reflection:", error);
+    console.warn("No se pudo cargar reflexión desde respaldo API:", error);
   }
 
   return {
     reflection: LOCAL_EMERGENCY_REFLECTION,
     rateLimited: aiResult.status === "rate_limited",
   };
+}
+
+export async function fetchDailyReflectionWithFallback(
+  options: FetchDailyReflectionOptions = {}
+): Promise<DailyReflectionFetchResult> {
+  const timeOfDay = options.timeOfDay ?? getCurrentTimeOfDay();
+  const isDefaultLoad = !options.refresh && !options.moodScore;
+
+  if (isDefaultLoad) {
+    const cached = readClientReflectionCache(timeOfDay);
+    if (cached) {
+      return {
+        reflection: cached,
+        rateLimited: false,
+      };
+    }
+
+    const dedupeKey = getClientCacheKey(timeOfDay);
+    const existing = inFlightClientRequests.get(dedupeKey);
+    if (existing) {
+      return existing;
+    }
+
+    const promise = performFetchDailyReflection(options, timeOfDay).finally(() => {
+      inFlightClientRequests.delete(dedupeKey);
+    });
+    inFlightClientRequests.set(dedupeKey, promise);
+    return promise;
+  }
+
+  return performFetchDailyReflection(options, timeOfDay);
 }
 
 export const getDailyReflection = async (

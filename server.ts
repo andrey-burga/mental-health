@@ -7,6 +7,7 @@ import healthHandler from "./api/ai/health.ts";
 import safetyHandler from "./api/ai/safety.ts";
 import reflectionHandler from "./api/ai/reflection.ts";
 import analyzeMoodHandler from "./api/ai/analyze-mood.ts";
+import companionHandler from "./api/ai/companion.ts";
 import { sendError } from "./api/_lib/http.ts";
 
 const __filename = fileURLToPath(import.meta.url);
@@ -44,6 +45,10 @@ async function createServer() {
 
   app.all("/api/ai/analyze-mood", (req, res) => {
     void analyzeMoodHandler(req, res);
+  });
+
+  app.all("/api/ai/companion", (req, res) => {
+    void companionHandler(req, res);
   });
 
   // Cualquier ruta /api/* no encontrada responde JSON consistente

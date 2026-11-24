@@ -1,8 +1,11 @@
 import { Routes, Route, Navigate, useLocation } from "react-router-dom";
 import { AnimatePresence } from "framer-motion";
-import { lazy, Suspense } from "react";
+import { lazy, Suspense, useState } from "react";
 
 import PageLoader from "./components/PageLoader";
+import EmotionalCompanion from "./components/EmotionalCompanion";
+import CrisisModal from "./components/CrisisModal";
+import type { CrisisRiskLevel } from "./utils/crisisSafety";
 
 // Lazy pages
 const Home = lazy(() => import("./pages/Home"));
@@ -33,40 +36,58 @@ import Register from "./pages/Register";
 
 function App() {
   const location = useLocation();
+  const [globalCrisisRisk, setGlobalCrisisRisk] = useState<CrisisRiskLevel>("none");
+  const [isGlobalCrisisOpen, setIsGlobalCrisisOpen] = useState(false);
+
+  const handleGlobalCrisisDetected = (riskLevel: CrisisRiskLevel) => {
+    if (riskLevel === "none") return;
+    setGlobalCrisisRisk(riskLevel);
+    setIsGlobalCrisisOpen(true);
+  };
 
   return (
-    <AnimatePresence mode="wait">
-      <Suspense fallback={<PageLoader />}>
-        <Routes location={location} key={location.pathname}>
-          <Route path="/" element={<Home />} />
-          <Route path="/salud-mental" element={<SaludMental />} />
-          <Route path="/trastornos" element={<Trastornos />} />
-          <Route path="/trastornos/:slug" element={<TrastornoDetalle />} />
-          <Route path="/autocuidado" element={<Autocuidado />} />
-          <Route path="/ayuda" element={<Help />} />
-          <Route path="/articulos" element={<Articulos />} />
-          <Route path="/testimonios" element={<Testimonial />} />
-          <Route path="/forgot-password" element={<ForgotPassword />} />
-          <Route path="/reset-password" element={<ResetPassword />} />
-          <Route element={<ProtectedRoute />}>
-            <Route path="/dashboard" element={<Dashboard />} />
-            <Route path="/diario" element={<DiarioPage />} />
-            <Route path="/respiracion" element={<RespiracionPage />} />
-            <Route path="/autocuidado-diario" element={<AutocuidadoPage />} />
-            <Route path="/autocuidadoPage" element={<Navigate to="/autocuidado-diario" replace />} />
-            <Route path="/sonidos" element={<SonidosPage />} />
-          </Route>
-          <Route path="/contacto" element={<Contact />} />
-          <Route path="/login" element={<Login />} />
-          <Route path="/register" element={<Register />} />
-          <Route path="/factores-riesgo" element={<FactoresRiesgo />} />
-          <Route path="/terms" element={<Terms />} />
-          <Route path="/privacy" element={<Privacy />} />
+    <>
+      <AnimatePresence mode="wait">
+        <Suspense fallback={<PageLoader />}>
+          <Routes location={location} key={location.pathname}>
+            <Route path="/" element={<Home />} />
+            <Route path="/salud-mental" element={<SaludMental />} />
+            <Route path="/trastornos" element={<Trastornos />} />
+            <Route path="/trastornos/:slug" element={<TrastornoDetalle />} />
+            <Route path="/autocuidado" element={<Autocuidado />} />
+            <Route path="/ayuda" element={<Help />} />
+            <Route path="/articulos" element={<Articulos />} />
+            <Route path="/testimonios" element={<Testimonial />} />
+            <Route path="/forgot-password" element={<ForgotPassword />} />
+            <Route path="/reset-password" element={<ResetPassword />} />
+            <Route element={<ProtectedRoute />}>
+              <Route path="/dashboard" element={<Dashboard />} />
+              <Route path="/diario" element={<DiarioPage />} />
+              <Route path="/respiracion" element={<RespiracionPage />} />
+              <Route path="/autocuidado-diario" element={<AutocuidadoPage />} />
+              <Route path="/autocuidadoPage" element={<Navigate to="/autocuidado-diario" replace />} />
+              <Route path="/sonidos" element={<SonidosPage />} />
+            </Route>
+            <Route path="/contacto" element={<Contact />} />
+            <Route path="/login" element={<Login />} />
+            <Route path="/register" element={<Register />} />
+            <Route path="/factores-riesgo" element={<FactoresRiesgo />} />
+            <Route path="/terms" element={<Terms />} />
+            <Route path="/privacy" element={<Privacy />} />
 
-          <Route path="*" element={<NotFound />} />
-        </Routes>
-      </Suspense>
-    </AnimatePresence>
+            <Route path="*" element={<NotFound />} />
+          </Routes>
+        </Suspense>
+      </AnimatePresence>
+
+      <EmotionalCompanion onCrisisDetected={handleGlobalCrisisDetected} />
+
+      <CrisisModal
+        isOpen={isGlobalCrisisOpen}
+        riskLevel={globalCrisisRisk}
+        onClose={() => setIsGlobalCrisisOpen(false)}
+      />
+    </>
   );
 }
 
