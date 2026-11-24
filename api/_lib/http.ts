@@ -72,12 +72,22 @@ export function sendError(
   });
 }
 
+function normalizeOriginValue(raw: string): string | null {
+  const trimmed = raw.trim();
+  if (!trimmed) return null;
+  try {
+    return new URL(trimmed).origin.toLowerCase();
+  } catch {
+    return trimmed.replace(/\/+$/, "").toLowerCase();
+  }
+}
+
 function getAllowedOriginsFromEnv(): string[] {
   const raw = process.env.ALLOWED_ORIGINS || "";
   return raw
     .split(",")
-    .map((item) => item.trim())
-    .filter(Boolean);
+    .map(normalizeOriginValue)
+    .filter((item): item is string => Boolean(item));
 }
 
 function isOriginAllowed(origin: string, req: ApiRequest): boolean {
@@ -89,14 +99,15 @@ function isOriginAllowed(origin: string, req: ApiRequest): boolean {
   }
 
   const forwardedHost = getHeader(req.headers, "x-forwarded-host");
-  const host = forwardedHost || getHeader(req.headers, "host");
+  const rawHost = forwardedHost || getHeader(req.headers, "host");
+  const host = rawHost ? rawHost.split(",")[0]?.trim() : undefined;
 
   if (host && parsedOrigin.host.toLowerCase() === host.toLowerCase()) {
     return true;
   }
 
   const envOrigins = getAllowedOriginsFromEnv();
-  if (envOrigins.includes(origin)) {
+  if (envOrigins.includes(parsedOrigin.origin.toLowerCase())) {
     return true;
   }
 
@@ -213,7 +224,12 @@ export async function parseJsonBody<T = Record<string, unknown>>(
 ): Promise<T> {
   if (req.body !== undefined) {
     if (typeof req.body === "string") {
-      return JSON.parse(req.body) as T;
+      const trimmed = req.body.trim();
+      return (trimmed ? JSON.parse(trimmed) : {}) as T;
+    }
+    if (Buffer.isBuffer(req.body)) {
+      const trimmed = req.body.toString("utf-8").trim();
+      return (trimmed ? JSON.parse(trimmed) : {}) as T;
     }
     if (typeof req.body === "object" && req.body !== null) {
       return req.body as T;
