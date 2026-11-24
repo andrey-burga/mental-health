@@ -1,11 +1,19 @@
-import React from "react";
+import React, { useState } from "react";
 import Header from "../components/Header";
 import Section from "../components/Section";
 import ResourceCard from "../components/ResourceCard";
 import Footer from "../components/Footer";
 import PageTransition from "../components/PageTransition";
+import ClinicalDisclaimer from "../components/ClinicalDisclaimer";
+import { CRISIS_COUNTRIES, CountryCode } from "../utils/crisisSafety";
 
 function Help() {
+  const [selectedCountry, setSelectedCountry] = useState<CountryCode>("CO");
+
+  const activeCountry =
+    CRISIS_COUNTRIES.find((c) => c.code === selectedCountry) ||
+    CRISIS_COUNTRIES[0];
+
   return (
     <PageTransition>
       <div className="min-h-screen flex flex-col bg-neutral-50/30 dark:bg-neutral-950 text-neutral-800 dark:text-gray-100 transition-colors duration-300">
@@ -37,6 +45,108 @@ function Help() {
                   todas son un reflejo de valentía.
                 </p>
               </div>
+            </div>
+          </Section>
+
+          {/* DIRECTORIO REAL DE LÍNEAS DE AYUDA INMEDIATA */}
+          <Section>
+            <div className="max-w-7xl mx-auto rounded-3xl border border-teal-200/70 dark:border-teal-900/40 bg-gradient-to-br from-teal-50/50 via-white to-indigo-50/40 dark:from-teal-950/20 dark:via-neutral-900/70 dark:to-neutral-900/40 p-6 sm:p-10 shadow-sm space-y-6">
+              <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-4">
+                <div className="space-y-2 max-w-2xl">
+                  <span className="inline-flex items-center gap-2 rounded-full bg-teal-100/80 dark:bg-teal-950/60 px-3 py-1 text-xs font-semibold uppercase tracking-wider text-teal-800 dark:text-teal-300">
+                    <span className="h-2 w-2 rounded-full bg-teal-600 dark:bg-teal-400 animate-pulse" />
+                    Atención Gratuita y Confidencial
+                  </span>
+                  <h2 className="text-2xl sm:text-3xl font-bold text-neutral-900 dark:text-white tracking-tight">
+                    Directorio de líneas de apoyo y crisis
+                  </h2>
+                  <p className="text-sm sm:text-base text-neutral-600 dark:text-neutral-400 font-light">
+                    Selecciona tu país para comunicarte directamente con canales oficiales de escucha, orientación psicológica y emergencias.
+                  </p>
+                </div>
+
+                {/* Selector de País */}
+                <div className="flex flex-wrap gap-2" role="tablist" aria-label="Seleccionar país">
+                  {CRISIS_COUNTRIES.map((country) => {
+                    const isActive = country.code === selectedCountry;
+                    return (
+                      <button
+                        key={country.code}
+                        type="button"
+                        role="tab"
+                        aria-selected={isActive}
+                        onClick={() => setSelectedCountry(country.code)}
+                        className={`inline-flex items-center gap-1.5 rounded-xl px-3.5 py-2 text-xs sm:text-sm font-medium transition-all border ${
+                          isActive
+                            ? "bg-teal-700 text-white border-teal-700 shadow-sm dark:bg-teal-600 dark:border-teal-600"
+                            : "bg-white/80 dark:bg-neutral-900 text-neutral-700 dark:text-neutral-300 border-neutral-200 dark:border-neutral-800 hover:bg-neutral-100 dark:hover:bg-neutral-800"
+                        }`}
+                      >
+                        <span>{country.flag}</span>
+                        <span>{country.name}</span>
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+
+              <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+                {activeCountry.helplines.map((line) => (
+                  <article
+                    key={line.label}
+                    className="flex flex-col justify-between rounded-2xl border border-neutral-200/80 dark:border-neutral-800 bg-white dark:bg-neutral-900/90 p-5 shadow-sm space-y-4"
+                  >
+                    <div className="space-y-2">
+                      <div className="flex items-center justify-between gap-2">
+                        <span className="text-[11px] font-semibold uppercase tracking-wider px-2.5 py-0.5 rounded-md bg-teal-50 dark:bg-teal-950/60 text-teal-700 dark:text-teal-300">
+                          {line.availability}
+                        </span>
+                      </div>
+                      <h3 className="text-base sm:text-lg font-bold text-neutral-900 dark:text-white leading-snug">
+                        {line.label}
+                      </h3>
+                      <p className="text-xs sm:text-sm text-neutral-600 dark:text-neutral-400 font-light leading-relaxed">
+                        {line.description}
+                      </p>
+                    </div>
+
+                    <div className="space-y-2 pt-2 border-t border-neutral-100 dark:border-neutral-800">
+                      <a
+                        href={line.telHref}
+                        className="flex w-full items-center justify-center gap-2 rounded-xl bg-teal-700 hover:bg-teal-800 dark:bg-teal-600 dark:hover:bg-teal-500 px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition-all active:scale-[0.98]"
+                      >
+                        <svg
+                          className="h-4 w-4"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                          strokeWidth="2"
+                          stroke="currentColor"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            d="M2.25 6.75c0 8.284 6.716 15 15 15h2.25a2.25 2.25 0 002.25-2.25v-1.372c0-.516-.351-.966-.852-1.091l-4.423-1.106c-.44-.11-.902.055-1.173.417l-.97 1.293c-.282.376-.769.542-1.21.38a12.035 12.035 0 01-7.143-7.143c-.162-.441.004-.928.38-1.21l1.293-.97c.363-.271.527-.734.417-1.173L6.963 3.102a1.125 1.125 0 00-1.091-.852H4.5A2.25 2.25 0 002.25 4.5v2.25z"
+                          />
+                        </svg>
+                        <span>Llamar al {line.numberDisplay}</span>
+                      </a>
+
+                      {line.whatsappHref && (
+                        <a
+                          href={line.whatsappHref}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="flex w-full items-center justify-center gap-2 rounded-xl border border-teal-200 dark:border-teal-800/70 bg-teal-50/50 dark:bg-teal-950/30 px-4 py-2 text-xs font-semibold text-teal-800 dark:text-teal-300 hover:bg-teal-100/60 dark:hover:bg-teal-950/60 transition-colors"
+                        >
+                          <span>{line.whatsappLabel || "Chat oficial por WhatsApp"}</span>
+                        </a>
+                      )}
+                    </div>
+                  </article>
+                ))}
+              </div>
+
+              <ClinicalDisclaimer compact />
             </div>
           </Section>
 
@@ -118,17 +228,24 @@ function Help() {
                 </p>
               </div>
               
-              {/* Banner de Emergencia Rediseñado con Estilo Institucional Limpio */}
+              {/* Banner de Emergencia con llamada directa */}
               <div className="pt-4 border-t border-neutral-100 dark:border-neutral-800/60">
-                <div className="rounded-2xl bg-red-50/50 border border-red-100 dark:bg-red-950/10 dark:border-red-900/30 p-4 sm:p-5 text-left max-w-3xl mx-auto flex gap-4 items-start">
-                  <span className="text-xl sm:text-2xl flex-shrink-0 animate-pulse">🚨</span>
+                <div className="rounded-2xl bg-amber-50/70 border border-amber-200/70 dark:bg-amber-950/20 dark:border-amber-900/40 p-5 text-left max-w-3xl mx-auto flex flex-col sm:flex-row gap-4 items-start sm:items-center justify-between">
                   <div className="space-y-1">
-                    <h4 className="text-xs sm:text-sm font-bold uppercase tracking-wider text-red-700 dark:text-red-400">
-                      Línea de Crisis o Emergencia Inmediata
+                    <h4 className="text-xs sm:text-sm font-bold uppercase tracking-wider text-amber-900 dark:text-amber-300">
+                      ¿Estás en riesgo inmediato?
                     </h4>
-                    <p className="text-xs sm:text-sm text-red-600 dark:text-red-400/90 font-light leading-relaxed">
-                      Si experimentas pensamientos de autolesión, te encuentras en una crisis severa o sientes que estás en riesgo inminente, por favor comunícate de inmediato con las líneas de emergencia locales o asiste al centro de salud u hospital más cercano.
+                    <p className="text-xs sm:text-sm text-neutral-700 dark:text-neutral-300 font-light leading-relaxed">
+                      Si experimentas pensamientos de autolesión o sientes que estás en peligro inminente, comunícate de inmediato con emergencias o acude al centro de salud más cercano.
                     </p>
+                  </div>
+                  <div className="flex flex-wrap gap-2 shrink-0">
+                    <a
+                      href={activeCountry.helplines[0]?.telHref || "tel:106"}
+                      className="rounded-xl bg-amber-700 hover:bg-amber-800 dark:bg-amber-600 dark:hover:bg-amber-500 px-4 py-2.5 text-xs sm:text-sm font-bold text-white shadow-sm transition-colors whitespace-nowrap"
+                    >
+                      Llamar {activeCountry.helplines[0]?.numberDisplay || "106"}
+                    </a>
                   </div>
                 </div>
               </div>

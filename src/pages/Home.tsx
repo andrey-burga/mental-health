@@ -17,25 +17,26 @@ import {
 import { DailyReflection } from "../types/reflections";
 
 // Servicios dinámicos para la API
-import { testimonialService } from "../services/testimonialService";
-// IMPORTANTE: Asegúrate de importar tu servicio para las reflexiones, por ejemplo:
-import { getDailyReflection } from "../services/reflectionsServices";
+import { getArticles } from "../services/articlesServices";
+import { fetchDailyReflectionWithFallback } from "../services/reflectionsServices";
+import { ResourceType } from "../types/resource";
 
 export default function Home() {
-  const [articles, setArticles] = useState<any[]>([]);
+  const [articles, setArticles] = useState<ResourceType[]>([]);
   const [isLoadingArticles, setIsLoadingArticles] = useState(true);
 
   // Estados para la reflexión diaria dinámica usando tu interfaz
   const [dailyReflection, setDailyReflection] = useState<DailyReflection | null>(null);
   const [isLoadingReflection, setIsLoadingReflection] = useState(true);
+  const [isRefreshingReflection, setIsRefreshingReflection] = useState(false);
+  const [reflectionNotice, setReflectionNotice] = useState<string | null>(null);
 
   // Cargar artículos y reflexión diaria desde la API
   useEffect(() => {
     const fetchData = async () => {
-      // 1. Cargar artículos
       try {
-        const data = await testimonialService.getAll(0, 3);
-        setArticles(data);
+        const data = await getArticles();
+        setArticles(data.slice(0, 3));
       } catch (err) {
         console.error("Error al cargar artículos de la Home:", err);
       } finally {
@@ -43,11 +44,12 @@ export default function Home() {
       }
     };
 
-    const fetchDailyReflection = async () => {
-      // 2. Cargar reflexión diaria
+    const loadInitialReflection = async () => {
       try {
-        const reflectionData = await getDailyReflection();
-        setDailyReflection(reflectionData);
+        const result = await fetchDailyReflectionWithFallback();
+        if (result.reflection) {
+          setDailyReflection(result.reflection);
+        }
       } catch (err) {
         console.error("Error al cargar la reflexión diaria:", err);
       } finally {
@@ -55,10 +57,29 @@ export default function Home() {
       }
     };
 
-    // Ejecutamos ambas de forma concurrente (en paralelo)
     fetchData();
-    fetchDailyReflection();
+    loadInitialReflection();
   }, []);
+
+  const handleRefreshReflection = async () => {
+    if (isRefreshingReflection) return;
+    setIsRefreshingReflection(true);
+    setReflectionNotice(null);
+
+    try {
+      const result = await fetchDailyReflectionWithFallback({ refresh: true });
+      if (result.reflection) {
+        setDailyReflection(result.reflection);
+      }
+      if (result.rateLimited && result.notice) {
+        setReflectionNotice(result.notice);
+      }
+    } catch (err) {
+      console.error("Error al actualizar reflexión diaria:", err);
+    } finally {
+      setIsRefreshingReflection(false);
+    }
+  };
 
   return (
     <PageTransition>
@@ -106,25 +127,77 @@ export default function Home() {
               {/* Tarjeta Visual de Reflexión Dinámica */}
               <div className="w-full max-w-md lg:w-[440px] flex-shrink-0 relative">
                 <div className="absolute inset-0 bg-gradient-to-tr from-indigo-500 to-violet-500 rounded-3xl opacity-10 blur-xl dark:opacity-20" />
-                <div className="relative rounded-3xl border border-neutral-200/80 bg-white/80 p-6 backdrop-blur-md dark:border-neutral-800/80 dark:bg-neutral-950/80 shadow-xl space-y-3">
-                  <div className="flex items-center gap-3">
-                    <div className="h-3 w-3 rounded-full bg-emerald-500 animate-pulse" />
-                    <span className="text-xs font-semibold text-neutral-500 uppercase tracking-wider">Reflexión diaria</span>
+                <div className="relative rounded-3xl border border-neutral-200/80 bg-white/85 p-6 backdrop-blur-md dark:border-neutral-800/80 dark:bg-neutral-950/85 shadow-xl space-y-4">
+                  <div className="flex items-center justify-between gap-2">
+                    <div className="flex items-center gap-2.5">
+                      <div className="h-2.5 w-2.5 rounded-full bg-emerald-500 animate-pulse" />
+                      <span className="text-xs font-semibold text-neutral-500 dark:text-neutral-400 uppercase tracking-wider">
+                        Reflexión diaria
+                      </span>
+                    </div>
+                    {dailyReflection?.theme && (
+                      <span className="text-[11px] font-medium px-2.5 py-0.5 rounded-full bg-indigo-50 text-indigo-700 dark:bg-indigo-950/60 dark:text-indigo-300">
+                        {dailyReflection.theme}
+                      </span>
+                    )}
                   </div>
 
                   {isLoadingReflection ? (
-                    <p className="text-neutral-400 dark:text-neutral-600 text-sm font-light animate-pulse">
-                      Cargando reflexión de hoy...
-                    </p>
+                    <div className="space-y-2 py-2 animate-pulse">
+                      <div className="h-4 w-full rounded bg-neutral-200 dark:bg-neutral-800" />
+                      <div className="h-4 w-4/5 rounded bg-neutral-200 dark:bg-neutral-800" />
+                    </div>
                   ) : (
                     <>
-                      <p className="text-neutral-700 dark:text-neutral-300 font-serif italic text-base sm:text-lg leading-relaxed">
+                      <p className="text-neutral-800 dark:text-neutral-200 font-serif italic text-base sm:text-lg leading-relaxed">
                         "{dailyReflection?.phrase || "El autocuidado es el primer paso hacia el bienestar."}"
                       </p>
+
+                      {dailyReflection?.reflectionPrompt && (
+                        <p className="text-xs sm:text-sm text-neutral-600 dark:text-neutral-400 bg-neutral-50 dark:bg-neutral-900/70 rounded-xl px-3.5 py-2.5 border border-neutral-200/50 dark:border-neutral-800">
+                          {dailyReflection.reflectionPrompt}
+                        </p>
+                      )}
+
                       {dailyReflection?.author && (
                         <span className="block text-xs text-neutral-500 dark:text-neutral-400 font-medium text-right">
                           — {dailyReflection.author}
                         </span>
+                      )}
+
+                      <div className="pt-2 border-t border-neutral-200/60 dark:border-neutral-800/80 flex items-center justify-between gap-2 flex-wrap">
+                        <Link
+                          to={dailyReflection?.suggestedRoute || "/respiracion"}
+                          className="inline-flex items-center gap-1.5 rounded-xl bg-indigo-600 hover:bg-indigo-700 px-3.5 py-2 text-xs font-semibold text-white transition-colors shadow-sm"
+                        >
+                          <span>{dailyReflection?.suggestedLabel || "Practicar respiración"}</span>
+                          <span aria-hidden="true">→</span>
+                        </Link>
+
+                        <button
+                          type="button"
+                          onClick={handleRefreshReflection}
+                          disabled={isRefreshingReflection}
+                          className="inline-flex items-center gap-1.5 rounded-xl border border-neutral-200 dark:border-neutral-700 bg-white dark:bg-neutral-900 px-3 py-2 text-xs font-medium text-neutral-700 dark:text-neutral-300 hover:bg-neutral-50 dark:hover:bg-neutral-800 disabled:opacity-60 transition-colors"
+                        >
+                          <svg
+                            className={`h-3.5 w-3.5 ${isRefreshingReflection ? "animate-spin" : ""}`}
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            strokeWidth="2"
+                            stroke="currentColor"
+                            aria-hidden="true"
+                          >
+                            <path strokeLinecap="round" strokeLinejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0l3.181 3.183a8.25 8.25 0 0013.803-3.7M4.031 9.865a8.25 8.25 0 0113.803-3.7l3.181 3.182m0-4.991v4.99" />
+                          </svg>
+                          <span>{isRefreshingReflection ? "Generando..." : "Nueva reflexión"}</span>
+                        </button>
+                      </div>
+
+                      {reflectionNotice && (
+                        <p role="status" className="text-[11px] text-amber-700 dark:text-amber-400">
+                          {reflectionNotice}
+                        </p>
                       )}
                     </>
                   )}
@@ -195,22 +268,18 @@ export default function Home() {
                 </div>
               ) : (
                 <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-                  {articles.map((article) => {
-                    const authorName = typeof article.author === "object" ? article.author?.name : article.author || "Anónimo";
-                    const categoryName = typeof article.category === "object" ? article.category?.name : article.category || "General";
-
-                    return (
+                  {articles.map((article) => (
+                    <Link key={article.id} to="/articulos" className="block h-full">
                       <ArticleCard
-                        key={article.id}
                         title={article.title}
-                        description={article.excerpt}
-                        date={article.created_at}
-                        datetime={article.created_at}
-                        category={categoryName}
-                        author={authorName}
+                        description={article.excerpt || article.description}
+                        date={article.published_at}
+                        datetime={article.published_at}
+                        category={article.category || "General"}
+                        author={{ name: "Equipo Editorial", role: "Salud Mental" }}
                       />
-                    );
-                  })}
+                    </Link>
+                  ))}
                 </div>
               )}
             </div>

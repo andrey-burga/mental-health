@@ -410,8 +410,17 @@ export const mockApiAdapter: AxiosAdapter = async (config) => {
   }
 
   if (method === "get" && path.startsWith("/disorders/slug/")) {
-    const slug = path.replace("/disorders/slug/", "");
-    const found = INITIAL_DISORDERS.find((d) => d.slug === slug);
+    const slugAliases: Record<string, string> = {
+      ansiedad: "trastorno-de-ansiedad-generalizada",
+      depresion: "trastorno-depresivo-mayor",
+      estres: "trastorno-por-estres-postraumatico",
+      panico: "trastorno-de-panico",
+      toc: "trastorno-obsesivo-compulsivo",
+      bipolar: "trastorno-bipolar",
+    };
+    const rawSlug = path.replace("/disorders/slug/", "");
+    const resolvedSlug = slugAliases[rawSlug] || rawSlug;
+    const found = INITIAL_DISORDERS.find((d) => d.slug === resolvedSlug);
     if (!found) return makeError(config, 404, "Trastorno no encontrado");
     return makeResponse(config, 200, found);
   }

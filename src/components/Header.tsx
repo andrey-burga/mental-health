@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 
@@ -15,9 +15,19 @@ const routes: NavRoute[] = [
   { path: "/testimonios", label: "Testimonios" },
 ];
 
+const personalTools: NavRoute[] = [
+  { path: "/dashboard", label: "Mi Panel" },
+  { path: "/diario", label: "Diario emocional" },
+  { path: "/respiracion", label: "Respiración guiada" },
+  { path: "/autocuidado-diario", label: "Autocuidado diario" },
+  { path: "/sonidos", label: "Sonidos terapéuticos" },
+];
+
 function Header() {
   const navigate = useNavigate();
   const [menuOpen, setMenuOpen] = useState<boolean>(false);
+  const [toolsOpen, setToolsOpen] = useState<boolean>(false);
+  const toolsDropdownRef = useRef<HTMLDivElement>(null);
   const { isAuthenticated, user, logout } = useAuth();
   const userName = user?.name || "Usuario";
 
@@ -41,11 +51,35 @@ function Header() {
     }
   }, [darkMode]);
 
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        toolsDropdownRef.current &&
+        !toolsDropdownRef.current.contains(event.target as Node)
+      ) {
+        setToolsOpen(false);
+      }
+    };
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        setToolsOpen(false);
+        setMenuOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    document.addEventListener("keydown", handleKeyDown);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+      document.removeEventListener("keydown", handleKeyDown);
+    };
+  }, []);
+
   const toggleDarkMode = () => setDarkMode(prev => !prev);
 
   const handleLogout = async () => {
     try {
       await logout();
+      setToolsOpen(false);
       setMenuOpen(false);
       navigate("/login");
     } catch (error) {
@@ -108,18 +142,81 @@ function Header() {
 
               {/* SESIÓN CONDICIONAL */}
               {isAuthenticated ? (
-                <div className="hidden md:flex items-center gap-4">
-                  <span className="text-sm font-medium text-neutral-700 dark:text-neutral-300">
+                <div className="hidden md:flex items-center gap-2.5">
+                  <NavLink
+                    to="/dashboard"
+                    className={({ isActive }) =>
+                      `rounded-xl px-3 py-2 text-sm font-medium transition-colors ${
+                        isActive
+                          ? "bg-indigo-50 text-indigo-700 dark:bg-indigo-950/50 dark:text-indigo-300 font-semibold"
+                          : "text-neutral-700 hover:bg-neutral-100 dark:text-neutral-200 dark:hover:bg-neutral-900"
+                      }`
+                    }
+                  >
+                    Mi Panel
+                  </NavLink>
+
+                  <div className="relative" ref={toolsDropdownRef}>
+                    <button
+                      type="button"
+                      onClick={() => setToolsOpen((prev) => !prev)}
+                      aria-expanded={toolsOpen}
+                      aria-haspopup="menu"
+                      className="inline-flex items-center gap-1 rounded-xl border border-neutral-200 bg-white px-3 py-2 text-sm font-medium text-neutral-700 hover:bg-neutral-50 dark:border-neutral-800 dark:bg-neutral-900 dark:text-neutral-200 dark:hover:bg-neutral-800 transition-colors cursor-pointer"
+                    >
+                      <span>Herramientas</span>
+                      <svg
+                        className={`h-4 w-4 transition-transform duration-200 ${toolsOpen ? "rotate-180" : ""}`}
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        strokeWidth="2"
+                        stroke="currentColor"
+                        aria-hidden="true"
+                      >
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
+                      </svg>
+                    </button>
+
+                    {toolsOpen && (
+                      <div
+                        role="menu"
+                        aria-label="Herramientas de bienestar"
+                        className="absolute right-0 mt-2 w-56 rounded-2xl border border-neutral-200/80 bg-white/95 backdrop-blur-lg p-1.5 shadow-xl dark:border-neutral-800 dark:bg-neutral-900/95 z-50"
+                      >
+                        {personalTools.map((tool) => (
+                          <NavLink
+                            key={tool.path}
+                            to={tool.path}
+                            role="menuitem"
+                            onClick={() => setToolsOpen(false)}
+                            className={({ isActive }) =>
+                              `block rounded-xl px-3.5 py-2.5 text-sm transition-colors ${
+                                isActive
+                                  ? "bg-indigo-50 text-indigo-700 font-semibold dark:bg-indigo-950/50 dark:text-indigo-300"
+                                  : "text-neutral-700 hover:bg-neutral-100 dark:text-neutral-300 dark:hover:bg-neutral-800"
+                              }`
+                            }
+                          >
+                            {tool.label}
+                          </NavLink>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+
+                  <span className="hidden xl:inline text-sm font-medium text-neutral-700 dark:text-neutral-300 pl-1">
                     Hola, <strong className="text-indigo-600 dark:text-indigo-400">{userName}</strong>
                   </span>
                   <button
                     onClick={handleLogout}
-                    className="flex items-center gap-1.5 rounded-xl border border-red-200 dark:border-red-900/50 bg-red-50/50 dark:bg-red-950/20 px-4 py-2 text-sm font-medium text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-950/40 transition-all duration-200 transform active:scale-95 cursor-pointer"
+                    className="flex items-center gap-1.5 rounded-xl border border-red-200 dark:border-red-900/50 bg-red-50/50 dark:bg-red-950/20 px-3 py-2 text-sm font-medium text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-950/40 transition-all duration-200 transform active:scale-95 cursor-pointer"
+                    aria-label="Cerrar sesión"
+                    title="Cerrar sesión"
                   >
-                    <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" strokeWidth="2" stroke="currentColor">
+                    <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" strokeWidth="2" stroke="currentColor" aria-hidden="true">
                       <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 9V5.25A2.25 2.25 0 0013.5 3h-6a2.25 2.25 0 00-2.25 2.25v13.5A2.25 2.25 0 007.5 21h6a2.25 2.25 0 002.25-2.25V15M12 9l-3 3m0 0l3 3m-3-3h12.75" />
                     </svg>
-                    Cerrar sesión
+                    <span className="hidden lg:inline">Cerrar sesión</span>
                   </button>
                 </div>
               ) : (
@@ -189,7 +286,28 @@ function Header() {
               <div className="mt-4 pt-4 border-t border-neutral-200 dark:border-neutral-800 flex flex-col gap-2 px-2">
                 {isAuthenticated ? (
                   <div className="space-y-3">
-                    <p className="text-sm text-center text-neutral-600 dark:text-neutral-400">
+                    <div className="space-y-1">
+                      <p className="px-2 pb-1 text-xs font-semibold uppercase tracking-wider text-neutral-400 dark:text-neutral-500">
+                        Mi Espacio Personal
+                      </p>
+                      {personalTools.map((tool) => (
+                        <NavLink
+                          key={tool.path}
+                          to={tool.path}
+                          className={({ isActive }) =>
+                            `block rounded-xl px-4 py-2.5 text-sm font-medium transition-colors ${
+                              isActive
+                                ? "bg-indigo-50 text-indigo-600 dark:bg-indigo-950/50 dark:text-indigo-400"
+                                : "text-neutral-600 hover:bg-neutral-50 hover:text-neutral-900 dark:text-neutral-400 dark:hover:bg-neutral-900 dark:hover:text-neutral-200"
+                            }`
+                          }
+                          onClick={() => setMenuOpen(false)}
+                        >
+                          {tool.label}
+                        </NavLink>
+                      ))}
+                    </div>
+                    <p className="text-sm text-center text-neutral-600 dark:text-neutral-400 pt-2 border-t border-neutral-200/60 dark:border-neutral-800/60">
                       Sesión iniciada como <strong className="text-indigo-600 dark:text-indigo-400">{userName}</strong>
                     </p>
                     <button

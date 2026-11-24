@@ -32,17 +32,6 @@ function Login() {
         rememberMe
       );
       navigate("/dashboard");
-
-      // 3. Almacenamiento seguro del token
-      // Si el usuario marca "Recordarme", usamos localStorage (persiste tras cerrar el navegador).
-      // Si no, usamos sessionStorage (se borra al cerrar la pestaña).
-      const storage = rememberMe ? localStorage : sessionStorage;
-      storage.setItem("token", response.access_token);
-
-      // Opcional: También puedes guardar los datos básicos del usuario
-      storage.setItem("user", JSON.stringify(response.user));
-
-      // Redirigir al dashboard o ruta principal de la aplicación
     } catch (err: any) {
       // Capturamos el error detallado que configuramos en FastAPI
       const message = err.response?.data?.detail || "Error al intentar iniciar sesión. Por favor, verifica tus datos.";
@@ -106,8 +95,11 @@ function Login() {
 
                   {/* Alerta de Error */}
                   {error && (
-                    <div className="bg-red-50 dark:bg-red-950/30 border border-red-200 dark:border-red-900/50 text-red-600 dark:text-red-400 text-xs p-3.5 rounded-xl font-medium leading-relaxed">
-                      ⚠️ {error}
+                    <div className="bg-red-50 dark:bg-red-950/30 border border-red-200 dark:border-red-900/50 text-red-700 dark:text-red-300 text-xs p-3.5 rounded-xl font-medium leading-relaxed flex items-start gap-2">
+                      <svg className="h-4 w-4 shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" strokeWidth="2" stroke="currentColor" aria-hidden="true">
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v3.75m9-.75a9 9 0 11-18 0 9 9 0 0118 0zm-9 3.75h.008v.008H12v-.008z" />
+                      </svg>
+                      <span>{error}</span>
                     </div>
                   )}
 

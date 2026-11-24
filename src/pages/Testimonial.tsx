@@ -70,10 +70,13 @@ function Testimonial() {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  // Estados para Modales
+  // Estados para Modales y confirmaciones visuales
   const [selectedTestimonial, setSelectedTestimonial] = useState<TestimonialType | null>(null);
   const [isFormModalOpen, setIsFormModalOpen] = useState(false);
   const [editingItem, setEditingItem] = useState<TestimonialType | null>(null);
+  const [pendingDeleteItem, setPendingDeleteItem] = useState<TestimonialType | null>(null);
+  const [deleting, setDeleting] = useState(false);
+  const [actionError, setActionError] = useState<string | null>(null);
 
   // Cargar testimonios desde la API
   const loadTestimonials = async () => {
@@ -105,25 +108,38 @@ function Testimonial() {
     }
   };
 
-  const handleDelete = async (e: React.MouseEvent, id: string) => {
+  const handleRequestDelete = (e: React.MouseEvent, item: TestimonialType) => {
     e.stopPropagation(); // Evita abrir el modal de lectura al hacer clic en eliminar
-    if (!confirm("¿Estás seguro de que deseas eliminar este testimonio?")) return;
+    setActionError(null);
+    setPendingDeleteItem(item);
+  };
+
+  const handleConfirmDelete = async () => {
+    if (!pendingDeleteItem) return;
+    setDeleting(true);
+    setActionError(null);
 
     try {
-      await testimonialService.delete(id);
-      setTestimonials((prev) => prev.filter((t) => t.id !== id));
+      await testimonialService.delete(pendingDeleteItem.id);
+      setTestimonials((prev) => prev.filter((t) => t.id !== pendingDeleteItem.id));
+      setPendingDeleteItem(null);
     } catch (err: any) {
-      alert(err.message || "Error al eliminar el testimonio");
+      setActionError(err.message || "Error al eliminar el testimonio.");
+      setPendingDeleteItem(null);
+    } finally {
+      setDeleting(false);
     }
   };
 
   const handleOpenEdit = (e: React.MouseEvent, item: TestimonialType) => {
     e.stopPropagation(); // Evita abrir el modal de lectura al hacer clic en editar
+    setActionError(null);
     setEditingItem(item);
     setIsFormModalOpen(true);
   };
 
   const handleOpenCreate = () => {
+    setActionError(null);
     setEditingItem(null);
     setIsFormModalOpen(true);
   };
@@ -168,7 +184,57 @@ function Testimonial() {
 
           {/* GRID BENTO DE TESTIMONIOS */}
           <Section>
-            <div className="max-w-7xl mx-auto">
+            <div className="max-w-7xl mx-auto space-y-6">
+              {actionError && (
+                <div
+                  role="alert"
+                  className="rounded-2xl border border-red-200 dark:border-red-900/50 bg-red-50/80 dark:bg-red-950/30 px-4 py-3 text-sm text-red-700 dark:text-red-300 flex items-center justify-between gap-3"
+                >
+                  <span>{actionError}</span>
+                  <button
+                    type="button"
+                    onClick={() => setActionError(null)}
+                    className="text-xs font-semibold underline shrink-0"
+                  >
+                    Cerrar
+                  </button>
+                </div>
+              )}
+
+              {pendingDeleteItem && (
+                <div
+                  role="alertdialog"
+                  aria-labelledby="testimonial-delete-confirm-title"
+                  className="rounded-2xl border border-rose-200 dark:border-rose-900/60 bg-rose-50/90 dark:bg-rose-950/40 p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3"
+                >
+                  <p
+                    id="testimonial-delete-confirm-title"
+                    className="text-sm text-rose-900 dark:text-rose-200"
+                  >
+                    ¿Confirmas que deseas eliminar la historia{" "}
+                    <strong>"{pendingDeleteItem.title}"</strong>? Esta acción no se puede revertir.
+                  </p>
+                  <div className="flex items-center gap-2 shrink-0">
+                    <button
+                      type="button"
+                      disabled={deleting}
+                      onClick={() => setPendingDeleteItem(null)}
+                      className="px-3.5 py-1.5 rounded-lg border border-neutral-300 dark:border-neutral-700 bg-white dark:bg-neutral-800 text-xs font-medium text-neutral-700 dark:text-neutral-200"
+                    >
+                      Cancelar
+                    </button>
+                    <button
+                      type="button"
+                      disabled={deleting}
+                      onClick={handleConfirmDelete}
+                      className="px-3.5 py-1.5 rounded-lg bg-rose-600 hover:bg-rose-700 text-xs font-semibold text-white disabled:opacity-60"
+                    >
+                      {deleting ? "Eliminando..." : "Sí, eliminar"}
+                    </button>
+                  </div>
+                </div>
+              )}
+
               {isLoading && (
                 <div className="text-center py-20 text-neutral-500 font-light">
                   Cargando testimonios...
@@ -229,18 +295,26 @@ function Testimonial() {
                                 {canEditOrDelete && (
                                   <div className="flex items-center gap-1 bg-neutral-100 dark:bg-neutral-800/80 p-1 rounded-lg">
                                     <button
+                                      type="button"
                                       onClick={(e) => handleOpenEdit(e, testimonial)}
-                                      className="p-1 text-xs text-neutral-500 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors"
-                                      title="Editar"
+                                      className="p-1.5 text-neutral-500 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors rounded"
+                                      title="Editar testimonio"
+                                      aria-label="Editar testimonio"
                                     >
-                                      ✏️
+                                      <svg className="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" strokeWidth="2" stroke="currentColor" aria-hidden="true">
+                                        <path strokeLinecap="round" strokeLinejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931z" />
+                                      </svg>
                                     </button>
                                     <button
-                                      onClick={(e) => handleDelete(e, testimonial.id)}
-                                      className="p-1 text-xs text-neutral-500 hover:text-red-500 transition-colors"
-                                      title="Eliminar"
+                                      type="button"
+                                      onClick={(e) => handleRequestDelete(e, testimonial)}
+                                      className="p-1.5 text-neutral-500 hover:text-red-500 transition-colors rounded"
+                                      title="Eliminar testimonio"
+                                      aria-label="Eliminar testimonio"
                                     >
-                                      🗑️
+                                      <svg className="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" strokeWidth="2" stroke="currentColor" aria-hidden="true">
+                                        <path strokeLinecap="round" strokeLinejoin="round" d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0" />
+                                      </svg>
                                     </button>
                                   </div>
                                 )}

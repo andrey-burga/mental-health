@@ -7,6 +7,7 @@ import ArticleModal from "../components/ArticleModal";
 import ArticleFormModal from "../components/ArticleFormModal";
 import PageTransition from "../components/PageTransition";
 import { getArticles, deleteArticle } from "../services/articlesServices";
+import { useAuth } from "../context/AuthContext";
 
 export interface ArticleType {
   id: string;
@@ -20,59 +21,21 @@ export interface ArticleType {
   author_id?: string | null;
 }
 
-// Decodificador seguro de JWT
-function parseJwt(token: string | null) {
-  if (!token) return null;
-  try {
-    const base64Url = token.split(".")[1];
-    const base64 = base64Url.replace(/-/g, "+").replace(/_/g, "/");
-    const jsonPayload = decodeURIComponent(
-      atob(base64)
-        .split("")
-        .map((c) => "%" + ("00" + c.charCodeAt(0).toString(16)).slice(-2))
-        .join("")
-    );
-    return JSON.parse(jsonPayload);
-  } catch (e) {
-    return null;
-  }
-}
-
 function Articulos() {
+  const { user, token, isAuthenticated } = useAuth();
   const [articles, setArticles] = useState<ArticleType[]>([]);
   const [selectedArticle, setSelectedArticle] = useState<ArticleType | null>(null);
 
   const [isFormOpen, setIsFormOpen] = useState<boolean>(false);
   const [articleToEdit, setArticleToEdit] = useState<ArticleType | null>(null);
+  const [articlePendingDelete, setArticlePendingDelete] = useState<ArticleType | null>(null);
+  const [deleting, setDeleting] = useState<boolean>(false);
 
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
-  const [token, setToken] = useState<string | null>(null);
+  const [actionError, setActionError] = useState<string | null>(null);
 
-  const [userRole, setUserRole] = useState<string | null>(null);
-  const [currentUserId, setCurrentUserId] = useState<string | null>(null);
-
-  // 1. Obtener el token e identificar al usuario
-  useEffect(() => {
-    const storedToken =
-      localStorage.getItem("token") ||
-      localStorage.getItem("access_token") ||
-      sessionStorage.getItem("token") ||
-      sessionStorage.getItem("access_token");
-
-    setToken(storedToken);
-
-    if (storedToken) {
-      const decoded = parseJwt(storedToken);
-      const roleInToken = String(decoded?.role || "");
-      const isAdminRole = roleInToken === "2" || roleInToken.toLowerCase() === "admin" || Boolean(decoded?.is_admin);
-
-      setUserRole(isAdminRole ? "admin" : "user");
-      setCurrentUserId(decoded?.sub || decoded?.id || null);
-    }
-  }, []);
-
-  // 2. Cargar los artículos usando el servicio externo
+  // Cargar los artículos usando el servicio externo
   const fetchArticles = useCallback(async () => {
     try {
       setLoading(true);
@@ -90,38 +53,47 @@ function Articulos() {
     fetchArticles();
   }, [fetchArticles]);
 
-  const isAuthenticated = Boolean(token);
-  const isAdmin = userRole === "admin";
-
   const canManageArticle = (article: ArticleType): boolean => {
-    if (!token) return false;
-    if (isAdmin) return true;
-    if (currentUserId && String(article.author_id) === String(currentUserId)) return true;
-    return false;
+    if (!isAuthenticated || !user) return false;
+    if (user.role === "admin") return true;
+    return Boolean(user.id && article.author_id && String(article.author_id) === String(user.id));
   };
 
-  // 3. Manejadores
+  // Manejadores
   const handleOpenCreate = () => {
+    setActionError(null);
     setArticleToEdit(null);
     setIsFormOpen(true);
   };
 
   const handleOpenEdit = (e: React.MouseEvent, article: ArticleType) => {
     e.stopPropagation();
+    setActionError(null);
     setArticleToEdit(article);
     setIsFormOpen(true);
   };
 
-  const handleDelete = async (e: React.MouseEvent, articleId: string) => {
+  const handleRequestDelete = (e: React.MouseEvent, article: ArticleType) => {
     e.stopPropagation();
-    if (!window.confirm("¿Estás seguro de que deseas eliminar este artículo?")) return;
+    setActionError(null);
+    setArticlePendingDelete(article);
+  };
+
+  const handleConfirmDelete = async () => {
+    if (!articlePendingDelete) return;
+    setDeleting(true);
+    setActionError(null);
 
     try {
-      if (!token) throw new Error("No hay un token de autenticación válido.");
-      await deleteArticle(articleId, token);
-      fetchArticles();
+      if (!token) throw new Error("No hay una sesión de autenticación válida.");
+      await deleteArticle(articlePendingDelete.id, token);
+      setArticlePendingDelete(null);
+      await fetchArticles();
     } catch (err: any) {
-      alert(err.message || "Error al eliminar");
+      setActionError(err.message || "Error al eliminar el artículo.");
+      setArticlePendingDelete(null);
+    } finally {
+      setDeleting(false);
     }
   };
 
@@ -151,6 +123,7 @@ function Articulos() {
 
                 {isAuthenticated && (
                   <button
+                    type="button"
                     onClick={handleOpenCreate}
                     className="flex-shrink-0 inline-flex items-center justify-center gap-2 px-5 py-3 rounded-2xl bg-indigo-600 hover:bg-indigo-700 text-white font-semibold shadow-lg shadow-indigo-500/20 transition-all duration-200 transform hover:-translate-y-0.5"
                   >
@@ -158,6 +131,56 @@ function Articulos() {
                   </button>
                 )}
               </div>
+
+              {actionError && (
+                <div
+                  role="alert"
+                  className="mt-6 rounded-2xl border border-red-200 dark:border-red-900/50 bg-red-50/80 dark:bg-red-950/30 px-4 py-3 text-sm text-red-700 dark:text-red-300 flex items-center justify-between gap-3"
+                >
+                  <span>{actionError}</span>
+                  <button
+                    type="button"
+                    onClick={() => setActionError(null)}
+                    className="text-xs font-semibold underline shrink-0"
+                  >
+                    Cerrar
+                  </button>
+                </div>
+              )}
+
+              {articlePendingDelete && (
+                <div
+                  role="alertdialog"
+                  aria-labelledby="article-delete-confirm-title"
+                  className="mt-6 rounded-2xl border border-rose-200 dark:border-rose-900/60 bg-rose-50/90 dark:bg-rose-950/40 p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3"
+                >
+                  <p
+                    id="article-delete-confirm-title"
+                    className="text-sm text-rose-900 dark:text-rose-200"
+                  >
+                    ¿Confirmas que deseas eliminar el artículo{" "}
+                    <strong>"{articlePendingDelete.title}"</strong>? Esta acción no se puede deshacer.
+                  </p>
+                  <div className="flex items-center gap-2 shrink-0">
+                    <button
+                      type="button"
+                      disabled={deleting}
+                      onClick={() => setArticlePendingDelete(null)}
+                      className="px-3.5 py-1.5 rounded-lg border border-neutral-300 dark:border-neutral-700 bg-white dark:bg-neutral-800 text-xs font-medium text-neutral-700 dark:text-neutral-200"
+                    >
+                      Cancelar
+                    </button>
+                    <button
+                      type="button"
+                      disabled={deleting}
+                      onClick={handleConfirmDelete}
+                      className="px-3.5 py-1.5 rounded-lg bg-rose-600 hover:bg-rose-700 text-xs font-semibold text-white disabled:opacity-60"
+                    >
+                      {deleting ? "Eliminando..." : "Sí, eliminar"}
+                    </button>
+                  </div>
+                </div>
+              )}
             </div>
           </Section>
 
@@ -186,16 +209,24 @@ function Articulos() {
                       {canManageArticle(featuredArticle) && (
                         <div className="absolute top-6 right-6 z-10 flex gap-2">
                           <button
+                            type="button"
                             onClick={(e) => handleOpenEdit(e, featuredArticle)}
-                            className="px-3 py-1.5 text-xs font-semibold rounded-lg bg-white/90 dark:bg-neutral-800/90 text-neutral-700 dark:text-neutral-200 border border-neutral-200 dark:border-neutral-700 hover:bg-indigo-600 hover:text-white transition-colors shadow-sm"
+                            className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold rounded-lg bg-white/90 dark:bg-neutral-800/90 text-neutral-700 dark:text-neutral-200 border border-neutral-200 dark:border-neutral-700 hover:bg-indigo-600 hover:text-white transition-colors shadow-sm"
                           >
-                            Editar
+                            <svg className="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" strokeWidth="2" stroke="currentColor" aria-hidden="true">
+                              <path strokeLinecap="round" strokeLinejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931z" />
+                            </svg>
+                            <span>Editar</span>
                           </button>
                           <button
-                            onClick={(e) => handleDelete(e, featuredArticle.id)}
-                            className="px-3 py-1.5 text-xs font-semibold rounded-lg bg-red-500/10 text-red-600 dark:text-red-400 border border-red-200 dark:border-red-900/50 hover:bg-red-600 hover:text-white transition-colors shadow-sm"
+                            type="button"
+                            onClick={(e) => handleRequestDelete(e, featuredArticle)}
+                            className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold rounded-lg bg-red-500/10 text-red-600 dark:text-red-400 border border-red-200 dark:border-red-900/50 hover:bg-red-600 hover:text-white transition-colors shadow-sm"
                           >
-                            Eliminar
+                            <svg className="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" strokeWidth="2" stroke="currentColor" aria-hidden="true">
+                              <path strokeLinecap="round" strokeLinejoin="round" d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0" />
+                            </svg>
+                            <span>Eliminar</span>
                           </button>
                         </div>
                       )}
@@ -230,16 +261,24 @@ function Articulos() {
                           {canManageArticle(article) && (
                             <div className="absolute top-4 right-4 z-10 flex gap-1.5 opacity-90 group-hover:opacity-100">
                               <button
+                                type="button"
                                 onClick={(e) => handleOpenEdit(e, article)}
-                                className="px-2.5 py-1 text-xs font-medium rounded-md bg-white/90 dark:bg-neutral-800/90 text-neutral-700 dark:text-neutral-200 border border-neutral-200 dark:border-neutral-700 hover:bg-indigo-600 hover:text-white transition-colors shadow-sm"
+                                className="inline-flex items-center gap-1 px-2.5 py-1 text-xs font-medium rounded-md bg-white/90 dark:bg-neutral-800/90 text-neutral-700 dark:text-neutral-200 border border-neutral-200 dark:border-neutral-700 hover:bg-indigo-600 hover:text-white transition-colors shadow-sm"
                               >
-                                Editar
+                                <svg className="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" strokeWidth="2" stroke="currentColor" aria-hidden="true">
+                                  <path strokeLinecap="round" strokeLinejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931z" />
+                                </svg>
+                                <span>Editar</span>
                               </button>
                               <button
-                                onClick={(e) => handleDelete(e, article.id)}
-                                className="px-2.5 py-1 text-xs font-medium rounded-md bg-red-500/10 text-red-600 dark:text-red-400 border border-red-200 dark:border-red-900/50 hover:bg-red-600 hover:text-white transition-colors shadow-sm"
+                                type="button"
+                                onClick={(e) => handleRequestDelete(e, article)}
+                                className="inline-flex items-center gap-1 px-2.5 py-1 text-xs font-medium rounded-md bg-red-500/10 text-red-600 dark:text-red-400 border border-red-200 dark:border-red-900/50 hover:bg-red-600 hover:text-white transition-colors shadow-sm"
                               >
-                                Eliminar
+                                <svg className="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" strokeWidth="2" stroke="currentColor" aria-hidden="true">
+                                  <path strokeLinecap="round" strokeLinejoin="round" d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0" />
+                                </svg>
+                                <span>Eliminar</span>
                               </button>
                             </div>
                           )}

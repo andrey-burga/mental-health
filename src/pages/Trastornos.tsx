@@ -2,9 +2,9 @@ import React, { useEffect, useState, useMemo } from "react";
 import { Link } from "react-router-dom";
 import Header from "../components/Header";
 import Section from "../components/Section";
-import Warning from "../components/Warning";
 import Footer from "../components/Footer";
 import PageTransition from "../components/PageTransition";
+import ClinicalDisclaimer from "../components/ClinicalDisclaimer";
 import { getDisorders } from "../services/disorders";
 
 interface Disorder {
@@ -66,6 +66,8 @@ function Trastornos() {
             </div>
           </Section>
 
+          <ClinicalDisclaimer />
+
           {/* CONTROL BAR (Buscador y Filtros Premium) */}
           <section className="bg-white dark:bg-neutral-900/60 backdrop-blur-md border border-neutral-200/60 dark:border-neutral-800/60 rounded-2xl p-4 sm:p-6 shadow-sm space-y-4">
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
@@ -78,7 +80,11 @@ function Trastornos() {
                   onChange={(e) => setSearchQuery(e.target.value)}
                   className="w-full pl-4 pr-10 py-2.5 text-sm bg-gray-50 dark:bg-neutral-800/50 border border-gray-200 dark:border-neutral-700/60 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary/40 focus:border-primary transition-all text-neutral-900 dark:text-white"
                 />
-                <span className="absolute right-3 top-3 text-gray-400">🔍</span>
+                <span className="absolute right-3 top-3 text-gray-400 pointer-events-none" aria-hidden="true">
+                  <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" strokeWidth="2" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z" />
+                  </svg>
+                </span>
               </div>
 
               {/* Filtros rápidos */}

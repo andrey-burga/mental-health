@@ -5,6 +5,7 @@ import Header from "../components/Header";
 import Section from "../components/Section";
 import Footer from "../components/Footer";
 import PageTransition from "../components/PageTransition";
+import ClinicalDisclaimer from "../components/ClinicalDisclaimer";
 import { getDisorderBySlug } from "../services/disorders";
 
 interface Symptom {
@@ -80,7 +81,11 @@ function TrastornoDetalle() {
           <Header />
           <main className="flex-grow flex items-center justify-center px-4 py-20">
             <div className="max-w-md w-full text-center space-y-6 bg-white dark:bg-neutral-900/60 border border-neutral-200/60 dark:border-neutral-800/60 p-8 rounded-3xl shadow-sm">
-              <span className="text-4xl">🔍</span>
+              <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-2xl bg-indigo-50 text-indigo-600 dark:bg-indigo-950/40 dark:text-indigo-400">
+                <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" strokeWidth="2" stroke="currentColor" aria-hidden="true">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z" />
+                </svg>
+              </div>
               <h2 className="text-xl font-bold text-neutral-900 dark:text-white">
                 Trastorno no encontrado
               </h2>
@@ -135,6 +140,8 @@ function TrastornoDetalle() {
             </p>
           </section>
 
+          <ClinicalDisclaimer compact />
+
           <hr className="border-neutral-200/60 dark:border-neutral-800/60" />
 
           {/* SÍNTOMAS FRECUENTES COMO TARJETAS GRID */}
@@ -167,7 +174,9 @@ function TrastornoDetalle() {
           <section className="pt-4">
             <div className="rounded-2xl border border-amber-200/50 dark:border-amber-900/30 bg-amber-50/30 dark:bg-amber-950/10 p-6 sm:p-8 space-y-4 shadow-sm backdrop-blur-sm">
               <h3 className="text-lg font-bold text-amber-800 dark:text-amber-400 tracking-tight flex items-center gap-2">
-                <span className="text-xl">⚠️</span>
+                <svg className="h-5 w-5 shrink-0" fill="none" viewBox="0 0 24 24" strokeWidth="2" stroke="currentColor" aria-hidden="true">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z" />
+                </svg>
                 Un recordatorio sumamente importante
               </h3>
               <p className="text-sm text-amber-900/80 dark:text-neutral-300 font-light leading-relaxed">

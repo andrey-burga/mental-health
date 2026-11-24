@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { useReducedMotion } from "framer-motion";
 import Header from "../components/Header";
 import Section from "../components/Section";
 import Footer from "../components/Footer";
@@ -48,6 +49,7 @@ export default function RespiracionPage() {
   const [phaseIndex, setPhaseIndex] = useState(0);
   const [timeLeft, setTimeLeft] = useState(TECHNIQUES[0].pattern[0].duration);
   const [completedCycles, setCompletedCycles] = useState(0);
+  const shouldReduceMotion = useReducedMotion();
 
   const currentPhase = selectedTechnique.pattern[phaseIndex];
 
@@ -97,18 +99,20 @@ export default function RespiracionPage() {
     }
   };
 
-  // Escalar el círculo dinámicamente según la fase
+  // Escalar el círculo dinámicamente según la fase (o solo tono/opacidad si hay prefers-reduced-motion)
   const getCircleScale = () => {
     if (!isActive) return "scale-100";
+    const scaleIn = shouldReduceMotion ? "scale-100" : "scale-125";
+    const scaleOut = shouldReduceMotion ? "scale-100" : "scale-90";
     switch (currentPhase.phase) {
       case "Inhala":
-        return "scale-125 bg-teal-500/20 border-teal-500";
+        return `${scaleIn} bg-teal-500/20 border-teal-500`;
       case "Mantén":
-        return "scale-125 bg-sky-500/20 border-sky-500";
+        return `${scaleIn} bg-sky-500/20 border-sky-500`;
       case "Exhala":
-        return "scale-90 bg-indigo-500/20 border-indigo-500";
+        return `${scaleOut} bg-indigo-500/20 border-indigo-500`;
       case "Espera":
-        return "scale-90 bg-slate-500/20 border-slate-400";
+        return `${scaleOut} bg-slate-500/20 border-slate-400`;
     }
   };
 
@@ -164,14 +168,17 @@ export default function RespiracionPage() {
                 <div className="relative flex items-center justify-center w-64 h-64">
                   {/* Anillo exterior decorativo */}
                   <div
-                    className={`absolute inset-0 rounded-full border border-dashed border-teal-500/30 transition-all duration-1000 ${
-                      isActive ? "animate-spin-slow" : ""
-                    }`}
+                    className={`absolute inset-0 rounded-full border border-dashed border-teal-500/30 ${
+                      shouldReduceMotion ? "" : "transition-all duration-1000"
+                    } ${isActive && !shouldReduceMotion ? "animate-spin-slow" : ""}`}
                   />
 
                   {/* Círculo Principal Animado */}
                   <div
-                    className={`w-48 h-48 rounded-full border-4 flex flex-col items-center justify-center transition-all ease-in-out duration-1000 ${getCircleScale()}`}
+                    aria-live="polite"
+                    className={`w-48 h-48 rounded-full border-4 flex flex-col items-center justify-center ${
+                      shouldReduceMotion ? "transition-colors duration-300" : "transition-all ease-in-out duration-1000"
+                    } ${getCircleScale()}`}
                   >
                     <span className="text-2xl font-extrabold text-slate-800 dark:text-white">
                       {isActive ? currentPhase.phase : "Listos"}

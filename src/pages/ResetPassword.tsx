@@ -47,7 +47,11 @@ export default function ResetPassword() {
       <div className="w-full max-w-md space-y-8 rounded-2xl border border-neutral-200 bg-white p-8 shadow-sm dark:border-neutral-800 dark:bg-neutral-900/50">
         
         <div className="text-center">
-          <span className="text-4xl">🔐</span>
+          <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-2xl bg-indigo-50 text-indigo-600 dark:bg-indigo-950/40 dark:text-indigo-400">
+            <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" strokeWidth="2" stroke="currentColor" aria-hidden="true">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 10-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H6.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z" />
+            </svg>
+          </div>
           <h2 className="mt-4 text-3xl font-extrabold tracking-tight text-neutral-900 dark:text-white">
             Nueva contraseña
           </h2>
@@ -119,7 +123,12 @@ export default function ResetPassword() {
             </div>
 
             {status === "error" && (
-              <p className="text-sm text-red-600 dark:text-red-400">⚠️ {message}</p>
+              <p role="alert" className="flex items-center gap-2 text-sm text-red-600 dark:text-red-400">
+                <svg className="h-4 w-4 shrink-0" fill="none" viewBox="0 0 24 24" strokeWidth="2" stroke="currentColor" aria-hidden="true">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v3.75m9-.75a9 9 0 11-18 0 9 9 0 0118 0zm-9 3.75h.008v.008H12v-.008z" />
+                </svg>
+                <span>{message}</span>
+              </p>
             )}
 
             <button

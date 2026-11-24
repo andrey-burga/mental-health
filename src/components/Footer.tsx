@@ -76,10 +76,22 @@ function Footer() {
             </h4>
             <ul className="space-y-3">
               <FooterLink to="/contacto">Contacto</FooterLink>
+              <FooterLink to="/terms">Términos y condiciones</FooterLink>
+              <FooterLink to="/privacy">Política de privacidad</FooterLink>
               <li className="pt-3 border-t border-neutral-200/60 dark:border-neutral-800/60">
-                <div className="rounded-xl bg-amber-50/50 dark:bg-amber-950/10 border border-amber-100/50 dark:border-amber-900/20 p-3">
-                  <span className="text-xs text-amber-700/90 dark:text-amber-400/80 font-light leading-relaxed block">
-                    ⚠️ Este sitio no reemplaza la atención o el diagnóstico médico profesional.
+                <div className="rounded-xl bg-amber-50/50 dark:bg-amber-950/10 border border-amber-100/50 dark:border-amber-900/20 p-3 flex items-start gap-2">
+                  <svg
+                    className="h-4 w-4 text-amber-700 dark:text-amber-400 shrink-0 mt-0.5"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    strokeWidth="2"
+                    stroke="currentColor"
+                    aria-hidden="true"
+                  >
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z" />
+                  </svg>
+                  <span className="text-xs text-amber-800/90 dark:text-amber-300/90 font-light leading-relaxed block">
+                    Este sitio no reemplaza la atención o el diagnóstico médico profesional.
                   </span>
                 </div>
               </li>
@@ -93,12 +105,7 @@ function Footer() {
           <div>
             © {new Date().getFullYear()} AWD S.A.S. — Todos los derechos reservados.
           </div>
-          <div className="flex items-center gap-3 text-[10px] font-mono text-neutral-400 dark:text-neutral-600">
-            <span className="flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-amber-500/10 text-amber-600 dark:text-amber-400 font-sans font-medium">
-              <span className="h-1 w-1 rounded-full bg-amber-500 animate-pulse" />
-              En desarrollo (15%)
-            </span>
-            <span className="text-neutral-300 dark:text-neutral-700">|</span>
+          <div className="flex items-center gap-3 text-[11px] font-mono text-neutral-400 dark:text-neutral-600">
             <span>v1.0.0</span>
           </div>
         </div>

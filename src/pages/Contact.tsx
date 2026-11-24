@@ -1,8 +1,10 @@
-import React, { useState, ChangeEvent, FormEvent } from "react";
+import React, { useState, useEffect, useRef, ChangeEvent, FormEvent } from "react";
 import Header from "../components/Header";
 import Section from "../components/Section";
 import Footer from "../components/Footer";
 import PageTransition from "../components/PageTransition";
+import CrisisModal from "../components/CrisisModal";
+import { detectCrisisSignals, CrisisRiskLevel } from "../utils/crisisSafety";
 
 interface ContactFormData {
   name: string;
@@ -16,24 +18,64 @@ function Contact() {
     email: "",
     message: "",
   });
+  const [submitted, setSubmitted] = useState(false);
+
+  const [crisisRisk, setCrisisRisk] = useState<CrisisRiskLevel>("none");
+  const [isCrisisModalOpen, setIsCrisisModalOpen] = useState(false);
+  const lastAcknowledgedRiskRef = useRef<CrisisRiskLevel>("none");
+
+  useEffect(() => {
+    const result = detectCrisisSignals(formData.message);
+    if (result.riskLevel === "none") {
+      lastAcknowledgedRiskRef.current = "none";
+      setCrisisRisk("none");
+      return;
+    }
+
+    setCrisisRisk(result.riskLevel);
+    const timer = setTimeout(() => {
+      const escalated =
+        result.riskLevel === "high" &&
+        lastAcknowledgedRiskRef.current !== "high";
+      const firstDetection = lastAcknowledgedRiskRef.current === "none";
+
+      if (firstDetection || escalated) {
+        setIsCrisisModalOpen(true);
+      }
+    }, 450);
+
+    return () => clearTimeout(timer);
+  }, [formData.message]);
 
   function handleChange(e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) {
+    setSubmitted(false);
     setFormData({
       ...formData,
       [e.target.name]: e.target.value,
     });
   }
 
+  function handleCloseCrisisModal() {
+    lastAcknowledgedRiskRef.current = crisisRisk;
+    setIsCrisisModalOpen(false);
+  }
+
   function handleSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
-    console.log("Formulario enviado:", formData);
-    alert("Mensaje enviado correctamente 💙");
 
+    const detection = detectCrisisSignals(formData.message);
+    if (detection.riskLevel !== "none") {
+      setCrisisRisk(detection.riskLevel);
+      setIsCrisisModalOpen(true);
+    }
+
+    setSubmitted(true);
     setFormData({
       name: "",
       email: "",
       message: "",
     });
+    lastAcknowledgedRiskRef.current = "none";
   }
 
   return (
@@ -78,7 +120,23 @@ function Contact() {
 
               {/* COLUMNA DERECHA: Formulario como Tarjeta Premium Flotante */}
               <div className="lg:col-span-7">
-                <div className="rounded-3xl border border-neutral-200/60 bg-white/70 dark:border-neutral-800/60 dark:bg-neutral-900/40 p-6 sm:p-10 shadow-xl shadow-neutral-100/50 dark:shadow-none backdrop-blur-md">
+                <div className="rounded-3xl border border-neutral-200/60 bg-white/70 dark:border-neutral-800/60 dark:bg-neutral-900/40 p-6 sm:p-10 shadow-xl shadow-neutral-100/50 dark:shadow-none backdrop-blur-md space-y-5">
+                  {submitted && (
+                    <div
+                      role="status"
+                      className="rounded-2xl border border-emerald-200 dark:border-emerald-900/50 bg-emerald-50/80 dark:bg-emerald-950/30 p-4 text-sm text-emerald-800 dark:text-emerald-300 flex items-center justify-between gap-3"
+                    >
+                      <span>Mensaje recibido correctamente. Gracias por escribirnos.</span>
+                      <button
+                        type="button"
+                        onClick={() => setSubmitted(false)}
+                        className="text-xs font-semibold underline"
+                      >
+                        Cerrar
+                      </button>
+                    </div>
+                  )}
+
                   <form onSubmit={handleSubmit} className="space-y-5">
                     
                     <div>
@@ -101,7 +159,7 @@ function Contact() {
                         Correo electrónico
                       </label>
                       <input
-                        type="type"
+                        type="email"
                         name="email"
                         value={formData.email}
                         onChange={handleChange}
@@ -126,6 +184,19 @@ function Contact() {
                       />
                     </div>
 
+                    {crisisRisk !== "none" && (
+                      <div className="rounded-xl border border-amber-200 dark:border-amber-900/50 bg-amber-50/70 dark:bg-amber-950/30 p-3 flex items-center justify-between gap-2 text-xs text-amber-900 dark:text-amber-300">
+                        <span>Este formulario no es atención inmediata de crisis. Hay líneas gratuitas 24/7 disponibles.</span>
+                        <button
+                          type="button"
+                          onClick={() => setIsCrisisModalOpen(true)}
+                          className="font-semibold underline shrink-0"
+                        >
+                          Ver líneas de ayuda
+                        </button>
+                      </div>
+                    )}
+
                     <button
                       type="submit"
                       className="w-full mt-2 rounded-xl bg-gradient-to-r from-indigo-600 to-violet-600 px-6 py-3.5 text-sm font-semibold text-white shadow-md shadow-indigo-500/10 hover:opacity-95 transition-all duration-150 transform active:scale-[0.99]"
@@ -139,6 +210,12 @@ function Contact() {
             </div>
           </Section>
         </main>
+
+        <CrisisModal
+          isOpen={isCrisisModalOpen}
+          riskLevel={crisisRisk}
+          onClose={handleCloseCrisisModal}
+        />
 
         <Footer />
       </div>

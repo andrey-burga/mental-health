@@ -19,7 +19,7 @@ function ResourceCard({ title, description, children, icon: Icon }: ResourceCard
         p-6
         shadow-sm
         transition-all duration-300
-        hover:-tranneutral-y-1 hover:shadow-md
+        hover:-translate-y-1 hover:shadow-md
         dark:border-neutral-800
         dark:bg-neutral-900
       "

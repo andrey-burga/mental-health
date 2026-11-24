@@ -49,7 +49,7 @@ function Register() {
 
   return (
     <PageTransition>
-      <div className="h-screen w-screen flex flex-col overflow-hidden from-slate-50 to-gray-100 dark:from-slate-950 dark:to-slate-900">
+      <div className="h-screen w-screen flex flex-col overflow-hidden bg-gradient-to-br from-slate-50 to-gray-100 dark:from-slate-950 dark:to-slate-900">
         <Header />
 
         <div className="flex-1 flex items-center justify-center p-4 min-h-0">
@@ -85,8 +85,11 @@ function Register() {
 
                   {/* Alerta de Error */}
                   {error && (
-                    <div className="bg-red-50 dark:bg-red-950/30 border border-red-200 dark:border-red-900 text-red-600 dark:text-red-400 text-xs p-3 rounded-lg font-medium leading-relaxed">
-                      ⚠️ {error}
+                    <div className="bg-red-50 dark:bg-red-950/30 border border-red-200 dark:border-red-900 text-red-700 dark:text-red-300 text-xs p-3 rounded-lg font-medium leading-relaxed flex items-start gap-2">
+                      <svg className="h-4 w-4 shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" strokeWidth="2" stroke="currentColor" aria-hidden="true">
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v3.75m9-.75a9 9 0 11-18 0 9 9 0 0118 0zm-9 3.75h.008v.008H12v-.008z" />
+                      </svg>
+                      <span>{error}</span>
                     </div>
                   )}
 
@@ -146,8 +149,8 @@ function Register() {
                       required 
                     />
                     <label htmlFor="terms" className="ml-2.5 text-sm text-gray-600 dark:text-gray-400 select-none cursor-pointer">
-                      Acepto los de forma obligatoria los{" "}
-                      <Link to="/terms" className="text-primary font-medium hover:underline">
+                      Acepto de forma obligatoria los{" "}
+                      <Link to="/terms" className="text-primary dark:text-primary-light font-medium hover:underline">
                         Términos y condiciones legales
                       </Link>
                     </label>

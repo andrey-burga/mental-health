@@ -30,7 +30,7 @@ function NotFound() {
     <div className="min-h-screen flex flex-col bg-neutral-50/30 dark:bg-neutral-950 text-neutral-800 dark:text-gray-100 transition-colors duration-300 overflow-hidden relative">
 
       {/* Orbe decorativo unificado (Reemplaza bg-primary) */}
-      <div className="absolute top-1/3 left-1/2 -tranneutral-x-1/2 -tranneutral-y-1/2 w-72 h-72 sm:w-96 sm:h-96 rounded-full bg-indigo-500/10 dark:bg-indigo-500/5 blur-3xl pointer-events-none -z-10" />
+      <div className="absolute top-1/3 left-1/2 -translate-x-1/2 -translate-y-1/2 w-72 h-72 sm:w-96 sm:h-96 rounded-full bg-indigo-500/10 dark:bg-indigo-500/5 blur-3xl pointer-events-none -z-10" />
 
       <Header />
 

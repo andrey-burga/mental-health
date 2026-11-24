@@ -154,6 +154,24 @@ export default function SonidosPage() {
     return () => clearInterval(interval);
   }, [timerMinutes]);
 
+  // Limpiar nodos activos y cerrar AudioContext al desmontar la página
+  useEffect(() => {
+    const nodes = nodesRef.current;
+    return () => {
+      Object.keys(nodes).forEach((id) => {
+        try {
+          nodes[id]?.stop();
+        } catch {
+          // Ignorar si el nodo ya fue detenido
+        }
+        delete nodes[id];
+      });
+      if (audioCtxRef.current && audioCtxRef.current.state !== "closed") {
+        audioCtxRef.current.close().catch(() => {});
+      }
+    };
+  }, []);
+
   const activeCount = Object.keys(activeTracks).length;
 
   return (

@@ -1,0 +1,8 @@
+{
+  "name": "Tu Espacio Seguro",
+  "description": "Plataforma psicoeducativa y de acompañamiento emocional en español con recursos de autocuidado, líneas de crisis e integración de IA segura.",
+  "requestFramePermissions": [],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}

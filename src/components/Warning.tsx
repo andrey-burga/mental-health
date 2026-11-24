@@ -62,7 +62,7 @@ function Warning({ title, text, slug }: WarningProps) {
               className="inline-flex items-center text-primary font-semibold hover:underline text-xs group"
             >
               Leer más 
-              <span className="ml-1 transform group-hover:tranneutral-x-0.5 transition-transform">→</span>
+              <span className="ml-1 transform group-hover:translate-x-0.5 transition-transform">→</span>
             </NavLink>
           )}
         </div>

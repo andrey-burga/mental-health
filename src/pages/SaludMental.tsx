@@ -3,7 +3,6 @@ import { NavLink, Link } from "react-router-dom";
 
 import Header from "../components/Header";
 import Section from "../components/Section";
-import Warning from "../components/Warning";
 import Footer from "../components/Footer";
 import PageTransition from "../components/PageTransition";
 import { getDisorders } from "../services/disorders";
@@ -11,6 +10,7 @@ import { mentalHealthIntro } from "../data/homeContent";
 
 interface Disorder {
   id: string | number;
+  slug: string;
   title: string;
   description: string;
 }
@@ -138,18 +138,41 @@ function SaludMental() {
                 </p>
               </div>
               
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-stretch">
                 {loadingDisorders ? (
                   Array.from({ length: 4 }).map((_, idx) => (
-                    <div key={idx} className="w-full h-36 rounded-2xl bg-neutral-100 dark:bg-neutral-800 animate-pulse" />
+                    <div key={idx} className="w-full h-44 rounded-2xl bg-neutral-100 dark:bg-neutral-800 animate-pulse" />
                   ))
                 ) : (
                   disorders.slice(0, 4).map((item) => (
-                    <Warning
+                    <article
                       key={item.id}
-                      title={item.title}
-                      text={item.description}
-                    />
+                      className="group flex flex-col justify-between rounded-2xl border border-neutral-200/70 dark:border-neutral-800/80 bg-white/80 dark:bg-neutral-900/50 p-6 shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:border-indigo-500/40 hover:shadow-md"
+                    >
+                      <div className="space-y-2.5">
+                        <h3 className="text-lg font-bold text-neutral-900 dark:text-white tracking-tight group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors">
+                          {item.title}
+                        </h3>
+                        <p className="text-sm text-neutral-600 dark:text-neutral-400 font-light leading-relaxed line-clamp-3">
+                          {item.description}
+                        </p>
+                      </div>
+
+                      <div className="mt-5 pt-4 border-t border-neutral-100 dark:border-neutral-800/60">
+                        <Link
+                          to={`/trastornos/${item.slug}`}
+                          className="inline-flex items-center gap-1.5 text-sm font-semibold text-indigo-600 dark:text-indigo-400 hover:text-indigo-700 dark:hover:text-indigo-300 transition-colors"
+                        >
+                          <span>Leer más</span>
+                          <span
+                            aria-hidden="true"
+                            className="transform group-hover:translate-x-1 transition-transform duration-200"
+                          >
+                            →
+                          </span>
+                        </Link>
+                      </div>
+                    </article>
                   ))
                 )}
               </div>
@@ -179,6 +202,13 @@ function SaludMental() {
               </p>
 
               <div className="flex gap-6 items-center justify-center flex-wrap">
+                <Link
+                  to="/factores-riesgo"
+                  className="text-sm font-semibold text-neutral-700 dark:text-neutral-300 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors"
+                >
+                  Explorar factores de riesgo
+                </Link>
+
                 <Link
                   to="/autocuidado"
                   className="text-sm font-semibold text-indigo-600 dark:text-indigo-400 hover:text-indigo-700 dark:hover:text-indigo-300 transition-colors"

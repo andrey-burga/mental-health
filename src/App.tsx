@@ -1,4 +1,4 @@
-import { Routes, Route, useLocation } from "react-router-dom";
+import { Routes, Route, Navigate, useLocation } from "react-router-dom";
 import { AnimatePresence } from "framer-motion";
 import { lazy, Suspense } from "react";
 
@@ -52,7 +52,8 @@ function App() {
             <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/diario" element={<DiarioPage />} />
             <Route path="/respiracion" element={<RespiracionPage />} />
-            <Route path="/autocuidadoPage" element={<AutocuidadoPage />} />
+            <Route path="/autocuidado-diario" element={<AutocuidadoPage />} />
+            <Route path="/autocuidadoPage" element={<Navigate to="/autocuidado-diario" replace />} />
             <Route path="/sonidos" element={<SonidosPage />} />
           </Route>
           <Route path="/contacto" element={<Contact />} />
