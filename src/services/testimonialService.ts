@@ -1,5 +1,6 @@
 import api from "./axios";
-import { Testimonial,TestimonialInput } from "../types/testimonial";
+import { Testimonial, TestimonialInput } from "../types/testimonial";
+export type { Testimonial, TestimonialInput };
 export const testimonialService = {
   // GET: Obtener todos (tipado con un array de Testimonial)
   getAll: async (skip = 0, limit = 10): Promise<Testimonial[]> => {

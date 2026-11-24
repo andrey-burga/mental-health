@@ -4,10 +4,12 @@ interface ArticleCardProps {
   date: string;
   datetime: string;
   category: string;
-  author: {
-    name: string;
-    role: string;
-  };
+  author:
+    | string
+    | {
+        name: string;
+        role: string;
+      };
 }
 
 function ArticleCard({
@@ -18,6 +20,14 @@ function ArticleCard({
   category,
   author,
 }: ArticleCardProps) {
+  const formattedDate = date
+    ? new Date(date).toLocaleDateString("es-ES", {
+        day: "numeric",
+        month: "short",
+        year: "numeric",
+      })
+    : "";
+
   return (
     <article
       className="
@@ -34,7 +44,7 @@ function ArticleCard({
       "
     >
       <div className="flex items-center gap-4 text-xs text-neutral-600 dark:text-neutral-400 mb-4">
-        <time dateTime={datetime}>{date}</time>
+        <time dateTime={datetime}>{formattedDate || date}</time>
 
         <span
           className="
@@ -63,7 +73,9 @@ function ArticleCard({
       </div>
 
       <div className="mt-6 text-sm text-neutral-600 dark:text-neutral-400">
-        {author.name} · {author.role}
+        {typeof author === "string"
+          ? author
+          : `${author.name} · ${author.role}`}
       </div>
     </article>
   );

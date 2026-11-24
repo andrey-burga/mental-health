@@ -1,10 +1,14 @@
 import axios from "axios";
+import { mockApiAdapter } from "./mockApi";
+
+const apiUrl = import.meta.env.VITE_API_URL;
 
 const api = axios.create({
-  baseURL: import.meta.env.VITE_API_URL, // Tu URL base centralizada
+  baseURL: apiUrl || undefined, // Tu URL base centralizada
   headers: {
     "Content-Type": "application/json",
   },
+  ...(apiUrl ? {} : { adapter: mockApiAdapter }),
 });
 
 // Interceptor para inyectar el token en cada petición
