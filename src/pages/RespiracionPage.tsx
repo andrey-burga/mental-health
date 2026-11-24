@@ -4,6 +4,7 @@ import { useReducedMotion } from "framer-motion";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
 import PageTransition from "../components/PageTransition";
+import { trackToolEvent } from "../utils/telemetry";
 
 type Phase = "Inhala" | "Mantén" | "Exhala" | "Espera";
 
@@ -52,6 +53,10 @@ export default function RespiracionPage() {
   const shouldReduceMotion = useReducedMotion();
 
   const currentPhase = selectedTechnique.pattern[phaseIndex];
+
+  useEffect(() => {
+    trackToolEvent("respiracion");
+  }, []);
 
   const handleSelectTechnique = (tech: Technique) => {
     setIsActive(false);

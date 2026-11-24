@@ -5,6 +5,7 @@ import {
   CountryCode,
   CrisisRiskLevel,
 } from "../utils/crisisSafety";
+import { trackToolEvent } from "../utils/telemetry";
 
 interface CrisisModalProps {
   isOpen: boolean;
@@ -28,7 +29,8 @@ export default function CrisisModal({
   }, [defaultCountry]);
 
   useEffect(() => {
-    if (!isOpen) return;
+    if (!isOpen || riskLevel === "none") return;
+    trackToolEvent("crisis_modal_opened");
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === "Escape") {
         onClose();

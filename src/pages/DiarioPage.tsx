@@ -28,6 +28,7 @@ import {
   type SuggestedMicroHabit,
   type RecommendedResource,
 } from "../services/aiService";
+import { trackToolEvent } from "../utils/telemetry";
 
 const MOODS = [
   { emoji: "😊", label: "Calmado" },
@@ -47,6 +48,10 @@ const PROMPTS = [
 
 export default function DiarioPage() {
   const { user } = useAuth();
+
+  useEffect(() => {
+    trackToolEvent("diario");
+  }, []);
 
   const [entry, setEntry] = useState("");
   const [selectedMood, setSelectedMood] = useState(MOODS[0].emoji);

@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
 import PageTransition from "../components/PageTransition";
+import { trackToolEvent } from "../utils/telemetry";
 
 interface Track {
   id: string;
@@ -61,6 +62,10 @@ export default function SonidosPage() {
 
   const audioCtxRef = useRef<AudioContext | null>(null);
   const nodesRef = useRef<{ [key: string]: { gain: GainNode; stop: () => void } }>({});
+
+  useEffect(() => {
+    trackToolEvent("sonidos");
+  }, []);
 
   const initAudio = () => {
     if (!audioCtxRef.current) {

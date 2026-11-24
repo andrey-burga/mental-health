@@ -22,3 +22,11 @@ ReactDOM.createRoot(rootElement).render(
     </AuthProvider>
   </React.StrictMode>
 );
+
+if ("serviceWorker" in navigator) {
+  window.addEventListener("load", () => {
+    navigator.serviceWorker.register("/sw.js").catch(() => {
+      // Registro silencioso si el navegador restringe Service Workers
+    });
+  });
+}

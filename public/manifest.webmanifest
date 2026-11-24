@@ -1,0 +1,27 @@
+{
+  "id": "/",
+  "name": "Tu Espacio Seguro",
+  "short_name": "Tu Espacio Seguro",
+  "description": "Plataforma psicoeducativa y de acompañamiento emocional en español con herramientas de autocuidado, diario privado y líneas de apoyo 24/7.",
+  "lang": "es",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "theme_color": "#4f46e5",
+  "background_color": "#fafafa",
+  "icons": [
+    {
+      "src": "/pwa-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/pwa-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    }
+  ]
+}

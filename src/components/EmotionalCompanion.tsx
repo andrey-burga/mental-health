@@ -13,6 +13,7 @@ import {
   detectCrisisSignals,
   type CrisisRiskLevel,
 } from "../utils/crisisSafety";
+import { trackToolEvent } from "../utils/telemetry";
 
 export const OPEN_COMPANION_EVENT = "bienestar:open-companion";
 
@@ -111,6 +112,7 @@ export default function EmotionalCompanion({
 
   useEffect(() => {
     if (isOpen) {
+      trackToolEvent("acompanante_ia");
       void loadCatalogSilently();
       const timer = window.setTimeout(() => {
         inputRef.current?.focus();

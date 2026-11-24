@@ -5,6 +5,7 @@ import { lazy, Suspense, useState } from "react";
 import PageLoader from "./components/PageLoader";
 import EmotionalCompanion from "./components/EmotionalCompanion";
 import CrisisModal from "./components/CrisisModal";
+import InstallAppBanner from "./components/InstallAppBanner";
 import type { CrisisRiskLevel } from "./utils/crisisSafety";
 
 // Lazy pages
@@ -79,6 +80,8 @@ function App() {
           </Routes>
         </Suspense>
       </AnimatePresence>
+
+      <InstallAppBanner />
 
       <EmotionalCompanion onCrisisDetected={handleGlobalCrisisDetected} />
 
