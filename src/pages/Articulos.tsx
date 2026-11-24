@@ -8,6 +8,7 @@ import ArticleFormModal from "../components/ArticleFormModal";
 import PageTransition from "../components/PageTransition";
 import { getArticles, deleteArticle } from "../services/articlesServices";
 import { useAuth } from "../context/AuthContext";
+import { canManageArticle as canUserManageArticle } from "../utils/permissions";
 
 export interface ArticleType {
   id: string;
@@ -55,8 +56,7 @@ function Articulos() {
 
   const canManageArticle = (article: ArticleType): boolean => {
     if (!isAuthenticated || !user) return false;
-    if (user.role === "admin") return true;
-    return Boolean(user.id && article.author_id && String(article.author_id) === String(user.id));
+    return canUserManageArticle(user, article.author_id);
   };
 
   // Manejadores

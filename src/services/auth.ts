@@ -1,33 +1,41 @@
 import api from "./axios";
 
-interface RegisterData {
+export interface RegisterData {
   name: string;
   email: string;
-  role_id: string;
+  password: string;
+  role_id?: string;
 }
 
-export async function registerUser(userData: any) {
+export interface LoginData {
+  email: string;
+  password: string;
+}
+
+export async function registerUser(userData: RegisterData) {
   const { data } = await api.post("/auth/register", userData);
   return data;
 }
 
-export async function loginUser(loginData: any) {
+export async function loginUser(loginData: LoginData) {
   const { data } = await api.post("/auth/login", loginData);
   return data;
 }
 
-// --- NUEVO: Solicitar recuperación de contraseña ---
+export async function getCurrentUser() {
+  const { data } = await api.get("/auth/me");
+  return data;
+}
+
 export async function forgotPassword(email: string) {
   const { data } = await api.post("/auth/forgot-password", { email });
   return data;
 }
 
-// --- NUEVO: Confirmar restablecimiento de contraseña ---
 export async function resetPassword(token: string, newPassword: string) {
   const { data } = await api.post("/auth/reset-password", {
     token,
-    new_password: newPassword, // Coincide con ResetPasswordRequest en FastAPI
+    new_password: newPassword,
   });
   return data;
 }
-

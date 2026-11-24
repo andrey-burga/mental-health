@@ -8,7 +8,7 @@ interface ArticleCardProps {
     | string
     | {
         name: string;
-        role: string;
+        role?: string | { id?: string; name?: string };
       };
 }
 
@@ -27,6 +27,13 @@ function ArticleCard({
         year: "numeric",
       })
     : "";
+
+  const authorRoleLabel =
+    typeof author === "object" && author.role
+      ? typeof author.role === "string"
+        ? author.role
+        : author.role.name || ""
+      : "";
 
   return (
     <article
@@ -75,7 +82,9 @@ function ArticleCard({
       <div className="mt-6 text-sm text-neutral-600 dark:text-neutral-400">
         {typeof author === "string"
           ? author
-          : `${author.name} · ${author.role}`}
+          : authorRoleLabel
+          ? `${author.name} · ${authorRoleLabel}`
+          : author.name}
       </div>
     </article>
   );

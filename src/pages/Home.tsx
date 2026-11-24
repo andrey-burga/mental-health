@@ -38,7 +38,7 @@ export default function Home() {
         const data = await getArticles();
         setArticles(data.slice(0, 3));
       } catch (err) {
-        console.error("Error al cargar artículos de la Home:", err);
+        console.warn("No se pudieron cargar los artículos de la Home:", err);
       } finally {
         setIsLoadingArticles(false);
       }

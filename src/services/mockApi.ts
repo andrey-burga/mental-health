@@ -330,7 +330,7 @@ function createMockJwt(payload: Record<string, unknown>): string {
   return `${header}.${body}.mock-signature`;
 }
 
-function parseMockJwt(authHeader?: string): { sub?: string; id?: string; name?: string; role?: string } | null {
+function parseMockJwt(authHeader?: string): { sub?: string; id?: string; name?: string; email?: string; role?: string } | null {
   if (!authHeader) return null;
   const token = authHeader.replace(/^Bearer\s+/i, "").trim();
   const parts = token.split(".");
@@ -480,6 +480,33 @@ export const mockApiAdapter: AxiosAdapter = async (config) => {
       access_token,
       token_type: "bearer",
       user: userPayload,
+    });
+  }
+
+  if (method === "get" && path === "/auth/me") {
+    if (!currentUser) {
+      return makeError(config, 401, "Sesión no autorizada o expirada.");
+    }
+    const users = readStore<StoredUser[]>(STORAGE_KEYS.users, INITIAL_USERS);
+    const matched = users.find(
+      (u) =>
+        (currentUser.id && u.id === currentUser.id) ||
+        (currentUser.sub && u.id === currentUser.sub) ||
+        (currentUser.email && u.email.toLowerCase() === String(currentUser.email).toLowerCase())
+    );
+    const resolved = matched || {
+      id: currentUser.id || currentUser.sub || "user-session",
+      name: currentUser.name || "Usuario",
+      email: currentUser.email || "",
+      role: (currentUser.role === "admin" ? "admin" : "user") as "admin" | "user",
+    };
+
+    return makeResponse(config, 200, {
+      id: resolved.id,
+      name: resolved.name,
+      email: resolved.email,
+      role: resolved.role,
+      role_id: resolved.role === "admin" ? "role-admin" : "role-user",
     });
   }
 

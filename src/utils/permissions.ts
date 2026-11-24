@@ -1,12 +1,36 @@
-// utils/permissions.ts
-import { User } from "../context/AuthContext";
+import { normalizeRole, NormalizedRole, User } from "../context/AuthContext";
+
+export function getUserRole(user: User | null | undefined): NormalizedRole {
+  if (!user) return "user";
+  return normalizeRole(user.role ?? user.rawRole, user.role_id);
+}
+
+export function isAdminUser(user: User | null | undefined): boolean {
+  if (!user) return false;
+  return getUserRole(user) === "admin";
+}
+
+export function isEditorialUser(user: User | null | undefined): boolean {
+  if (!user) return false;
+  const role = getUserRole(user);
+  return role === "admin" || role === "editor";
+}
 
 export const canManageTestimonial = (user: User | null, author: any): boolean => {
-  if (!user) return false; // Si no está autenticado, cero permisos
-  if (user.role === "admin") return true; // El admin puede con todo
+  if (!user) return false;
+  if (isAdminUser(user)) return true;
 
-  // Extraer el ID del autor sin importar si viene como string u objeto
   const authorId = typeof author === "object" ? author?.id : author;
 
-  return Boolean(user.id && authorId && user.id === authorId);
+  return Boolean(user.id && authorId && String(user.id) === String(authorId));
+};
+
+export const canManageArticle = (
+  user: User | null,
+  authorId?: string | null
+): boolean => {
+  if (!user) return false;
+  if (isEditorialUser(user)) return true;
+
+  return Boolean(user.id && authorId && String(authorId) === String(user.id));
 };
