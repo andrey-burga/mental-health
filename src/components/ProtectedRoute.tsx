@@ -1,21 +1,29 @@
-import React from "react";
 import { Navigate, Outlet } from "react-router-dom";
-import { useAuth } from "../context/AuthContext";
+import { NormalizedRole, useAuth } from "../context/AuthContext";
 import PageLoader from "../components/PageLoader";
+import { getUserRole } from "../utils/permissions";
 
-export default function ProtectedRoute() {
-  const { isAuthenticated, isLoading } = useAuth();
+interface ProtectedRouteProps {
+  allowedRoles?: NormalizedRole[];
+}
 
-  // 1. Reutilizamos tu PageLoader premium para mantener coherencia estética
+export default function ProtectedRoute({ allowedRoles }: ProtectedRouteProps) {
+  const { isAuthenticated, isLoading, user } = useAuth();
+
   if (isLoading) {
     return <PageLoader fullScreen={true} />;
   }
 
-  // 2. Si no está autenticado, redirigimos al login de forma segura
   if (!isAuthenticated) {
     return <Navigate to="/login" replace />;
   }
 
-  // 3. Si está autenticado, renderizamos las rutas protegidas (ej. el Dashboard)
+  if (allowedRoles && allowedRoles.length > 0) {
+    const role = getUserRole(user);
+    if (!allowedRoles.includes(role)) {
+      return <Navigate to="/dashboard" replace />;
+    }
+  }
+
   return <Outlet />;
 }

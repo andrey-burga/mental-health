@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useMemo } from "react";
 import { Link } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
+import { getRoleDisplayLabel, isAdminUser, isEditorialUser } from "../utils/permissions";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
 import PageTransition from "../components/PageTransition";
@@ -145,6 +146,8 @@ export default function Dashboard() {
   const completedHabitsCount = habits.filter((h) => h.completed).length;
   const totalHabitsCount = habits.length;
   const recentEntries = savedEntries.slice(0, 3);
+  const showEditorialAccess = isEditorialUser(user);
+  const userIsAdmin = isAdminUser(user);
 
   const therapeuticTools = [
     {
@@ -447,6 +450,34 @@ export default function Dashboard() {
                 )}
               </div>
             </section>
+
+            {/* ACCESO EDITORIAL DISCRETO (SOLO ADMIN Y EDITOR) */}
+            {showEditorialAccess && (
+              <section aria-label="Centro Editorial y de Moderación">
+                <div className="rounded-2xl border border-neutral-200/80 dark:border-neutral-800 bg-white dark:bg-neutral-900/70 p-5 sm:p-6 shadow-sm flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                  <div className="space-y-1">
+                    <p className="text-xs font-semibold text-teal-700 dark:text-teal-400">
+                      Gestión Editorial · {getRoleDisplayLabel(user)}
+                    </p>
+                    <h2 className="text-base sm:text-lg font-bold text-neutral-900 dark:text-white">
+                      Centro Editorial y de Moderación
+                    </h2>
+                    <p className="text-xs sm:text-sm text-neutral-600 dark:text-neutral-400 leading-relaxed">
+                      {userIsAdmin
+                        ? "Modera testimonios de la comunidad, gestiona guías de trastornos, administra roles y publica artículos educativos."
+                        : "Crea y actualiza artículos psicoeducativos y consulta las pautas editoriales de la plataforma."}
+                    </p>
+                  </div>
+                  <Link
+                    to="/admin"
+                    className="whitespace-nowrap shrink-0 inline-flex items-center justify-center gap-2 rounded-xl border border-indigo-200 dark:border-indigo-800/80 bg-indigo-50/70 dark:bg-indigo-950/40 hover:bg-indigo-100 dark:hover:bg-indigo-950/70 px-4 py-2.5 text-sm font-semibold text-indigo-700 dark:text-indigo-300 transition-colors"
+                  >
+                    <span>Abrir Gestión Editorial</span>
+                    <span aria-hidden="true">→</span>
+                  </Link>
+                </div>
+              </section>
+            )}
 
             {/* 3. GRID EQUILIBRADO DE HERRAMIENTAS TERAPÉUTICAS */}
             <section aria-labelledby="tools-heading" className="space-y-5">

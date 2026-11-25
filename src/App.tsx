@@ -30,6 +30,7 @@ const SonidosPage = lazy(() => import("./pages/SonidosPage"));
 const ForgotPassword = lazy(() => import("./pages/ForgotPassword"));
 const ResetPassword = lazy(() => import("./pages/ResetPassword"));
 const Privacy = lazy(() => import("./pages/Privacy"));
+const AdminPanel = lazy(() => import("./pages/AdminPanel"));
 
 import NotFound from "./pages/NotFound";
 import Login from "./pages/Login";
@@ -68,6 +69,9 @@ function App() {
               <Route path="/autocuidado-diario" element={<AutocuidadoPage />} />
               <Route path="/autocuidadoPage" element={<Navigate to="/autocuidado-diario" replace />} />
               <Route path="/sonidos" element={<SonidosPage />} />
+            </Route>
+            <Route element={<ProtectedRoute allowedRoles={["admin", "editor"]} />}>
+              <Route path="/admin" element={<AdminPanel />} />
             </Route>
             <Route path="/contacto" element={<Contact />} />
             <Route path="/login" element={<Login />} />

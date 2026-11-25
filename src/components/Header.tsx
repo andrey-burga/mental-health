@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import { openEmotionalCompanion } from "./EmotionalCompanion";
+import { getRoleDisplayLabel, isEditorialUser } from "../utils/permissions";
 
 interface DropdownItem {
   path: string;
@@ -100,6 +101,7 @@ function Header() {
   const { isAuthenticated, user, logout } = useAuth();
   const userName = user?.name || "Usuario";
   const userEmail = user?.email || "";
+  const canOpenEditorialCenter = isEditorialUser(user);
 
   const [darkMode, setDarkMode] = useState<boolean>(() => {
     if (typeof window !== "undefined") {
@@ -520,9 +522,38 @@ function Header() {
                             {userEmail}
                           </p>
                         )}
+                        {canOpenEditorialCenter && (
+                          <p className="text-[11px] font-medium text-indigo-600 dark:text-indigo-400 mt-1">
+                            {getRoleDisplayLabel(user)}
+                          </p>
+                        )}
                       </div>
 
                       <div className="py-1.5 space-y-0.5">
+                        {canOpenEditorialCenter && (
+                          <NavLink
+                            to="/admin"
+                            role="menuitem"
+                            onClick={() => setProfileOpen(false)}
+                            className="flex items-center gap-2.5 rounded-xl px-3 py-2 text-sm font-medium text-indigo-700 dark:text-indigo-300 hover:bg-indigo-50/70 dark:hover:bg-indigo-950/40 transition-colors"
+                          >
+                            <svg
+                              className="h-4 w-4 shrink-0"
+                              fill="none"
+                              viewBox="0 0 24 24"
+                              strokeWidth="1.8"
+                              stroke="currentColor"
+                              aria-hidden="true"
+                            >
+                              <path
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                d="M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285z"
+                              />
+                            </svg>
+                            <span>Gestión Editorial</span>
+                          </NavLink>
+                        )}
                         <NavLink
                           to="/ayuda"
                           role="menuitem"
@@ -769,6 +800,15 @@ function Header() {
             </div>
 
             <div className="pt-3 border-t border-neutral-200/70 dark:border-neutral-800 flex flex-col gap-2">
+              {isAuthenticated && canOpenEditorialCenter && (
+                <NavLink
+                  to="/admin"
+                  onClick={() => setMenuOpen(false)}
+                  className="w-full text-center rounded-xl border border-indigo-200 dark:border-indigo-900/50 bg-indigo-50/70 dark:bg-indigo-950/30 py-2.5 text-sm font-semibold text-indigo-700 dark:text-indigo-300"
+                >
+                  Gestión Editorial
+                </NavLink>
+              )}
               <NavLink
                 to="/ayuda"
                 onClick={() => setMenuOpen(false)}

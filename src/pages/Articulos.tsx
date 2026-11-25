@@ -8,7 +8,7 @@ import ArticleFormModal from "../components/ArticleFormModal";
 import PageTransition from "../components/PageTransition";
 import { getArticles, deleteArticle } from "../services/articlesServices";
 import { useAuth } from "../context/AuthContext";
-import { canManageArticle as canUserManageArticle } from "../utils/permissions";
+import { canManageArticle as canUserManageArticle, isEditorialUser } from "../utils/permissions";
 
 export interface ArticleType {
   id: string;
@@ -121,7 +121,7 @@ function Articulos() {
                   </h1>
                 </div>
 
-                {isAuthenticated && (
+                {isAuthenticated && isEditorialUser(user) && (
                   <button
                     type="button"
                     onClick={handleOpenCreate}

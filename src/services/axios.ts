@@ -8,6 +8,10 @@ const apiUrl = rawApiUrl.replace(/\/+$/, "");
 const useMockDirectly =
   !apiUrl || /mental-health-api-tjys\.onrender\.com/i.test(apiUrl);
 
+export function isMockBackendMode(): boolean {
+  return useMockDirectly;
+}
+
 const api = axios.create({
   baseURL: useMockDirectly ? undefined : apiUrl,
   headers: {

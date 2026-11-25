@@ -16,6 +16,21 @@ export function isEditorialUser(user: User | null | undefined): boolean {
   return role === "admin" || role === "editor";
 }
 
+export function canAccessAdminPanel(user: User | null | undefined): boolean {
+  return isEditorialUser(user);
+}
+
+export function getRoleDisplayLabel(roleOrUser: User | NormalizedRole | null | undefined): string {
+  const role =
+    typeof roleOrUser === "string"
+      ? normalizeRole(roleOrUser)
+      : getUserRole(roleOrUser);
+
+  if (role === "admin") return "Administrador";
+  if (role === "editor") return "Editor";
+  return "Usuario";
+}
+
 export const canManageTestimonial = (user: User | null, author: any): boolean => {
   if (!user) return false;
   if (isAdminUser(user)) return true;

@@ -7,7 +7,7 @@ import PageTransition from "../components/PageTransition";
 import TestimonialFormModal from "../components/TestimonialFormModal";
 import { testimonialService, TestimonialInput } from "../services/testimonialService";
 import { useAuth } from "../context/AuthContext";
-import { canManageTestimonial } from "../utils/permissions";
+import { canManageTestimonial, isEditorialUser } from "../utils/permissions";
 
 // --- TIPOS E INTERFACES ---
 interface RoleType {
@@ -77,6 +77,7 @@ function Testimonial() {
   const [pendingDeleteItem, setPendingDeleteItem] = useState<TestimonialType | null>(null);
   const [deleting, setDeleting] = useState(false);
   const [actionError, setActionError] = useState<string | null>(null);
+  const [submissionNotice, setSubmissionNotice] = useState<string | null>(null);
 
   // Cargar testimonios desde la API
   const loadTestimonials = async () => {
@@ -104,7 +105,13 @@ function Testimonial() {
       );
     } else {
       const created = await testimonialService.create(formData);
-      setTestimonials((prev) => [created, ...prev]);
+      if (isEditorialUser(user) || created.status === "approved") {
+        setTestimonials((prev) => [created, ...prev]);
+      } else {
+        setSubmissionNotice(
+          "Tu testimonio ha sido recibido y pasará por una breve revisión editorial antes de publicarse para cuidar la seguridad de la comunidad."
+        );
+      }
     }
   };
 
@@ -185,6 +192,22 @@ function Testimonial() {
           {/* GRID BENTO DE TESTIMONIOS */}
           <Section>
             <div className="max-w-7xl mx-auto space-y-6">
+              {submissionNotice && (
+                <div
+                  role="status"
+                  className="rounded-2xl border border-teal-200 dark:border-teal-900/50 bg-teal-50/80 dark:bg-teal-950/30 px-4 py-3.5 text-sm text-teal-900 dark:text-teal-200 flex items-center justify-between gap-3"
+                >
+                  <span>{submissionNotice}</span>
+                  <button
+                    type="button"
+                    onClick={() => setSubmissionNotice(null)}
+                    className="text-xs font-semibold underline shrink-0 cursor-pointer"
+                  >
+                    Cerrar
+                  </button>
+                </div>
+              )}
+
               {actionError && (
                 <div
                   role="alert"

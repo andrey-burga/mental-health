@@ -1,15 +1,25 @@
+export type TestimonialStatus = "pending" | "approved" | "rejected";
 
-// 1. Interfaz para el objeto que viene de la base de datos (con ID y fechas)
-export interface Testimonial extends TestimonialInput {
-  id: string;
-  createdAt?: string;
-  updatedAt?: string;
+export interface TestimonialAuthor {
+  id?: string;
+  name?: string;
+  email?: string;
+  role?: string | { id?: string; name?: string };
 }
 
-// 2. Interfaz para la entrada (haciendo el slug opcional si el backend lo autogenera)
 export interface TestimonialInput {
   slug?: string;
   title: string;
   excerpt: string;
   content: string;
+}
+
+export interface Testimonial extends TestimonialInput {
+  id: string;
+  status?: TestimonialStatus;
+  category?: string;
+  author?: TestimonialAuthor | string;
+  created_at?: string;
+  createdAt?: string;
+  updatedAt?: string;
 }

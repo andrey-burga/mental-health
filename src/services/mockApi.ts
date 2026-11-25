@@ -5,13 +5,14 @@ interface StoredUser {
   name: string;
   email: string;
   password: string;
-  role: "admin" | "user";
+  role: "admin" | "editor" | "user";
 }
 
 const STORAGE_KEYS = {
   users: "mock_bienestar_users",
   articles: "mock_bienestar_articles",
   testimonials: "mock_bienestar_testimonials",
+  disorders: "mock_bienestar_disorders",
 };
 
 const INITIAL_USERS: StoredUser[] = [
@@ -21,6 +22,13 @@ const INITIAL_USERS: StoredUser[] = [
     email: "demo@bienestar.com",
     password: "demo1234",
     role: "user",
+  },
+  {
+    id: "user-editor-1",
+    name: "Editora Psicoeducativa",
+    email: "editor@bienestar.com",
+    password: "editor1234",
+    role: "editor",
   },
   {
     id: "user-admin-1",
@@ -200,12 +208,46 @@ const INITIAL_ARTICLES = [
   },
 ];
 
-const INITIAL_TESTIMONIALS = [
+interface MockTestimonial {
+  id: string;
+  slug: string;
+  title: string;
+  category: string;
+  status?: "pending" | "approved" | "rejected";
+  excerpt: string;
+  content: string;
+  created_at: string;
+  author: {
+    id: string;
+    name: string;
+    role: { id: string; name: string };
+  };
+}
+
+const INITIAL_TESTIMONIALS: MockTestimonial[] = [
+  {
+    id: "test-pending-1",
+    slug: "pedir-ayuda-a-tiempo-cambio-mi-semana",
+    title: "Pedir ayuda a tiempo me dio un respiro cuando más lo necesitaba",
+    category: "Acompañamiento",
+    status: "pending",
+    excerpt:
+      "Comparto mi experiencia al animarme a hablar con un profesional tras meses de cargar todo en silencio.",
+    content:
+      "Durante varios meses pensé que debía resolver mi agotamiento por mi cuenta. Cuando finalmente reservé una primera consulta y empecé a registrar mis emociones sin exigirme perfección, sentí un alivio enorme.\n\nOjalá este mensaje anime a alguien más a dar ese primer paso con amabilidad.",
+    created_at: "2026-11-22T14:15:00Z",
+    author: {
+      id: "user-demo-1",
+      name: "Andrés L.",
+      role: { id: "role-user", name: "Comunidad" },
+    },
+  },
   {
     id: "test-1",
     slug: "aprender-a-escuchar-mi-ansiedad",
     title: "Dejar de pelear con mi ansiedad me permitió empezar a sanar",
     category: "Ansiedad",
+    status: "approved",
     excerpt:
       "Durante años pensé que sentir miedo significaba debilidad. En terapia aprendí que mis síntomas eran señales pidiendo pausa y cuidado.",
     content:
@@ -406,7 +448,8 @@ export const mockApiAdapter: AxiosAdapter = async (config) => {
 
   // --- DISORDERS ---
   if (method === "get" && path === "/disorders") {
-    return makeResponse(config, 200, INITIAL_DISORDERS);
+    const disorders = readStore(STORAGE_KEYS.disorders, INITIAL_DISORDERS);
+    return makeResponse(config, 200, disorders);
   }
 
   if (method === "get" && path.startsWith("/disorders/slug/")) {
@@ -420,9 +463,78 @@ export const mockApiAdapter: AxiosAdapter = async (config) => {
     };
     const rawSlug = path.replace("/disorders/slug/", "");
     const resolvedSlug = slugAliases[rawSlug] || rawSlug;
-    const found = INITIAL_DISORDERS.find((d) => d.slug === resolvedSlug);
+    const disorders = readStore(STORAGE_KEYS.disorders, INITIAL_DISORDERS);
+    const found = disorders.find((d) => d.slug === resolvedSlug);
     if (!found) return makeError(config, 404, "Trastorno no encontrado");
     return makeResponse(config, 200, found);
+  }
+
+  if (method === "post" && path === "/disorders/symptoms") {
+    if (!currentUser || currentUser.role !== "admin") {
+      return makeError(config, 403, "Se requieren permisos de administrador.");
+    }
+    const disorderId = String(body.disorder_id || "");
+    const text = String(body.text || "").trim();
+    if (!disorderId || !text) {
+      return makeError(config, 400, "Indica el trastorno y el texto del síntoma.");
+    }
+    const disorders = readStore(STORAGE_KEYS.disorders, INITIAL_DISORDERS);
+    const idx = disorders.findIndex((d) => d.id === disorderId);
+    if (idx === -1) return makeError(config, 404, "Trastorno no encontrado");
+    const newSymptom = { id: `sym-${Date.now()}`, text };
+    disorders[idx] = {
+      ...disorders[idx],
+      symptoms: [...(disorders[idx].symptoms || []), newSymptom],
+    };
+    writeStore(STORAGE_KEYS.disorders, disorders);
+    return makeResponse(config, 201, { ...newSymptom, disorder_id: disorderId });
+  }
+
+  if (method === "post" && path === "/disorders") {
+    if (!currentUser || currentUser.role !== "admin") {
+      return makeError(config, 403, "Se requieren permisos de administrador.");
+    }
+    const title = String(body.title || "").trim();
+    const description = String(body.description || "").trim();
+    if (!title || !description) {
+      return makeError(config, 400, "Título y descripción son obligatorios.");
+    }
+    const disorders = readStore(STORAGE_KEYS.disorders, INITIAL_DISORDERS);
+    const newDisorder = {
+      id: `dis-${Date.now()}`,
+      slug: String(body.slug || "").trim() || slugify(title),
+      title,
+      category: String(body.category || "otros"),
+      description,
+      symptoms: [],
+    };
+    const updated = [newDisorder, ...disorders];
+    writeStore(STORAGE_KEYS.disorders, updated);
+    return makeResponse(config, 201, newDisorder);
+  }
+
+  if (method === "patch" && path.startsWith("/disorders/")) {
+    if (!currentUser || currentUser.role !== "admin") {
+      return makeError(config, 403, "Se requieren permisos de administrador.");
+    }
+    const id = path.replace("/disorders/", "");
+    const disorders = readStore(STORAGE_KEYS.disorders, INITIAL_DISORDERS);
+    const idx = disorders.findIndex((d) => d.id === id);
+    if (idx === -1) return makeError(config, 404, "Trastorno no encontrado");
+    disorders[idx] = { ...disorders[idx], ...body };
+    writeStore(STORAGE_KEYS.disorders, disorders);
+    return makeResponse(config, 200, disorders[idx]);
+  }
+
+  if (method === "delete" && path.startsWith("/disorders/")) {
+    if (!currentUser || currentUser.role !== "admin") {
+      return makeError(config, 403, "Se requieren permisos de administrador.");
+    }
+    const id = path.replace("/disorders/", "");
+    const disorders = readStore(STORAGE_KEYS.disorders, INITIAL_DISORDERS);
+    const filtered = disorders.filter((d) => d.id !== id);
+    writeStore(STORAGE_KEYS.disorders, filtered);
+    return makeResponse(config, 200, { deleted: true });
   }
 
   // --- AUTH ---
@@ -494,11 +606,16 @@ export const mockApiAdapter: AxiosAdapter = async (config) => {
         (currentUser.sub && u.id === currentUser.sub) ||
         (currentUser.email && u.email.toLowerCase() === String(currentUser.email).toLowerCase())
     );
+    const resolvedRole = (
+      currentUser.role === "admin" || currentUser.role === "editor"
+        ? currentUser.role
+        : "user"
+    ) as "admin" | "editor" | "user";
     const resolved = matched || {
       id: currentUser.id || currentUser.sub || "user-session",
       name: currentUser.name || "Usuario",
       email: currentUser.email || "",
-      role: (currentUser.role === "admin" ? "admin" : "user") as "admin" | "user",
+      role: resolvedRole,
     };
 
     return makeResponse(config, 200, {
@@ -506,7 +623,59 @@ export const mockApiAdapter: AxiosAdapter = async (config) => {
       name: resolved.name,
       email: resolved.email,
       role: resolved.role,
-      role_id: resolved.role === "admin" ? "role-admin" : "role-user",
+      role_id: `role-${resolved.role}`,
+    });
+  }
+
+  // --- USERS MANAGEMENT (ADMIN) ---
+  if (method === "get" && path === "/users") {
+    if (!currentUser || currentUser.role !== "admin") {
+      return makeError(config, 403, "Se requieren permisos de administrador.");
+    }
+    const users = readStore<StoredUser[]>(STORAGE_KEYS.users, INITIAL_USERS);
+    const q = String(config.params?.q || "").trim().toLowerCase();
+    const filtered = q
+      ? users.filter(
+          (u) =>
+            u.name.toLowerCase().includes(q) ||
+            u.email.toLowerCase().includes(q) ||
+            u.role.toLowerCase().includes(q)
+        )
+      : users;
+
+    return makeResponse(
+      config,
+      200,
+      filtered.map((u) => ({
+        id: u.id,
+        name: u.name,
+        email: u.email,
+        role: { id: `role-${u.role}`, name: u.role },
+        role_id: `role-${u.role}`,
+      }))
+    );
+  }
+
+  if (method === "patch" && path.startsWith("/users/") && path.endsWith("/role")) {
+    if (!currentUser || currentUser.role !== "admin") {
+      return makeError(config, 403, "Se requieren permisos de administrador.");
+    }
+    const userId = path.replace("/users/", "").replace(/\/role$/, "");
+    const nextRole = String(body.role || "").toLowerCase();
+    if (nextRole !== "user" && nextRole !== "editor" && nextRole !== "admin") {
+      return makeError(config, 400, "Rol no válido.");
+    }
+    const users = readStore<StoredUser[]>(STORAGE_KEYS.users, INITIAL_USERS);
+    const idx = users.findIndex((u) => u.id === userId);
+    if (idx === -1) return makeError(config, 404, "Usuario no encontrado.");
+    users[idx] = { ...users[idx], role: nextRole };
+    writeStore(STORAGE_KEYS.users, users);
+    return makeResponse(config, 200, {
+      id: users[idx].id,
+      name: users[idx].name,
+      email: users[idx].email,
+      role: { id: `role-${nextRole}`, name: nextRole },
+      role_id: `role-${nextRole}`,
     });
   }
 
@@ -578,9 +747,17 @@ export const mockApiAdapter: AxiosAdapter = async (config) => {
   // --- TESTIMONIALS ---
   if (method === "get" && path === "/testimonials") {
     const testimonials = readStore(STORAGE_KEYS.testimonials, INITIAL_TESTIMONIALS);
+    const statusParam = String(config.params?.status || "").toLowerCase();
+    const filtered =
+      statusParam === "all"
+        ? testimonials
+        : statusParam
+        ? testimonials.filter((t: any) => (t.status || "approved") === statusParam)
+        : testimonials.filter((t: any) => (t.status || "approved") === "approved");
+
     const skip = Number(config.params?.skip ?? 0);
-    const limit = Number(config.params?.limit ?? testimonials.length);
-    return makeResponse(config, 200, testimonials.slice(skip, skip + limit));
+    const limit = Number(config.params?.limit ?? filtered.length);
+    return makeResponse(config, 200, filtered.slice(skip, skip + limit));
   }
 
   if (method === "get" && path.startsWith("/testimonials/")) {
@@ -594,6 +771,7 @@ export const mockApiAdapter: AxiosAdapter = async (config) => {
   if (method === "post" && path === "/testimonials") {
     if (!currentUser) return makeError(config, 401, "No autorizado");
     const testimonials = readStore(STORAGE_KEYS.testimonials, INITIAL_TESTIMONIALS);
+    const isStaff = currentUser.role === "admin" || currentUser.role === "editor";
     const newItem = {
       id: `test-${Date.now()}`,
       slug: body.slug || slugify(body.title),
@@ -601,16 +779,37 @@ export const mockApiAdapter: AxiosAdapter = async (config) => {
       excerpt: body.excerpt || "",
       content: body.content || "",
       category: "Testimonio",
+      status: isStaff ? "approved" : "pending",
       created_at: new Date().toISOString(),
       author: {
         id: currentUser.id || currentUser.sub || "user-anon",
         name: currentUser.name || "Usuario",
-        role: { id: "1", name: currentUser.role === "admin" ? "Admin" : "Comunidad" },
+        role: { id: `role-${currentUser.role || "user"}`, name: isStaff ? "Equipo Editorial" : "Comunidad" },
       },
     };
     const updated = [newItem, ...testimonials];
     writeStore(STORAGE_KEYS.testimonials, updated);
     return makeResponse(config, 201, newItem);
+  }
+
+  if (method === "patch" && path.startsWith("/testimonials/") && path.endsWith("/status")) {
+    if (!currentUser || currentUser.role !== "admin") {
+      return makeError(config, 403, "Se requieren permisos de administrador.");
+    }
+    const id = path.replace("/testimonials/", "").replace(/\/status$/, "");
+    const nextStatus = String(body.status || "");
+    if (nextStatus !== "approved" && nextStatus !== "rejected") {
+      return makeError(config, 400, "Estado inválido.");
+    }
+    const testimonials = readStore<MockTestimonial[]>(
+      STORAGE_KEYS.testimonials,
+      INITIAL_TESTIMONIALS
+    );
+    const idx = testimonials.findIndex((t) => t.id === id);
+    if (idx === -1) return makeError(config, 404, "Testimonio no encontrado");
+    testimonials[idx] = { ...testimonials[idx], status: nextStatus };
+    writeStore(STORAGE_KEYS.testimonials, testimonials);
+    return makeResponse(config, 200, testimonials[idx]);
   }
 
   if (method === "put" && path.startsWith("/testimonials/")) {
